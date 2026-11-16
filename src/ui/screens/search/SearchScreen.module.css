@@ -1,0 +1,205 @@
+.header {
+  flex: none;
+  padding: var(--pad-top-76) var(--gutter) 0;
+}
+
+/* The back button of a player's games sits above the title, the title keeps its place. */
+.back {
+  position: absolute;
+  top: calc(var(--pad-top-76) - 52px);
+}
+
+.field {
+  flex: none;
+  margin: 16px var(--gutter) 0;
+  height: 44px;
+  border-radius: var(--r-board);
+  background: var(--fill);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+}
+.field:focus-within {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.fieldIcon {
+  flex: none;
+  color: var(--text-3);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  font-size: 17px;
+  font-weight: 400;
+  outline: none;
+  appearance: none;
+}
+.input::placeholder {
+  color: var(--text-3);
+}
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: var(--float-clearance);
+}
+
+.start {
+  padding: var(--section-gap-lg) var(--gutter) 0;
+}
+
+.sectionTitle {
+  margin-bottom: var(--title-gap);
+}
+
+.publicNote {
+  margin-top: 8px;
+}
+
+.action {
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  color: var(--text);
+}
+.action + .action {
+  border-top: var(--hairline);
+}
+.action:focus-visible {
+  outline-offset: -4px;
+  border-radius: var(--r-board);
+}
+@media (hover: hover) {
+  .action:hover {
+    background: var(--hover-fill);
+  }
+}
+
+.actionIcon {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: var(--r-icon);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chevron {
+  flex: none;
+  color: var(--chevron);
+}
+
+.message {
+  padding: 28px var(--gutter) 0;
+}
+
+.results {
+  padding: 28px var(--gutter) 0;
+}
+
+.resultGroup + .resultGroup {
+  margin-top: 20px;
+}
+
+.groupTitle {
+  margin-bottom: 4px;
+}
+
+.playerRow {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: var(--hairline);
+  text-align: left;
+}
+
+.title {
+  font-weight: 800;
+}
+
+/* ---- the Paste PGN sheet ---- */
+.sheet {
+  margin: auto auto 0;
+  width: 100%;
+  max-width: var(--content-max);
+  max-height: none;
+  border: 0;
+  padding: 0;
+  border-radius: var(--r-box) var(--r-box) 0 0;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--shadow-hero);
+}
+.sheet::backdrop {
+  background: transparent;
+}
+.sheet[open] {
+  animation: rise var(--sheet-slide);
+}
+@keyframes rise {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.sheetBody {
+  padding: 20px var(--gutter) var(--pad-bottom-34);
+  display: flex;
+  flex-direction: column;
+}
+
+.pgn {
+  margin-top: var(--title-gap);
+  height: 200px;
+  resize: none;
+  border: 0;
+  border-radius: var(--r-board);
+  background: var(--fill);
+  padding: 12px 16px;
+  font-family: var(--font);
+}
+
+.error {
+  margin-top: 6px;
+  color: var(--q-blunder);
+}
+
+/* A PGN with several games: only the first opens (Fable review A6-06). */
+.note {
+  margin-top: 6px;
+}
+
+.primary {
+  margin-top: 16px;
+  height: 52px;
+  border-radius: var(--r-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+}

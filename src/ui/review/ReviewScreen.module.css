@@ -1,0 +1,596 @@
+/*
+ * The review screen (BRIEF-UI 6.2). Everything has a fixed height except the board, which takes
+ * what is left (BRIEF-UI section 4):
+ *   board = min(width − 40 − 20, height − top − FIXED − bar bottom)
+ * where 20 is the evaluation bar (14) and its gap to the board (6) (owner, 2026-11-15).
+ *   FIXED = 44 header + 8 + 28 row + 4 + 4 + 28 row + 10 + 36 graph + 12 + 32 tabs + 10
+ *         + 128 panel + 12 + 62 bar = 418
+ * The rows, graph, tabs and panel are as wide as the bar and the board together, and the
+ * column is centred.
+ */
+/* The review keeps 640px on a big screen: its board takes the room (owner, 2026-11-15). */
+.screen:not(.wide) {
+  max-width: 640px;
+}
+
+.screen {
+  --row-h: 28px;
+  --graph-h: 36px;
+  --panel-h: 128px;
+  --fixed: 418px;
+  --eval-w: 14px;
+  --eval-gap: 6px;
+  --board: min(
+    100vw - 2 * var(--gutter) - var(--eval-w) - var(--eval-gap),
+    640px - 2 * var(--gutter) - var(--eval-w) - var(--eval-gap),
+    100dvh - var(--pad-top-52) - var(--fixed) - var(--float-bottom)
+  );
+}
+
+/* Short screens (iPhone SE): smaller rows, graph and panel, 8px above the bar. */
+@media (max-height: 759.98px) {
+  .screen {
+    --row-h: 24px;
+    --graph-h: 28px;
+    --panel-h: 104px;
+    --fixed: 374px;
+  }
+  .chance {
+    display: none;
+  }
+  .chance + .line3 {
+    margin-top: 10px;
+  }
+}
+
+.header {
+  flex: none;
+  padding: var(--pad-top-52) var(--gutter) 0;
+  height: calc(var(--pad-top-52) + 44px);
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  text-align: center;
+}
+
+/* iPads, either way round: the wider evaluation bar with its figure (owner, 2026-11-15). */
+@media (min-width: 700px) {
+  .screen {
+    --eval-w: 20px;
+  }
+}
+
+/* The evaluation bar, then the board. */
+.boardRow {
+  display: flex;
+  gap: var(--eval-gap);
+}
+
+.column {
+  width: calc(var(--board) + var(--eval-w) + var(--eval-gap));
+  margin: 8px auto 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- players ---- */
+.player {
+  height: var(--row-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.player:first-child {
+  margin-bottom: 4px;
+}
+.player:nth-child(3) {
+  margin-top: 4px;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title {
+  font-weight: 800;
+}
+
+.dotBlack,
+.dotWhite {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+}
+.dotBlack {
+  background: var(--text);
+}
+.dotWhite {
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1.5px var(--text);
+}
+
+.clock {
+  flex: none;
+  color: var(--text-clock);
+}
+
+/* ---- graph ---- */
+.graph {
+  margin-top: 10px;
+  height: var(--graph-h);
+  border-radius: var(--r-board);
+  background: var(--fill);
+  overflow: hidden;
+  touch-action: none;
+  cursor: pointer;
+}
+.graphSvg {
+  display: block;
+}
+.graphArea {
+  fill: var(--eval-fill);
+}
+.graphLine {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.graphCursor {
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+
+/* ---- move quality colours: dots and move text only ---- */
+.fill-brilliant {
+  fill: var(--q-brilliant);
+  background: var(--q-brilliant);
+}
+.fill-great {
+  fill: var(--q-great);
+  background: var(--q-great);
+}
+.fill-best {
+  fill: var(--q-best);
+  background: var(--q-best);
+}
+.fill-excellent {
+  fill: var(--q-excellent);
+  background: var(--q-excellent);
+}
+/* Good's dot takes the tick's green: its pale badge ground would vanish on the grey panel. */
+.fill-good {
+  fill: var(--q-good);
+  background: var(--q-good);
+}
+.fill-book {
+  fill: var(--q-book);
+  background: var(--q-book);
+}
+.fill-inaccuracy {
+  fill: var(--q-inaccuracy);
+  background: var(--q-inaccuracy);
+}
+.fill-mistake {
+  fill: var(--q-mistake);
+  background: var(--q-mistake);
+}
+.fill-miss {
+  fill: var(--q-miss);
+  background: var(--q-miss);
+}
+.fill-blunder {
+  fill: var(--q-blunder);
+  background: var(--q-blunder);
+}
+.fill-neutral {
+  fill: var(--q-neutral);
+  background: var(--q-neutral);
+}
+.text-brilliant {
+  color: var(--q-brilliant);
+}
+.text-great {
+  color: var(--q-great);
+}
+.text-inaccuracy {
+  color: var(--q-inaccuracy-text);
+}
+.text-mistake {
+  color: var(--q-mistake-text);
+}
+.text-miss {
+  color: var(--q-mistake-text);
+}
+.text-blunder {
+  color: var(--q-blunder);
+}
+
+/* ---- panels ---- */
+.tabs {
+  margin-top: 12px;
+}
+
+.panel {
+  /* Holds the hidden line read out to screen readers. */
+  position: relative;
+  margin-top: 10px;
+  height: var(--panel-h);
+  padding: 14px 16px;
+  border-radius: var(--r-card);
+  background: var(--fill);
+  overflow: hidden;
+}
+
+.moveHead {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.moveHead > :first-child {
+  white-space: nowrap;
+}
+
+.badge {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.qdot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.eval {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.line2 {
+  margin-top: 10px;
+}
+.line3 {
+  margin-top: 2px;
+}
+.best {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.retry {
+  margin-top: 10px;
+  min-height: 44px;
+  text-align: left;
+  color: var(--text);
+}
+
+.accuracies {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.accuracyRight {
+  padding-left: 16px;
+  border-left: var(--hairline);
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chips {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.chip {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  white-space: nowrap;
+}
+
+.allMoves {
+  height: 100px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 4px 2px;
+}
+
+.moveNumber {
+  height: 26px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.moveItem {
+  height: 26px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+}
+.moveOn {
+  background: var(--surface);
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .moveItem:not(.moveOn):hover,
+  .chip:hover {
+    background: var(--hover-surface);
+  }
+}
+
+/* Short screens: the Move panel keeps its first line and "Better was"; All Moves shrinks. */
+@media (max-height: 759.98px) {
+  .allMoves {
+    height: 76px;
+  }
+}
+
+/* ---- the stepper bar ---- */
+.stepper {
+  composes: glass from '../components/FloatingBar.module.css';
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: center;
+  justify-items: center;
+}
+
+.stepButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stepNext {
+  composes: stepButton;
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+@media (hover: hover) {
+  .stepButton:hover:not(:disabled):not(.stepNext) {
+    background: var(--tab-active-bg);
+  }
+}
+
+/* ---- iPad in landscape: two columns (BRIEF-UI section 4) ----
+ * Left: the board, as big as the height allows, with a player row above and below.
+ * Right: a 390px column with the header, graph, tabs, the panel taking what is left, and the
+ * step bar at its foot. 32px between the columns. */
+.screen.wide {
+  --side: 390px;
+  --wide-top: var(--pad-top-52);
+  --wide-bottom: var(--pad-bottom-34);
+  --board: min(
+    100dvh - var(--wide-top) - var(--wide-bottom) - 2 * (var(--row-h) + 4px),
+    100vw - 2 * var(--gutter) - var(--side) - 32px - var(--eval-w) - var(--eval-gap)
+  );
+  max-width: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 32px;
+  padding: var(--wide-top) var(--gutter) var(--wide-bottom);
+}
+
+.wideBoard {
+  width: calc(var(--board) + var(--eval-w) + var(--eval-gap));
+  display: flex;
+  flex-direction: column;
+}
+
+.wideSide {
+  width: var(--side);
+  height: calc(var(--board) + 2 * (var(--row-h) + 4px));
+  display: flex;
+  flex-direction: column;
+}
+
+.wideSide .header {
+  padding: 0;
+  height: 44px;
+}
+
+.wideSide .graph {
+  margin-top: 8px;
+}
+
+.wideSide .panel {
+  flex: none;
+  height: auto;
+}
+/* 12px between the panel and the move table. */
+.wideSide .panel {
+  margin-bottom: 12px;
+}
+
+.docked {
+  position: static;
+  margin: auto 0 0;
+  max-width: none;
+  flex: none;
+}
+
+/* ---- the move table: iPad in landscape only (owner, 2026-11-15) ----
+ * Under the Move / Summary panel, always shown, taking exactly what is left down to the step bar
+ * (12px above it). One full move per row: number, White, Black; the two move columns as wide as
+ * each other and the moves lined up on the left whether or not they carry a badge. */
+.moveTable {
+  /* Holds the hidden category names of the rows, which would otherwise stretch the page. */
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  margin: 0 0 12px;
+  padding: 6px 8px;
+  overflow-y: auto;
+  list-style: none;
+  border-radius: var(--r-card);
+  background: var(--fill);
+}
+
+.tableRow {
+  height: 40px;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+.tableRow > :first-child {
+  padding-left: 6px;
+}
+
+.tableMove {
+  justify-self: start;
+  max-width: 100%;
+  height: 32px;
+  padding: 0 10px 0 6px;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.tableOn {
+  background: var(--surface);
+  font-weight: 700;
+}
+@media (hover: hover) {
+  .tableMove:not(.tableOn):hover {
+    background: var(--hover-surface);
+  }
+}
+
+/* Every move keeps room for a badge, so the moves line up. */
+.tableBadgeSlot {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.tableBadge {
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--badge-mark);
+  font: 800 11px / 1 var(--font-inter);
+  letter-spacing: 0;
+}
+
+.tableIcon {
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+/* All Moves (phones, iPad portrait): the badge before a move that has one. */
+.movesBadge {
+  margin-right: 4px;
+}
+
+/* ---- a line of the reader's own (owner, 2026-11-16) ----
+ * In place of the tabs, and the same size: what the line is on the left, the way back to the
+ * game on the right. The graph fades, because it is about the game and not about the line. */
+.tryBar {
+  margin-top: 12px;
+  height: 32px;
+  padding: 3px 3px 3px 12px;
+  border-radius: var(--r-pill);
+  background: var(--fill);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tryTitle {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tryBack {
+  position: relative;
+  flex: none;
+  height: 26px;
+  padding: 0 11px 0 7px;
+  border-radius: var(--r-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+/* 44px tall to a finger. */
+.tryBack::after {
+  content: '';
+  position: absolute;
+  inset: -9px 0;
+}
+
+.graphFaded {
+  opacity: 0.5;
+}
+
+.fill-checking {
+  background: var(--q-checking);
+}
+
+/* Short screens keep two lines in the Move panel: the third gives way when there is a second. */
+@media (max-height: 759.98px) {
+  .line2 + .tryExtra {
+    display: none;
+  }
+}

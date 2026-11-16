@@ -1,0 +1,34 @@
+.board {
+  display: block;
+  overflow: hidden;
+}
+
+.board[data-palette='blue'] {
+  --sq-l: var(--board-blue-l);
+  --sq-d: var(--board-blue-d);
+}
+.board[data-palette='green'] {
+  --sq-l: var(--board-green-l);
+  --sq-d: var(--board-green-d);
+}
+.board[data-palette='orange'] {
+  --sq-l: var(--board-orange-l);
+  --sq-d: var(--board-orange-d);
+}
+.board[data-palette='purple'] {
+  --sq-l: var(--board-purple-l);
+  --sq-d: var(--board-purple-d);
+}
+
+.light {
+  fill: var(--sq-l);
+}
+.dark {
+  fill: var(--sq-d);
+}
+.hl {
+  fill: var(--board-hl-l);
+}
+.hd {
+  fill: var(--board-hl-d);
+}

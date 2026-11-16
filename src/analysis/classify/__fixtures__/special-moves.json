@@ -1,0 +1,2341 @@
+{
+  "moments": [
+    {
+      "id": "byrne-fischer-1956-17b-Be6",
+      "kind": "brilliant-sacrifice",
+      "source": {
+        "game": "Donald Byrne vs Bobby Fischer, Rosenwald Memorial, New York, 1956 (\"The Game of the Century\")",
+        "movesFrom": "https://en.wikipedia.org/wiki/Game_of_the_Century_(chess) (revision 1382823337)",
+        "move": "17...Be6"
+      },
+      "expected": {
+        "category": "brilliant",
+        "basis": "Printed as 17...Be6!! on the cited page: the queen sacrifice the game is famous for."
+      },
+      "movesBefore": [
+        "Nf3",
+        "Nf6",
+        "c4",
+        "g6",
+        "Nc3",
+        "Bg7",
+        "d4",
+        "O-O",
+        "Bf4",
+        "d5",
+        "Qb3",
+        "dxc4",
+        "Qxc4",
+        "c6",
+        "e4",
+        "Nbd7",
+        "Rd1",
+        "Nb6",
+        "Qc5",
+        "Bg4",
+        "Bg5",
+        "Na4",
+        "Qa3",
+        "Nxc3",
+        "bxc3",
+        "Nxe4",
+        "Bxe7",
+        "Qb6",
+        "Bc4",
+        "Nxc3",
+        "Bc5",
+        "Rfe8+",
+        "Kf1"
+      ],
+      "fenBefore": "r3r1k1/pp3pbp/1qp3p1/2B5/2BP2b1/Q1n2N2/P4PPP/3R1K1R b - - 3 17",
+      "moveUci": "g4e6",
+      "moveSan": "Be6",
+      "evals": {
+        "before": {
+          "ply": 33,
+          "fen": "r3r1k1/pp3pbp/1qp3p1/2B5/2BP2b1/Q1n2N2/P4PPP/3R1K1R b - - 3 17",
+          "score": { "kind": "cp", "value": -202 },
+          "whiteExpected": 0.3303,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -202 },
+              "uci": ["g4e6", "a3c3", "b6c5", "d4c5", "g7c3", "c4e6", "e8e6", "g2g3"],
+              "san": ["Be6", "Qxc3", "Qxc5", "dxc5", "Bxc3", "Bxe6", "Rxe6", "g3"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 59 },
+              "uci": ["c3b5", "c4f7", "g8h8", "c5b6", "b5a3", "b6c5", "e8f8", "c5f8"],
+              "san": ["Nb5", "Bxf7+", "Kh8", "Bxb6", "Nxa3", "Bc5", "Rf8", "Bxf8"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 34,
+          "fen": "r3r1k1/pp3pbp/1qp1b1p1/2B5/2BP4/Q1n2N2/P4PPP/3R1K1R w - - 4 18",
+          "score": { "kind": "cp", "value": -202 },
+          "whiteExpected": 0.3303,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -202 },
+              "uci": ["a3c3", "b6c5", "d4c5", "g7c3", "c4e6", "e8e6", "g2g3", "e6e7"],
+              "san": ["Qxc3", "Qxc5", "dxc5", "Bxc3", "Bxe6", "Rxe6", "g3", "Re7"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -352 },
+              "uci": ["c4d3", "c3b5", "a3c1", "b6a5", "h2h4", "b7b6", "h4h5", "b6c5"],
+              "san": ["Bd3", "Nb5", "Qc1", "Qa5", "h4", "b6", "h5", "bxc5"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "kasparov-topalov-1999-24w-Rxd4",
+      "kind": "brilliant-sacrifice",
+      "source": {
+        "game": "Garry Kasparov vs Veselin Topalov, Hoogovens, Wijk aan Zee, 1999 (\"Kasparov's Immortal\")",
+        "movesFrom": "https://en.wikipedia.org/wiki/Kasparov's_Immortal (revision 1380728072)",
+        "move": "24.Rxd4"
+      },
+      "expected": {
+        "category": "brilliant",
+        "basis": "Printed as 24.Rxd4!! on the cited page: the rook sacrifice that starts the king hunt."
+      },
+      "movesBefore": [
+        "e4",
+        "d6",
+        "d4",
+        "Nf6",
+        "Nc3",
+        "g6",
+        "Be3",
+        "Bg7",
+        "Qd2",
+        "c6",
+        "f3",
+        "b5",
+        "Nge2",
+        "Nbd7",
+        "Bh6",
+        "Bxh6",
+        "Qxh6",
+        "Bb7",
+        "a3",
+        "e5",
+        "O-O-O",
+        "Qe7",
+        "Kb1",
+        "a6",
+        "Nc1",
+        "O-O-O",
+        "Nb3",
+        "exd4",
+        "Rxd4",
+        "c5",
+        "Rd1",
+        "Nb6",
+        "g3",
+        "Kb8",
+        "Na5",
+        "Ba8",
+        "Bh3",
+        "d5",
+        "Qf4+",
+        "Ka7",
+        "Rhe1",
+        "d4",
+        "Nd5",
+        "Nbxd5",
+        "exd5",
+        "Qd6"
+      ],
+      "fenBefore": "b2r3r/k4p1p/p2q1np1/NppP4/3p1Q2/P4PPB/1PP4P/1K1RR3 w - - 1 24",
+      "moveUci": "d1d4",
+      "moveSan": "Rxd4",
+      "evals": {
+        "before": {
+          "ply": 46,
+          "fen": "b2r3r/k4p1p/p2q1np1/NppP4/3p1Q2/P4PPB/1PP4P/1K1RR3 w - - 1 24",
+          "score": { "kind": "cp", "value": -37 },
+          "whiteExpected": 0.4677,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -37 },
+              "uci": ["d1d4", "a7b6", "b2b4", "d6f4", "d4f4", "f6d5", "f4f7", "c5b4"],
+              "san": ["Rxd4", "Kb6", "b4", "Qxf4", "Rxf4", "Nxd5", "Rxf7", "cxb4"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -97 },
+              "uci": ["a5c6", "a8c6", "f4d6", "d8d6", "d5c6", "a7b6", "e1e7", "b6c6"],
+              "san": ["Nc6+", "Bxc6", "Qxd6", "Rxd6", "dxc6", "Kb6", "Re7", "Kxc6"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 47,
+          "fen": "b2r3r/k4p1p/p2q1np1/NppP4/3R1Q2/P4PPB/1PP4P/1K2R3 b - - 0 24",
+          "score": { "kind": "cp", "value": -30 },
+          "whiteExpected": 0.4738,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -30 },
+              "uci": ["a7b6", "b2b4", "d6f4", "d4f4", "f6d5", "f4f7", "c5b4", "a3b4"],
+              "san": ["Kb6", "b4", "Qxf4", "Rxf4", "Nxd5", "Rxf7", "cxb4", "axb4"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 0 },
+              "uci": ["h8e8", "e1e8", "f6e8", "f4f7", "a7b6", "a5c6", "a8c6", "d5c6"],
+              "san": ["Rhe8", "Rxe8", "Nxe8", "Qxf7+", "Kb6", "Nc6", "Bxc6", "dxc6"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "levitsky-marshall-1912-23b-Qg3",
+      "kind": "brilliant-sacrifice",
+      "source": {
+        "game": "Stepan Levitsky vs Frank Marshall, DSB Congress, Breslau, 1912 (\"The Gold Coins Game\")",
+        "movesFrom": "https://en.wikipedia.org/wiki/Levitsky_versus_Marshall (revision 1358157322)",
+        "move": "23...Qg3"
+      },
+      "expected": {
+        "category": "brilliant",
+        "basis": "Printed as 23...Qg3!! on the cited page: the queen is put where three pieces can take it."
+      },
+      "movesBefore": [
+        "d4",
+        "e6",
+        "e4",
+        "d5",
+        "Nc3",
+        "c5",
+        "Nf3",
+        "Nc6",
+        "exd5",
+        "exd5",
+        "Be2",
+        "Nf6",
+        "O-O",
+        "Be7",
+        "Bg5",
+        "O-O",
+        "dxc5",
+        "Be6",
+        "Nd4",
+        "Bxc5",
+        "Nxe6",
+        "fxe6",
+        "Bg4",
+        "Qd6",
+        "Bh3",
+        "Rae8",
+        "Qd2",
+        "Bb4",
+        "Bxf6",
+        "Rxf6",
+        "Rad1",
+        "Qc5",
+        "Qe2",
+        "Bxc3",
+        "bxc3",
+        "Qxc3",
+        "Rxd5",
+        "Nd4",
+        "Qh5",
+        "Ref8",
+        "Re5",
+        "Rh6",
+        "Qg5",
+        "Rxh3",
+        "Rc5"
+      ],
+      "fenBefore": "5rk1/pp4pp/4p3/2R3Q1/3n4/2q4r/P1P2PPP/5RK1 b - - 1 23",
+      "moveUci": "c3g3",
+      "moveSan": "Qg3",
+      "evals": {
+        "before": {
+          "ply": 45,
+          "fen": "5rk1/pp4pp/4p3/2R3Q1/3n4/2q4r/P1P2PPP/5RK1 b - - 1 23",
+          "score": { "kind": "cp", "value": -504 },
+          "whiteExpected": 0.1463,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -504 },
+              "uci": ["c3g3", "g5g3", "d4e2", "g1h1", "e2g3", "h1g1", "h3h5", "c5h5"],
+              "san": ["Qg3", "Qxg3", "Ne2+", "Kh1", "Nxg3+", "Kg1", "Rh5", "Rxh5"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -439 },
+              "uci": ["c3b2", "g5g4", "h3h6", "c2c3", "d4c6", "c5g5", "b2c3", "f1d1"],
+              "san": ["Qb2", "Qg4", "Rh6", "c3", "Nc6", "Rg5", "Qxc3", "Rd1"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 46,
+          "fen": "5rk1/pp4pp/4p3/2R3Q1/3n4/6qr/P1P2PPP/5RK1 w - - 2 24",
+          "score": { "kind": "cp", "value": -511 },
+          "whiteExpected": 0.1433,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -511 },
+              "uci": ["g5g3", "d4e2", "g1h1", "e2g3", "h1g1", "h3h5", "c5h5", "g3h5"],
+              "san": ["Qxg3", "Ne2+", "Kh1", "Nxg3+", "Kg1", "Rh5", "Rxh5", "Nxh5"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -1029 },
+              "uci": ["g5g7", "g3g7", "f1d1", "d4f3", "g1f1", "h3h2", "f1e2", "g7g2"],
+              "san": ["Qxg7+", "Qxg7", "Rd1", "Nf3+", "Kf1", "Rxh2", "Ke2", "Qxg2"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "topalov-shirov-1998-47b-Bh3",
+      "kind": "brilliant-sacrifice",
+      "source": {
+        "game": "Veselin Topalov vs Alexei Shirov, Linares, 1998",
+        "movesFrom": "https://en.wikipedia.org/wiki/Alexei_Shirov (revision 1383860105)",
+        "move": "47...Bh3"
+      },
+      "expected": {
+        "category": "brilliant",
+        "basis": "Printed as 47...Bh3!! on the cited page, which calls it one of the greatest chess moves of all time."
+      },
+      "movesBefore": [
+        "d4",
+        "Nf6",
+        "c4",
+        "g6",
+        "Nc3",
+        "d5",
+        "cxd5",
+        "Nxd5",
+        "e4",
+        "Nxc3",
+        "bxc3",
+        "Bg7",
+        "Bb5+",
+        "c6",
+        "Ba4",
+        "O-O",
+        "Ne2",
+        "Nd7",
+        "O-O",
+        "e5",
+        "f3",
+        "Qe7",
+        "Be3",
+        "Rd8",
+        "Qc2",
+        "Nb6",
+        "Bb3",
+        "Be6",
+        "Rad1",
+        "Nc4",
+        "Bc1",
+        "b5",
+        "f4",
+        "exd4",
+        "Nxd4",
+        "Bg4",
+        "Rde1",
+        "Qc5",
+        "Kh1",
+        "a5",
+        "h3",
+        "Bd7",
+        "a4",
+        "bxa4",
+        "Ba2",
+        "Be8",
+        "e5",
+        "Nb6",
+        "f5",
+        "Nd5",
+        "Bd2",
+        "Nb4",
+        "Qxa4",
+        "Nxa2",
+        "Qxa2",
+        "Bxe5",
+        "fxg6",
+        "hxg6",
+        "Bg5",
+        "Rd5",
+        "Re3",
+        "Qd6",
+        "Qe2",
+        "Bd7",
+        "c4",
+        "Bxd4",
+        "cxd5",
+        "Bxe3",
+        "Qxe3",
+        "Re8",
+        "Qc3",
+        "Qxd5",
+        "Bh6",
+        "Re5",
+        "Rf3",
+        "Qc5",
+        "Qa1",
+        "Bf5",
+        "Re3",
+        "f6",
+        "Rxe5",
+        "Qxe5",
+        "Qa2+",
+        "Qd5",
+        "Qxd5+",
+        "cxd5",
+        "Bd2",
+        "a4",
+        "Bc3",
+        "Kf7",
+        "h4",
+        "Ke6",
+        "Kg1"
+      ],
+      "fenBefore": "8/8/4kpp1/3p1b2/p6P/2B5/6P1/6K1 b - - 2 47",
+      "moveUci": "f5h3",
+      "moveSan": "Bh3",
+      "evals": {
+        "before": {
+          "ply": 93,
+          "fen": "8/8/4kpp1/3p1b2/p6P/2B5/6P1/6K1 b - - 2 47",
+          "score": { "kind": "cp", "value": -151 },
+          "whiteExpected": 0.3709,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -151 },
+              "uci": ["f5h3", "g2h3", "e6f5", "g1f2", "f5e4", "c3b2", "e4d3", "f2e1"],
+              "san": ["Bh3", "gxh3", "Kf5", "Kf2", "Ke4", "Bb2", "Kd3", "Ke1"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -103 },
+              "uci": ["f5e4", "g2g3", "f6f5", "g1f2", "f5f4", "g3f4", "e6f5", "f2e2"],
+              "san": ["Be4", "g3", "f5", "Kf2", "f4", "gxf4", "Kf5", "Ke2"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 94,
+          "fen": "8/8/4kpp1/3p4/p6P/2B4b/6P1/6K1 w - - 3 48",
+          "score": { "kind": "cp", "value": -448 },
+          "whiteExpected": 0.1725,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -448 },
+              "uci": ["g1f2", "e6f5", "f2f3", "h3g2", "f3g2", "f5e4", "c3f6", "d5d4"],
+              "san": ["Kf2", "Kf5", "Kf3", "Bxg2+", "Kxg2", "Ke4", "Bxf6", "d4"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -465 },
+              "uci": ["c3b2", "e6f5", "g1f2", "h3g2", "f2g2", "f5e4", "b2f6", "d5d4"],
+              "san": ["Bb2", "Kf5", "Kf2", "Bxg2", "Kxg2", "Ke4", "Bxf6", "d4"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "rotlewi-rubinstein-1907-22b-Rxc3",
+      "kind": "brilliant-sacrifice",
+      "source": {
+        "game": "Gersz Rotlewi vs Akiba Rubinstein, Lodz, 1907 (\"Rubinstein's Immortal\")",
+        "movesFrom": "https://en.wikipedia.org/wiki/Rotlewi_versus_Rubinstein (revision 1356335921)",
+        "move": "22...Rxc3"
+      },
+      "expected": {
+        "category": "brilliant",
+        "basis": "Printed as 22...Rxc3!! on the cited page: the start of the queen and rook sacrifice."
+      },
+      "movesBefore": [
+        "d4",
+        "d5",
+        "Nf3",
+        "e6",
+        "e3",
+        "c5",
+        "c4",
+        "Nc6",
+        "Nc3",
+        "Nf6",
+        "dxc5",
+        "Bxc5",
+        "a3",
+        "a6",
+        "b4",
+        "Bd6",
+        "Bb2",
+        "O-O",
+        "Qd2",
+        "Qe7",
+        "Bd3",
+        "dxc4",
+        "Bxc4",
+        "b5",
+        "Bd3",
+        "Rd8",
+        "Qe2",
+        "Bb7",
+        "O-O",
+        "Ne5",
+        "Nxe5",
+        "Bxe5",
+        "f4",
+        "Bc7",
+        "e4",
+        "Rac8",
+        "e5",
+        "Bb6+",
+        "Kh1",
+        "Ng4",
+        "Be4",
+        "Qh4",
+        "g3"
+      ],
+      "fenBefore": "2rr2k1/1b3ppp/pb2p3/1p2P3/1P2BPnq/P1N3P1/1B2Q2P/R4R1K b - - 0 22",
+      "moveUci": "c8c3",
+      "moveSan": "Rxc3",
+      "evals": {
+        "before": {
+          "ply": 43,
+          "fen": "2rr2k1/1b3ppp/pb2p3/1p2P3/1P2BPnq/P1N3P1/1B2Q2P/R4R1K b - - 0 22",
+          "score": { "kind": "cp", "value": -552 },
+          "whiteExpected": 0.1265,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -552 },
+              "uci": ["c8c3", "e4b7", "c3g3", "f1f3", "g3f3", "b7f3", "g4f2", "h1g1"],
+              "san": ["Rxc3", "Bxb7", "Rxg3", "Rf3", "Rxf3", "Bxf3", "Nf2+", "Kg1"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -318 },
+              "uci": ["h4e7", "a1e1", "b7e4", "c3e4", "g4e3", "f1f2", "e3c2", "e2c2"],
+              "san": ["Qe7", "Rae1", "Bxe4+", "Nxe4", "Ne3", "Rf2", "Nc2", "Qxc2"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 44,
+          "fen": "3r2k1/1b3ppp/pb2p3/1p2P3/1P2BPnq/P1r3P1/1B2Q2P/R4R1K w - - 0 23",
+          "score": { "kind": "cp", "value": -562 },
+          "whiteExpected": 0.1227,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -562 },
+              "uci": ["e4b7", "c3g3", "a1c1", "g3e3", "e2g2", "e3h3", "c1c2", "g4e3"],
+              "san": ["Bxb7", "Rxg3", "Rac1", "Re3", "Qg2", "Rh3", "Rc2", "Ne3"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -931 },
+              "uci": ["g3h4", "d8d2", "e4b7", "d2e2", "f1f2", "g4f2", "h1g2", "f2g4"],
+              "san": ["gxh4", "Rd2", "Bxb7", "Rxe2", "Rf2", "Nxf2+", "Kg2", "Ng4+"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "kasparov-topalov-1999-36w-Bf1",
+      "kind": "only-move",
+      "source": {
+        "game": "Garry Kasparov vs Veselin Topalov, Hoogovens, Wijk aan Zee, 1999 (\"Kasparov's Immortal\")",
+        "movesFrom": "https://en.wikipedia.org/wiki/Kasparov's_Immortal (revision 1380728072)",
+        "move": "36.Bf1"
+      },
+      "expected": {
+        "category": "great",
+        "basis": "Printed as 36.Bf1!! on the cited page; known as the only move that keeps the attack winning."
+      },
+      "movesBefore": [
+        "e4",
+        "d6",
+        "d4",
+        "Nf6",
+        "Nc3",
+        "g6",
+        "Be3",
+        "Bg7",
+        "Qd2",
+        "c6",
+        "f3",
+        "b5",
+        "Nge2",
+        "Nbd7",
+        "Bh6",
+        "Bxh6",
+        "Qxh6",
+        "Bb7",
+        "a3",
+        "e5",
+        "O-O-O",
+        "Qe7",
+        "Kb1",
+        "a6",
+        "Nc1",
+        "O-O-O",
+        "Nb3",
+        "exd4",
+        "Rxd4",
+        "c5",
+        "Rd1",
+        "Nb6",
+        "g3",
+        "Kb8",
+        "Na5",
+        "Ba8",
+        "Bh3",
+        "d5",
+        "Qf4+",
+        "Ka7",
+        "Rhe1",
+        "d4",
+        "Nd5",
+        "Nbxd5",
+        "exd5",
+        "Qd6",
+        "Rxd4",
+        "cxd4",
+        "Re7+",
+        "Kb6",
+        "Qxd4+",
+        "Kxa5",
+        "b4+",
+        "Ka4",
+        "Qc3",
+        "Qxd5",
+        "Ra7",
+        "Bb7",
+        "Rxb7",
+        "Qc4",
+        "Qxf6",
+        "Kxa3",
+        "Qxa6+",
+        "Kxb4",
+        "c3+",
+        "Kxc3",
+        "Qa1+",
+        "Kd2",
+        "Qb2+",
+        "Kd1"
+      ],
+      "fenBefore": "3r3r/1R3p1p/6p1/1p6/2q5/5PPB/1Q5P/1K1k4 w - - 4 36",
+      "moveUci": "h3f1",
+      "moveSan": "Bf1",
+      "evals": {
+        "before": {
+          "ply": 70,
+          "fen": "3r3r/1R3p1p/6p1/1p6/2q5/5PPB/1Q5P/1K1k4 w - - 4 36",
+          "score": { "kind": "cp", "value": 182 },
+          "whiteExpected": 0.6541,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 182 },
+              "uci": ["h3f1", "d1e1", "f1c4", "d8d1", "b1a2", "h8a8", "a2b3", "b5c4"],
+              "san": ["Bf1", "Ke1", "Bxc4", "Rd1+", "Ka2", "Ra8+", "Kb3", "bxc4+"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -562 },
+              "uci": ["b2a3", "c4c2", "b1a1", "d8a8", "b7a7", "a8a7", "a3a7", "c2a4"],
+              "san": ["Qa3", "Qc2+", "Ka1", "Ra8", "Ra7", "Rxa7", "Qxa7", "Qa4+"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 71,
+          "fen": "3r3r/1R3p1p/6p1/1p6/2q5/5PP1/1Q5P/1K1k1B2 b - - 5 36",
+          "score": { "kind": "cp", "value": 184 },
+          "whiteExpected": 0.6557,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 184 },
+              "uci": ["d8d2", "b7d7", "d2d7", "f1c4", "b5c4", "b2h8", "d7d3", "h8c8"],
+              "san": ["Rd2", "Rd7", "Rxd7", "Bxc4", "bxc4", "Qxh8", "Rd3", "Qc8"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 223 },
+              "uci": ["d1e1", "f1c4", "d8d1", "b1a2", "h8a8", "a2b3", "b5c4", "b3c4"],
+              "san": ["Ke1", "Bxc4", "Rd1+", "Ka2", "Ra8+", "Kb3", "bxc4+", "Kxc4"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "kasparov-topalov-1999-37w-Rd7",
+      "kind": "only-move",
+      "source": {
+        "game": "Garry Kasparov vs Veselin Topalov, Hoogovens, Wijk aan Zee, 1999 (\"Kasparov's Immortal\")",
+        "movesFrom": "https://en.wikipedia.org/wiki/Kasparov's_Immortal (revision 1380728072)",
+        "move": "37.Rd7"
+      },
+      "expected": {
+        "category": "great",
+        "basis": "Printed as 37.Rd7!! on the cited page, which gives 37.Qxh8 as losing to mate and 37.Bxc4 as only a draw."
+      },
+      "movesBefore": [
+        "e4",
+        "d6",
+        "d4",
+        "Nf6",
+        "Nc3",
+        "g6",
+        "Be3",
+        "Bg7",
+        "Qd2",
+        "c6",
+        "f3",
+        "b5",
+        "Nge2",
+        "Nbd7",
+        "Bh6",
+        "Bxh6",
+        "Qxh6",
+        "Bb7",
+        "a3",
+        "e5",
+        "O-O-O",
+        "Qe7",
+        "Kb1",
+        "a6",
+        "Nc1",
+        "O-O-O",
+        "Nb3",
+        "exd4",
+        "Rxd4",
+        "c5",
+        "Rd1",
+        "Nb6",
+        "g3",
+        "Kb8",
+        "Na5",
+        "Ba8",
+        "Bh3",
+        "d5",
+        "Qf4+",
+        "Ka7",
+        "Rhe1",
+        "d4",
+        "Nd5",
+        "Nbxd5",
+        "exd5",
+        "Qd6",
+        "Rxd4",
+        "cxd4",
+        "Re7+",
+        "Kb6",
+        "Qxd4+",
+        "Kxa5",
+        "b4+",
+        "Ka4",
+        "Qc3",
+        "Qxd5",
+        "Ra7",
+        "Bb7",
+        "Rxb7",
+        "Qc4",
+        "Qxf6",
+        "Kxa3",
+        "Qxa6+",
+        "Kxb4",
+        "c3+",
+        "Kxc3",
+        "Qa1+",
+        "Kd2",
+        "Qb2+",
+        "Kd1",
+        "Bf1",
+        "Rd2"
+      ],
+      "fenBefore": "7r/1R3p1p/6p1/1p6/2q5/5PP1/1Q1r3P/1K1k1B2 w - - 6 37",
+      "moveUci": "b7d7",
+      "moveSan": "Rd7",
+      "evals": {
+        "before": {
+          "ply": 72,
+          "fen": "7r/1R3p1p/6p1/1p6/2q5/5PP1/1Q1r3P/1K1k1B2 w - - 6 37",
+          "score": { "kind": "cp", "value": 236 },
+          "whiteExpected": 0.6955,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 236 },
+              "uci": ["b7d7", "d2d7", "f1c4", "b5c4", "b2h8", "d7d3", "h8e8", "f7f5"],
+              "san": ["Rd7", "Rxd7", "Bxc4", "bxc4", "Qxh8", "Rd3", "Qe8", "f5"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -11 },
+              "uci": ["f1c4", "d2b2", "b1b2", "b5c4", "b7f7", "d1d2", "f7d7", "d2e1"],
+              "san": ["Bxc4", "Rxb2+", "Kxb2", "bxc4", "Rxf7", "Kd2", "Rd7+", "Ke1"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 73,
+          "fen": "7r/3R1p1p/6p1/1p6/2q5/5PP1/1Q1r3P/1K1k1B2 b - - 7 37",
+          "score": { "kind": "cp", "value": 232 },
+          "whiteExpected": 0.6925,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 232 },
+              "uci": ["d2d7", "f1c4", "b5c4", "b2h8", "d7d3", "h8e8", "d3b3", "b1a2"],
+              "san": ["Rxd7", "Bxc4", "bxc4", "Qxh8", "Rd3", "Qe8", "Rb3+", "Ka2"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 755 },
+              "uci": ["c4b4", "b2b4", "d2d7", "b4c3", "h8c8", "c3c8", "d1e1", "c8d7"],
+              "san": ["Qb4", "Qxb4", "Rxd7", "Qc3", "Rc8", "Qxc8", "Ke1", "Qxd7"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "topalov-shirov-1998-48b-Kf5",
+      "kind": "only-move",
+      "source": {
+        "game": "Veselin Topalov vs Alexei Shirov, Linares, 1998",
+        "movesFrom": "https://en.wikipedia.org/wiki/Alexei_Shirov (revision 1383860105)",
+        "move": "48...Kf5"
+      },
+      "expected": {
+        "category": "great",
+        "basis": "The only way to make the bishop sacrifice work: in a shallow engine scan every other move gave the win away."
+      },
+      "movesBefore": [
+        "d4",
+        "Nf6",
+        "c4",
+        "g6",
+        "Nc3",
+        "d5",
+        "cxd5",
+        "Nxd5",
+        "e4",
+        "Nxc3",
+        "bxc3",
+        "Bg7",
+        "Bb5+",
+        "c6",
+        "Ba4",
+        "O-O",
+        "Ne2",
+        "Nd7",
+        "O-O",
+        "e5",
+        "f3",
+        "Qe7",
+        "Be3",
+        "Rd8",
+        "Qc2",
+        "Nb6",
+        "Bb3",
+        "Be6",
+        "Rad1",
+        "Nc4",
+        "Bc1",
+        "b5",
+        "f4",
+        "exd4",
+        "Nxd4",
+        "Bg4",
+        "Rde1",
+        "Qc5",
+        "Kh1",
+        "a5",
+        "h3",
+        "Bd7",
+        "a4",
+        "bxa4",
+        "Ba2",
+        "Be8",
+        "e5",
+        "Nb6",
+        "f5",
+        "Nd5",
+        "Bd2",
+        "Nb4",
+        "Qxa4",
+        "Nxa2",
+        "Qxa2",
+        "Bxe5",
+        "fxg6",
+        "hxg6",
+        "Bg5",
+        "Rd5",
+        "Re3",
+        "Qd6",
+        "Qe2",
+        "Bd7",
+        "c4",
+        "Bxd4",
+        "cxd5",
+        "Bxe3",
+        "Qxe3",
+        "Re8",
+        "Qc3",
+        "Qxd5",
+        "Bh6",
+        "Re5",
+        "Rf3",
+        "Qc5",
+        "Qa1",
+        "Bf5",
+        "Re3",
+        "f6",
+        "Rxe5",
+        "Qxe5",
+        "Qa2+",
+        "Qd5",
+        "Qxd5+",
+        "cxd5",
+        "Bd2",
+        "a4",
+        "Bc3",
+        "Kf7",
+        "h4",
+        "Ke6",
+        "Kg1",
+        "Bh3",
+        "gxh3"
+      ],
+      "fenBefore": "8/8/4kpp1/3p4/p6P/2B4P/8/6K1 b - - 0 48",
+      "moveUci": "e6f5",
+      "moveSan": "Kf5",
+      "evals": {
+        "before": {
+          "ply": 95,
+          "fen": "8/8/4kpp1/3p4/p6P/2B4P/8/6K1 b - - 0 48",
+          "score": { "kind": "cp", "value": -377 },
+          "whiteExpected": 0.2109,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -377 },
+              "uci": ["e6f5", "g1f2", "f5e4", "c3b2", "f6f5", "f2e2", "f5f4", "e2d1"],
+              "san": ["Kf5", "Kf2", "Ke4", "Bb2", "f5", "Ke2", "f4", "Kd1"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -61 },
+              "uci": ["f6f5", "g1f2", "e6d6", "c3d4", "d6c6", "f2e3", "c6b5", "e3d3"],
+              "san": ["f5", "Kf2", "Kd6", "Bd4", "Kc6", "Ke3", "Kb5", "Kd3"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 96,
+          "fen": "8/8/5pp1/3p1k2/p6P/2B4P/8/6K1 w - - 1 49",
+          "score": { "kind": "cp", "value": -540 },
+          "whiteExpected": 0.1312,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -540 },
+              "uci": ["g1f2", "f5e4", "c3f6", "d5d4", "f6g5", "e4d3", "f2f3", "d3c2"],
+              "san": ["Kf2", "Ke4", "Bxf6", "d4", "Bg5", "Kd3", "Kf3", "Kc2"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -540 },
+              "uci": ["g1g2", "f5e4", "c3b2", "d5d4", "b2a3", "f6f5", "a3c5", "f5f4"],
+              "san": ["Kg2", "Ke4", "Bb2", "d4", "Ba3", "f5", "Bc5", "f4"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "kasparov-topalov-1999-25b-Kb6",
+      "kind": "only-move",
+      "source": {
+        "game": "Garry Kasparov vs Veselin Topalov, Hoogovens, Wijk aan Zee, 1999 (\"Kasparov's Immortal\")",
+        "movesFrom": "https://en.wikipedia.org/wiki/Kasparov's_Immortal (revision 1380728072)",
+        "move": "25...Kb6"
+      },
+      "expected": {
+        "category": "great",
+        "basis": "Only-move defence: the cited page shows 25...Qxe7 being mated by force. Played while in check."
+      },
+      "movesBefore": [
+        "e4",
+        "d6",
+        "d4",
+        "Nf6",
+        "Nc3",
+        "g6",
+        "Be3",
+        "Bg7",
+        "Qd2",
+        "c6",
+        "f3",
+        "b5",
+        "Nge2",
+        "Nbd7",
+        "Bh6",
+        "Bxh6",
+        "Qxh6",
+        "Bb7",
+        "a3",
+        "e5",
+        "O-O-O",
+        "Qe7",
+        "Kb1",
+        "a6",
+        "Nc1",
+        "O-O-O",
+        "Nb3",
+        "exd4",
+        "Rxd4",
+        "c5",
+        "Rd1",
+        "Nb6",
+        "g3",
+        "Kb8",
+        "Na5",
+        "Ba8",
+        "Bh3",
+        "d5",
+        "Qf4+",
+        "Ka7",
+        "Rhe1",
+        "d4",
+        "Nd5",
+        "Nbxd5",
+        "exd5",
+        "Qd6",
+        "Rxd4",
+        "cxd4",
+        "Re7+"
+      ],
+      "fenBefore": "b2r3r/k3Rp1p/p2q1np1/Np1P4/3p1Q2/P4PPB/1PP4P/1K6 b - - 1 25",
+      "moveUci": "a7b6",
+      "moveSan": "Kb6",
+      "evals": {
+        "before": {
+          "ply": 49,
+          "fen": "b2r3r/k3Rp1p/p2q1np1/Np1P4/3p1Q2/P4PPB/1PP4P/1K6 b - - 1 25",
+          "score": { "kind": "cp", "value": 83 },
+          "whiteExpected": 0.5721,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 83 },
+              "uci": ["a7b6", "f4d4", "b6a5", "b2b4", "a5a4", "d4c3", "d6d5", "e7a7"],
+              "san": ["Kb6", "Qxd4+", "Kxa5", "b4+", "Ka4", "Qc3", "Qxd5", "Ra7"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 342 },
+              "uci": ["a7b8", "f4d4", "d8d7", "h3d7", "h8c8", "a5c6", "c8c6", "d7c6"],
+              "san": ["Kb8", "Qxd4", "Rd7", "Bxd7", "Rc8", "Nc6+", "Rxc6", "Bxc6"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 50,
+          "fen": "b2r3r/4Rp1p/pk1q1np1/Np1P4/3p1Q2/P4PPB/1PP4P/1K6 w - - 2 26",
+          "score": { "kind": "cp", "value": 154 },
+          "whiteExpected": 0.6316,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 154 },
+              "uci": ["f4d4", "b6a5", "b2b4", "a5a4", "d4c3", "d6d5", "e7a7", "a8b7"],
+              "san": ["Qxd4+", "Kxa5", "b4+", "Ka4", "Qc3", "Qxd5", "Ra7", "Bb7"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -287 },
+              "uci": ["a5c4", "b5c4", "f4d4", "b6a5", "d4c3", "a5b5", "a3a4", "b5b6"],
+              "san": ["Nc4+", "bxc4", "Qxd4+", "Ka5", "Qc3+", "Kb5", "a4+", "Kb6"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "carlsen-anand-2014-g6-26b-a4",
+      "kind": "missed-win",
+      "source": {
+        "game": "Magnus Carlsen vs Viswanathan Anand, World Chess Championship 2014, game 6",
+        "movesFrom": "https://en.wikipedia.org/wiki/World_Chess_Championship_2014 (revision 1377112266)",
+        "move": "26...a4"
+      },
+      "expected": {
+        "category": "miss",
+        "basis": "The cited page calls 26.Kd2 and 26...a4 a double blunder: 26...Nxe5 would have won."
+      },
+      "movesBefore": [
+        "e4",
+        "c5",
+        "Nf3",
+        "e6",
+        "d4",
+        "cxd4",
+        "Nxd4",
+        "a6",
+        "c4",
+        "Nf6",
+        "Nc3",
+        "Bb4",
+        "Qd3",
+        "Nc6",
+        "Nxc6",
+        "dxc6",
+        "Qxd8+",
+        "Kxd8",
+        "e5",
+        "Nd7",
+        "Bf4",
+        "Bxc3+",
+        "bxc3",
+        "Kc7",
+        "h4",
+        "b6",
+        "h5",
+        "h6",
+        "O-O-O",
+        "Bb7",
+        "Rd3",
+        "c5",
+        "Rg3",
+        "Rag8",
+        "Bd3",
+        "Nf8",
+        "Be3",
+        "g6",
+        "hxg6",
+        "Nxg6",
+        "Rh5",
+        "Bc6",
+        "Bc2",
+        "Kb7",
+        "Rg4",
+        "a5",
+        "Bd1",
+        "Rd8",
+        "Bc2",
+        "Rdg8"
+      ],
+      "previous": {
+        "fenBefore": "6rr/1k3p2/1pb1p1np/p1p1P2R/2P3R1/2P1B3/P1B2PP1/2K5 w - - 4 26",
+        "moveUci": "c1d2",
+        "moveSan": "Kd2"
+      },
+      "fenBefore": "6rr/1k3p2/1pb1p1np/p1p1P2R/2P3R1/2P1B3/P1BK1PP1/8 b - - 5 26",
+      "moveUci": "a5a4",
+      "moveSan": "a4",
+      "evals": {
+        "previousBefore": {
+          "ply": 50,
+          "fen": "6rr/1k3p2/1pb1p1np/p1p1P2R/2P3R1/2P1B3/P1B2PP1/2K5 w - - 4 26",
+          "score": { "kind": "cp", "value": 32 },
+          "whiteExpected": 0.528,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 32 },
+              "uci": ["c1d1", "b7a6", "d1e2", "a5a4", "f2f3", "a6a5", "e2f2", "c6b7"],
+              "san": ["Kd1", "Ka6", "Ke2", "a4", "f3", "Ka5", "Kf2", "Bb7"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 24 },
+              "uci": ["a2a4", "c6e8", "c1b2", "e8c6", "b2b3", "b7c8", "e3h6", "g6e7"],
+              "san": ["a4", "Be8", "Kb2", "Bc6", "Kb3", "Kc8", "Bxh6", "Ne7"]
+            }
+          ],
+          "source": "engine"
+        },
+        "before": {
+          "ply": 51,
+          "fen": "6rr/1k3p2/1pb1p1np/p1p1P2R/2P3R1/2P1B3/P1BK1PP1/8 b - - 5 26",
+          "score": { "kind": "cp", "value": -188 },
+          "whiteExpected": 0.3412,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": -188 },
+              "uci": ["g6e5", "g4g8", "e5c4", "d2d3", "c4b2", "d3e2", "h8g8", "h5h6"],
+              "san": ["Nxe5", "Rxg8", "Nxc4+", "Kd3", "Nb2+", "Ke2", "Rxg8", "Rxh6"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 52 },
+              "uci": ["b7a6", "d2e2", "a5a4", "f2f3", "a6a5", "e2f2", "c6b7", "a2a3"],
+              "san": ["Ka6", "Ke2", "a4", "f3", "Ka5", "Kf2", "Bb7", "a3"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 52,
+          "fen": "6rr/1k3p2/1pb1p1np/2p1P2R/p1P3R1/2P1B3/P1BK1PP1/8 w - - 0 27",
+          "score": { "kind": "cp", "value": 49 },
+          "whiteExpected": 0.5428,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 49 },
+              "uci": ["d2e2", "b7a6", "a2a3", "a6a5", "g4g3", "g8d8", "f2f3", "c6b7"],
+              "san": ["Ke2", "Ka6", "a3", "Ka5", "Rg3", "Rd8", "f3", "Bb7"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 37 },
+              "uci": ["d2e1", "a4a3", "f2f3", "b7a6", "e3c1", "a6a5", "c1a3", "c6a4"],
+              "san": ["Ke1", "a3", "f3", "Ka6", "Bc1", "Ka5", "Bxa3", "Ba4"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "topalov-kramnik-2006-g2-32w-Qg6",
+      "kind": "missed-win",
+      "source": {
+        "game": "Veselin Topalov vs Vladimir Kramnik, World Chess Championship 2006, game 2",
+        "movesFrom": "https://en.wikipedia.org/wiki/World_Chess_Championship_2006 (revision 1375751263)",
+        "move": "32.Qg6+"
+      },
+      "expected": {
+        "category": "miss",
+        "basis": "The cited page: after 31...Bxf8 \"Topalov missed victory by playing 32. Qg6+ instead of 32. Rxg4+\"."
+      },
+      "movesBefore": [
+        "d4",
+        "d5",
+        "c4",
+        "c6",
+        "Nc3",
+        "Nf6",
+        "Nf3",
+        "dxc4",
+        "a4",
+        "Bf5",
+        "e3",
+        "e6",
+        "Bxc4",
+        "Bb4",
+        "O-O",
+        "Nbd7",
+        "Qe2",
+        "Bg6",
+        "e4",
+        "O-O",
+        "Bd3",
+        "Bh5",
+        "e5",
+        "Nd5",
+        "Nxd5",
+        "cxd5",
+        "Qe3",
+        "Bg6",
+        "Ng5",
+        "Re8",
+        "f4",
+        "Bxd3",
+        "Qxd3",
+        "f5",
+        "Be3",
+        "Nf8",
+        "Kh1",
+        "Rc8",
+        "g4",
+        "Qd7",
+        "Rg1",
+        "Be7",
+        "Nf3",
+        "Rc4",
+        "Rg2",
+        "fxg4",
+        "Rxg4",
+        "Rxa4",
+        "Rag1",
+        "g6",
+        "h4",
+        "Rb4",
+        "h5",
+        "Qb5",
+        "Qc2",
+        "Rxb2",
+        "hxg6",
+        "h5",
+        "g7",
+        "hxg4",
+        "gxf8=Q+"
+      ],
+      "previous": {
+        "fenBefore": "4rQk1/pp2b3/4p3/1q1pP3/3P1Pp1/4BN2/1rQ5/6RK b - - 0 31",
+        "moveUci": "e7f8",
+        "moveSan": "Bxf8"
+      },
+      "fenBefore": "4rbk1/pp6/4p3/1q1pP3/3P1Pp1/4BN2/1rQ5/6RK w - - 0 32",
+      "moveUci": "c2g6",
+      "moveSan": "Qg6+",
+      "evals": {
+        "previousBefore": {
+          "ply": 61,
+          "fen": "4rQk1/pp2b3/4p3/1q1pP3/3P1Pp1/4BN2/1rQ5/6RK b - - 0 31",
+          "score": { "kind": "cp", "value": 0 },
+          "whiteExpected": 0.5,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 0 },
+              "uci": ["g8f8", "c2g6", "b5e2", "g6h6", "f8f7", "h6h5", "f7f8", "h5h8"],
+              "san": ["Kxf8", "Qg6", "Qe2", "Qh6+", "Kf7", "Qh5+", "Kf8", "Qh8+"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 604 },
+              "uci": ["e7f8", "g1g4", "f8g7", "c2c7", "b5f1", "f3g1", "f1g2", "g4g2"],
+              "san": ["Bxf8", "Rxg4+", "Bg7", "Qc7", "Qf1+", "Ng1", "Qg2+", "Rxg2"]
+            }
+          ],
+          "source": "engine"
+        },
+        "before": {
+          "ply": 62,
+          "fen": "4rbk1/pp6/4p3/1q1pP3/3P1Pp1/4BN2/1rQ5/6RK w - - 0 32",
+          "score": { "kind": "cp", "value": 618 },
+          "whiteExpected": 0.8969,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 618 },
+              "uci": ["g1g4", "f8g7", "c2c7", "b5f1", "f3g1", "f1g2", "g4g2", "b2g2"],
+              "san": ["Rxg4+", "Bg7", "Qc7", "Qf1+", "Ng1", "Qg2+", "Rxg2", "Rxg2"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 103 },
+              "uci": ["c2g6", "f8g7", "f4f5", "e8e7", "f5f6", "b5e2", "g6g4", "e7f7"],
+              "san": ["Qg6+", "Bg7", "f5", "Re7", "f6", "Qe2", "Qxg4", "Rf7"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 63,
+          "fen": "4rbk1/pp6/4p1Q1/1q1pP3/3P1Pp1/4BN2/1r6/6RK b - - 1 32",
+          "score": { "kind": "cp", "value": 94 },
+          "whiteExpected": 0.5815,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 94 },
+              "uci": ["f8g7", "f4f5", "e8e7", "f5f6", "b5e2", "g6g4", "e7f7", "g4h5"],
+              "san": ["Bg7", "f5", "Re7", "f6", "Qe2", "Qxg4", "Rf7", "Qh5"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 621 },
+              "uci": ["g8h8", "g1g4", "b5f1", "f3g1", "f1g2", "g4g2", "b2g2", "h1g2"],
+              "san": ["Kh8", "Rxg4", "Qf1+", "Ng1", "Qg2+", "Rxg2", "Rxg2", "Kxg2"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "chesscom-186299125430-61w-h5",
+      "kind": "missed-win",
+      "source": {
+        "game": "Sina-Movahed vs Hikaru, Chess.com live blitz game, 2026-10-31",
+        "movesFrom": "https://www.chess.com/game/live/186299125430 (src/data/__fixtures__/chesscom-prev-month.json in this repository)",
+        "move": "61.h5"
+      },
+      "expected": {
+        "category": "miss",
+        "basis": "No published annotation. Chosen from a shallow engine scan: 60...Ra5 gives White a winning rook ending and 61.h5 gives it back."
+      },
+      "movesBefore": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Bc4",
+        "Nf6",
+        "d3",
+        "h6",
+        "O-O",
+        "g6",
+        "a4",
+        "Bg7",
+        "a5",
+        "a6",
+        "Nc3",
+        "O-O",
+        "Nd5",
+        "d6",
+        "Nxf6+",
+        "Qxf6",
+        "c3",
+        "Be6",
+        "Bb3",
+        "Rad8",
+        "Re1",
+        "d5",
+        "Qc2",
+        "Rfe8",
+        "Ba4",
+        "dxe4",
+        "dxe4",
+        "Bc4",
+        "Re3",
+        "Rd6",
+        "b3",
+        "Be6",
+        "Ba3",
+        "Rd7",
+        "Bxc6",
+        "bxc6",
+        "c4",
+        "h5",
+        "Bb2",
+        "Bg4",
+        "h3",
+        "Bxf3",
+        "Rxf3",
+        "Qd6",
+        "Bc3",
+        "Red8",
+        "g3",
+        "Bh6",
+        "h4",
+        "Qe6",
+        "Kg2",
+        "f6",
+        "Qe2",
+        "c5",
+        "Ra2",
+        "Kg7",
+        "Be1",
+        "Rd1",
+        "Rc3",
+        "Qg4",
+        "f3",
+        "Qe6",
+        "Rcc2",
+        "Rb1",
+        "Rab2",
+        "Rbd1",
+        "Bf2",
+        "Qc6",
+        "Be3",
+        "Bxe3",
+        "Qxe3",
+        "R8d3",
+        "Qf2",
+        "Qd6",
+        "Re2",
+        "Qd4",
+        "b4",
+        "cxb4",
+        "Qxd4",
+        "Rxd4",
+        "Rxb4",
+        "Rc1",
+        "Rb7",
+        "Rcxc4",
+        "Ra7",
+        "Rc6",
+        "Ra2",
+        "Kf7",
+        "Ra8",
+        "f5",
+        "exf5",
+        "gxf5",
+        "Re2",
+        "Rd5",
+        "Rh8",
+        "Kg6",
+        "Rg8+",
+        "Kf6",
+        "Rg5",
+        "Rxa5",
+        "Rxh5",
+        "Kg6",
+        "Rg5+",
+        "Kf6",
+        "Rh5",
+        "Rc3",
+        "g4",
+        "fxg4",
+        "fxg4",
+        "Ra4",
+        "Rf5+",
+        "Ke6",
+        "Rfxe5+",
+        "Kd7",
+        "R5e4"
+      ],
+      "previous": {
+        "fenBefore": "8/2pk4/p7/8/r3R1PP/2r5/4R1K1/8 b - - 2 60",
+        "moveUci": "a4a5",
+        "moveSan": "Ra5"
+      },
+      "fenBefore": "8/2pk4/p7/r7/4R1PP/2r5/4R1K1/8 w - - 3 61",
+      "moveUci": "h4h5",
+      "moveSan": "h5",
+      "evals": {
+        "previousBefore": {
+          "ply": 119,
+          "fen": "8/2pk4/p7/8/r3R1PP/2r5/4R1K1/8 b - - 2 60",
+          "score": { "kind": "cp", "value": 51 },
+          "whiteExpected": 0.5445,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 51 },
+              "uci": ["a4a3", "g4g5", "c3g3", "g2f1", "a3a1", "f1f2", "a1a3", "e4f4"],
+              "san": ["Raa3", "g5", "Rg3+", "Kf1", "Ra1+", "Kf2", "Raa3", "Rf4"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 309 },
+              "uci": ["a4e4", "e2e4", "a6a5", "h4h5", "c3c6", "g2g3", "c6e6", "e4a4"],
+              "san": ["Rxe4", "Rxe4", "a5", "h5", "Rc6", "Kg3", "Re6", "Ra4"]
+            }
+          ],
+          "source": "engine"
+        },
+        "before": {
+          "ply": 120,
+          "fen": "8/2pk4/p7/r7/4R1PP/2r5/4R1K1/8 w - - 3 61",
+          "score": { "kind": "cp", "value": 374 },
+          "whiteExpected": 0.7873,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 374 },
+              "uci": ["g4g5", "c3c6", "e4e7", "d7d8", "e7e8", "d8d7", "e2e7", "d7d6"],
+              "san": ["g5", "Rc6", "Re7+", "Kd8", "Re8+", "Kd7", "R2e7+", "Kd6"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 332 },
+              "uci": ["e2d2", "d7c8", "g4g5", "c3c6", "g2g3", "c6g6", "g3g4", "g6g8"],
+              "san": ["Rd2+", "Kc8", "g5", "Rc6", "Kg3", "Rg6", "Kg4", "Rg8"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 121,
+          "fen": "8/2pk4/p7/r6P/4R1P1/2r5/4R1K1/8 b - - 0 61",
+          "score": { "kind": "cp", "value": 43 },
+          "whiteExpected": 0.5376,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 43 },
+              "uci": ["a5a3", "g2g1", "c3g3", "e2g2", "g3h3", "g2d2", "d7c6", "e4c4"],
+              "san": ["Raa3", "Kg1", "Rg3+", "Rg2", "Rh3", "Rd2+", "Kc6", "Rc4+"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 311 },
+              "uci": ["c7c6", "e4e3", "a5a2", "e3c3", "a2e2", "g2g3", "e2e6", "g4g5"],
+              "san": ["c6", "R4e3", "Ra2", "Rxc3", "Rxe2+", "Kg3", "Re6", "g5"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "chesscom-186299125430-93w-Qe8",
+      "kind": "missed-win",
+      "source": {
+        "game": "Sina-Movahed vs Hikaru, Chess.com live blitz game, 2026-10-31",
+        "movesFrom": "https://www.chess.com/game/live/186299125430 (src/data/__fixtures__/chesscom-prev-month.json in this repository)",
+        "move": "93.Qe8"
+      },
+      "expected": {
+        "category": "miss",
+        "basis": "No published annotation. Chosen from a shallow engine scan: 92...Kb7 lets White win and 93.Qe8 lets it go."
+      },
+      "movesBefore": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "Bc4",
+        "Nf6",
+        "d3",
+        "h6",
+        "O-O",
+        "g6",
+        "a4",
+        "Bg7",
+        "a5",
+        "a6",
+        "Nc3",
+        "O-O",
+        "Nd5",
+        "d6",
+        "Nxf6+",
+        "Qxf6",
+        "c3",
+        "Be6",
+        "Bb3",
+        "Rad8",
+        "Re1",
+        "d5",
+        "Qc2",
+        "Rfe8",
+        "Ba4",
+        "dxe4",
+        "dxe4",
+        "Bc4",
+        "Re3",
+        "Rd6",
+        "b3",
+        "Be6",
+        "Ba3",
+        "Rd7",
+        "Bxc6",
+        "bxc6",
+        "c4",
+        "h5",
+        "Bb2",
+        "Bg4",
+        "h3",
+        "Bxf3",
+        "Rxf3",
+        "Qd6",
+        "Bc3",
+        "Red8",
+        "g3",
+        "Bh6",
+        "h4",
+        "Qe6",
+        "Kg2",
+        "f6",
+        "Qe2",
+        "c5",
+        "Ra2",
+        "Kg7",
+        "Be1",
+        "Rd1",
+        "Rc3",
+        "Qg4",
+        "f3",
+        "Qe6",
+        "Rcc2",
+        "Rb1",
+        "Rab2",
+        "Rbd1",
+        "Bf2",
+        "Qc6",
+        "Be3",
+        "Bxe3",
+        "Qxe3",
+        "R8d3",
+        "Qf2",
+        "Qd6",
+        "Re2",
+        "Qd4",
+        "b4",
+        "cxb4",
+        "Qxd4",
+        "Rxd4",
+        "Rxb4",
+        "Rc1",
+        "Rb7",
+        "Rcxc4",
+        "Ra7",
+        "Rc6",
+        "Ra2",
+        "Kf7",
+        "Ra8",
+        "f5",
+        "exf5",
+        "gxf5",
+        "Re2",
+        "Rd5",
+        "Rh8",
+        "Kg6",
+        "Rg8+",
+        "Kf6",
+        "Rg5",
+        "Rxa5",
+        "Rxh5",
+        "Kg6",
+        "Rg5+",
+        "Kf6",
+        "Rh5",
+        "Rc3",
+        "g4",
+        "fxg4",
+        "fxg4",
+        "Ra4",
+        "Rf5+",
+        "Ke6",
+        "Rfxe5+",
+        "Kd7",
+        "R5e4",
+        "Ra5",
+        "h5",
+        "Rc6",
+        "Rf4",
+        "Ra3",
+        "Kf2",
+        "Rh3",
+        "Kg2",
+        "Rcc3",
+        "Ref2",
+        "Rcg3+",
+        "Kf1",
+        "Rh1+",
+        "Ke2",
+        "a5",
+        "R2f3",
+        "Rg2+",
+        "Rf2",
+        "Rg3",
+        "R2f3",
+        "Rgg1",
+        "Rf1",
+        "Rh2+",
+        "Ke1",
+        "Rg3",
+        "R1f3",
+        "Rgg2",
+        "Rf2",
+        "Rg1+",
+        "Rf1",
+        "Rhh1",
+        "Rxg1",
+        "Rxg1+",
+        "Kf2",
+        "Rh1",
+        "Kg3",
+        "Rg1+",
+        "Kh4",
+        "Rd1",
+        "Kg5",
+        "Rh1",
+        "h6",
+        "Re1",
+        "Kg6",
+        "Re6+",
+        "Rf6",
+        "Re8",
+        "g5",
+        "a4",
+        "Kh5",
+        "Rh8",
+        "h7",
+        "Rxh7+",
+        "Kg6",
+        "Re7",
+        "Rf7",
+        "Rxf7",
+        "Kxf7",
+        "a3",
+        "g6",
+        "a2",
+        "g7",
+        "Kc6",
+        "g8=Q"
+      ],
+      "previous": {
+        "fenBefore": "6Q1/2p2K2/2k5/8/8/8/p7/8 b - - 0 92",
+        "moveUci": "c6b7",
+        "moveSan": "Kb7"
+      },
+      "fenBefore": "6Q1/1kp2K2/8/8/8/8/p7/8 w - - 1 93",
+      "moveUci": "g8e8",
+      "moveSan": "Qe8",
+      "evals": {
+        "previousBefore": {
+          "ply": 183,
+          "fen": "6Q1/2p2K2/2k5/8/8/8/p7/8 b - - 0 92",
+          "score": { "kind": "cp", "value": 0 },
+          "whiteExpected": 0.5,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 0 },
+              "uci": ["a2a1q", "g8e8", "c6c5", "e8e7", "c5b6", "e7b4", "b6a6", "b4c4"],
+              "san": ["a1=Q", "Qe8+", "Kc5", "Qe7+", "Kb6", "Qb4+", "Ka6", "Qc4+"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 511 },
+              "uci": ["a2a1r", "g8g2", "c6c5", "g2c2", "c5d5", "c2d3", "d5e5", "d3c3"],
+              "san": ["a1=R", "Qg2+", "Kc5", "Qc2+", "Kd5", "Qd3+", "Ke5", "Qc3+"]
+            }
+          ],
+          "source": "engine"
+        },
+        "before": {
+          "ply": 184,
+          "fen": "6Q1/1kp2K2/8/8/8/8/p7/8 w - - 1 93",
+          "score": { "kind": "cp", "value": 489 },
+          "whiteExpected": 0.847,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 489 },
+              "uci": ["g8g2", "b7b6", "g2a2", "b6c5", "a2c2", "c5d4", "c2c7", "d4d3"],
+              "san": ["Qg2+", "Kb6", "Qxa2", "Kc5", "Qc2+", "Kd4", "Qxc7", "Kd3"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 487 },
+              "uci": ["g8g7", "b7c6", "f7e6", "c6b5", "g7b2", "b5c4", "b2a2", "c4d4"],
+              "san": ["Qg7", "Kc6", "Ke6", "Kb5", "Qb2+", "Kc4", "Qxa2+", "Kd4"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 185,
+          "fen": "4Q3/1kp2K2/8/8/8/8/p7/8 b - - 2 93",
+          "score": { "kind": "cp", "value": 0 },
+          "whiteExpected": 0.5,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 0 },
+              "uci": ["a2a1q", "e8b5", "b7a8", "b5d5", "a8b8", "d5b5", "b8a8"],
+              "san": ["a1=Q", "Qb5+", "Ka8", "Qd5+", "Kb8", "Qb5+", "Ka8"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 254 },
+              "uci": ["a2a1r", "e8b5", "b7a7", "f7e8", "a1a6", "e8d7", "a6b6", "b5e5"],
+              "san": ["a1=R", "Qb5+", "Ka7", "Ke8", "Ra6", "Kd7", "Rb6", "Qe5"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "lichess-LAGvRNey-7w-Re1",
+      "kind": "quiet-best",
+      "source": {
+        "game": "EricRosen vs ni5hu, Lichess rated rapid game, 2026-11-04",
+        "movesFrom": "https://lichess.org/game/LAGvRNey (fixtures/lichess-LAGvRNey/game.json in this repository)",
+        "move": "7.Re1"
+      },
+      "expected": {
+        "category": "best",
+        "basis": "Control: a quiet developing move that the committed depth-18 fixture has as the first choice with a near-equal alternative. Must not be brilliant or great."
+      },
+      "movesBefore": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "d4",
+        "exd4",
+        "Bc4",
+        "Nf6",
+        "O-O",
+        "Be7",
+        "e5",
+        "Ng4"
+      ],
+      "fenBefore": "r1bqk2r/ppppbppp/2n5/4P3/2Bp2n1/5N2/PPP2PPP/RNBQ1RK1 w kq - 1 7",
+      "moveUci": "f1e1",
+      "moveSan": "Re1",
+      "evals": {
+        "before": {
+          "ply": 12,
+          "fen": "r1bqk2r/ppppbppp/2n5/4P3/2Bp2n1/5N2/PPP2PPP/RNBQ1RK1 w kq - 1 7",
+          "score": { "kind": "cp", "value": 30 },
+          "whiteExpected": 0.5262,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 30 },
+              "uci": ["f1e1", "d7d6", "e5d6", "c7d6", "c4d5", "e8g8", "h2h3", "g4f6"],
+              "san": ["Re1", "d6", "exd6", "cxd6", "Bd5", "O-O", "h3", "Nf6"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": -6 },
+              "uci": ["c1f4", "g7g5", "f4c1", "d7d6", "e5e6", "c8e6", "c4e6", "f7e6"],
+              "san": ["Bf4", "g5", "Bc1", "d6", "e6", "Bxe6", "Bxe6", "fxe6"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 13,
+          "fen": "r1bqk2r/ppppbppp/2n5/4P3/2Bp2n1/5N2/PPP2PPP/RNBQR1K1 b kq - 2 7",
+          "score": { "kind": "cp", "value": 14 },
+          "whiteExpected": 0.5122,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 14 },
+              "uci": ["d7d6", "e5d6", "c7d6", "c4d5", "e8g8", "h2h3", "g4f6", "d5b3"],
+              "san": ["d6", "exd6", "cxd6", "Bd5", "O-O", "h3", "Nf6", "Bb3"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 68 },
+              "uci": ["f7f6", "e5f6", "g4f6", "d1e2", "a7a6", "c4b3", "d7d5", "c2c4"],
+              "san": ["f6", "exf6", "Nxf6", "Qe2", "a6", "Bb3", "d5", "c4"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "lichess-LAGvRNey-24w-Kf2",
+      "kind": "quiet-best",
+      "source": {
+        "game": "EricRosen vs ni5hu, Lichess rated rapid game, 2026-11-04",
+        "movesFrom": "https://lichess.org/game/LAGvRNey (fixtures/lichess-LAGvRNey/game.json in this repository)",
+        "move": "24.Kf2"
+      },
+      "expected": {
+        "category": "best",
+        "basis": "Control: a quiet king move that the committed depth-18 fixture has as the first choice with a near-equal alternative. Must not be brilliant or great."
+      },
+      "movesBefore": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "d4",
+        "exd4",
+        "Bc4",
+        "Nf6",
+        "O-O",
+        "Be7",
+        "e5",
+        "Ng4",
+        "Re1",
+        "O-O",
+        "h3",
+        "d5",
+        "exd6",
+        "Bxd6",
+        "hxg4",
+        "Bxg4",
+        "Re4",
+        "Bf5",
+        "Rh4",
+        "Qf6",
+        "Bg5",
+        "Qg6",
+        "Bd3",
+        "Bxd3",
+        "Qxd3",
+        "Qxd3",
+        "cxd3",
+        "Ne5",
+        "Nxe5",
+        "Bxe5",
+        "Bf4",
+        "Bf6",
+        "Rh1",
+        "c5",
+        "Nd2",
+        "Rfe8",
+        "Ne4",
+        "Be7",
+        "Rc1",
+        "b6",
+        "f3",
+        "h6"
+      ],
+      "fenBefore": "r3r1k1/p3bpp1/1p5p/2p5/3pNB2/3P1P2/PP4P1/2R3KR w - - 0 24",
+      "moveUci": "g1f2",
+      "moveSan": "Kf2",
+      "evals": {
+        "before": {
+          "ply": 46,
+          "fen": "r3r1k1/p3bpp1/1p5p/2p5/3pNB2/3P1P2/PP4P1/2R3KR w - - 0 24",
+          "score": { "kind": "cp", "value": 372 },
+          "whiteExpected": 0.7862,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 372 },
+              "uci": ["g2g4", "e8f8", "e4g3", "a7a5", "f4d2", "a5a4", "f3f4", "b6b5"],
+              "san": ["g4", "Rf8", "Ng3", "a5", "Bd2", "a4", "f4", "b5"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 355 },
+              "uci": ["g1f2", "e8f8", "a2a4", "a8e8", "c1e1", "g7g5", "f4d2", "f7f5"],
+              "san": ["Kf2", "Rf8", "a4", "Rae8", "Rce1", "g5", "Bd2", "f5"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 47,
+          "fen": "r3r1k1/p3bpp1/1p5p/2p5/3pNB2/3P1P2/PP3KP1/2R4R b - - 1 24",
+          "score": { "kind": "cp", "value": 343 },
+          "whiteExpected": 0.7686,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 343 },
+              "uci": ["f7f5", "e4g3", "e8f8", "c1e1", "a8e8", "b2b3", "g7g5", "f4c7"],
+              "san": ["f5", "Ng3", "Rf8", "Rce1", "Rae8", "b3", "g5", "Bc7"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 365 },
+              "uci": ["e8f8", "a2a4", "f7f5", "e4d2", "a7a6", "c1e1", "a8e8", "f4c7"],
+              "san": ["Rf8", "a4", "f5", "Nd2", "a6", "Rce1", "Rae8", "Bc7"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "lichess-LAGvRNey-33w-Ree7",
+      "kind": "quiet-best",
+      "source": {
+        "game": "EricRosen vs ni5hu, Lichess rated rapid game, 2026-11-04",
+        "movesFrom": "https://lichess.org/game/LAGvRNey (fixtures/lichess-LAGvRNey/game.json in this repository)",
+        "move": "33.Ree7"
+      },
+      "expected": {
+        "category": "best",
+        "basis": "Control: a quiet rook move that the committed depth-18 fixture has as the first choice with a near-equal alternative. Must not be brilliant or great."
+      },
+      "movesBefore": [
+        "e4",
+        "e5",
+        "Nf3",
+        "Nc6",
+        "d4",
+        "exd4",
+        "Bc4",
+        "Nf6",
+        "O-O",
+        "Be7",
+        "e5",
+        "Ng4",
+        "Re1",
+        "O-O",
+        "h3",
+        "d5",
+        "exd6",
+        "Bxd6",
+        "hxg4",
+        "Bxg4",
+        "Re4",
+        "Bf5",
+        "Rh4",
+        "Qf6",
+        "Bg5",
+        "Qg6",
+        "Bd3",
+        "Bxd3",
+        "Qxd3",
+        "Qxd3",
+        "cxd3",
+        "Ne5",
+        "Nxe5",
+        "Bxe5",
+        "Bf4",
+        "Bf6",
+        "Rh1",
+        "c5",
+        "Nd2",
+        "Rfe8",
+        "Ne4",
+        "Be7",
+        "Rc1",
+        "b6",
+        "f3",
+        "h6",
+        "Kf2",
+        "f5",
+        "Nd6",
+        "Bxd6",
+        "Bxd6",
+        "Re6",
+        "Bf4",
+        "g5",
+        "Bd2",
+        "f4",
+        "Rhe1",
+        "Rd6",
+        "Re7",
+        "a5",
+        "Rce1",
+        "Kf8",
+        "Rh7",
+        "Kg8"
+      ],
+      "fenBefore": "r5k1/7R/1p1r3p/p1p3p1/3p1p2/3P1P2/PP1B1KP1/4R3 w - - 4 33",
+      "moveUci": "e1e7",
+      "moveSan": "Ree7",
+      "evals": {
+        "before": {
+          "ply": 64,
+          "fen": "r5k1/7R/1p1r3p/p1p3p1/3p1p2/3P1P2/PP1B1KP1/4R3 w - - 4 33",
+          "score": { "kind": "cp", "value": 320 },
+          "whiteExpected": 0.754,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 320 },
+              "uci": ["h7b7", "g8f8", "b7e7", "a8c8", "b2b3", "c8a8", "g2g3", "f4g3"],
+              "san": ["Rb7", "Kf8", "Rbe7", "Rc8", "b3", "Ra8", "g3", "fxg3+"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 320 },
+              "uci": ["h7c7", "g8f8", "c7h7", "f8g8", "h7b7", "g8f8", "b7e7", "a8c8"],
+              "san": ["Rc7", "Kf8", "Rh7", "Kg8", "Rb7", "Kf8", "Rbe7", "Rc8"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 65,
+          "fen": "r5k1/4R2R/1p1r3p/p1p3p1/3p1p2/3P1P2/PP1B1KP1/8 b - - 5 33",
+          "score": { "kind": "cp", "value": 338 },
+          "whiteExpected": 0.7655,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 338 },
+              "uci": ["a8e8", "h7g7", "g8h8", "g2g3", "e8e7", "g7e7", "f4g3", "f2g3"],
+              "san": ["Re8", "Rhg7+", "Kh8", "g3", "Rxe7", "Rxe7", "fxg3+", "Kxg3"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 351 },
+              "uci": ["d6g6", "g2g3", "f4g3", "f2g3", "a5a4", "g3g4", "a8e8", "g4f5"],
+              "san": ["Rg6", "g3", "fxg3+", "Kxg3", "a4", "Kg4", "Re8", "Kf5"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    },
+    {
+      "id": "carlsen-anand-2014-g6-27w-Ke2",
+      "kind": "quiet-best",
+      "source": {
+        "game": "Magnus Carlsen vs Viswanathan Anand, World Chess Championship 2014, game 6",
+        "movesFrom": "https://en.wikipedia.org/wiki/World_Chess_Championship_2014 (revision 1377112266)",
+        "move": "27.Ke2"
+      },
+      "expected": {
+        "category": "best",
+        "basis": "Control: a quiet king move that a shallow engine scan had as the first choice with a near-equal alternative. Must not be brilliant or great."
+      },
+      "movesBefore": [
+        "e4",
+        "c5",
+        "Nf3",
+        "e6",
+        "d4",
+        "cxd4",
+        "Nxd4",
+        "a6",
+        "c4",
+        "Nf6",
+        "Nc3",
+        "Bb4",
+        "Qd3",
+        "Nc6",
+        "Nxc6",
+        "dxc6",
+        "Qxd8+",
+        "Kxd8",
+        "e5",
+        "Nd7",
+        "Bf4",
+        "Bxc3+",
+        "bxc3",
+        "Kc7",
+        "h4",
+        "b6",
+        "h5",
+        "h6",
+        "O-O-O",
+        "Bb7",
+        "Rd3",
+        "c5",
+        "Rg3",
+        "Rag8",
+        "Bd3",
+        "Nf8",
+        "Be3",
+        "g6",
+        "hxg6",
+        "Nxg6",
+        "Rh5",
+        "Bc6",
+        "Bc2",
+        "Kb7",
+        "Rg4",
+        "a5",
+        "Bd1",
+        "Rd8",
+        "Bc2",
+        "Rdg8",
+        "Kd2",
+        "a4"
+      ],
+      "fenBefore": "6rr/1k3p2/1pb1p1np/2p1P2R/p1P3R1/2P1B3/P1BK1PP1/8 w - - 0 27",
+      "moveUci": "d2e2",
+      "moveSan": "Ke2",
+      "evals": {
+        "before": {
+          "ply": 52,
+          "fen": "6rr/1k3p2/1pb1p1np/2p1P2R/p1P3R1/2P1B3/P1BK1PP1/8 w - - 0 27",
+          "score": { "kind": "cp", "value": 49 },
+          "whiteExpected": 0.5428,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 49 },
+              "uci": ["d2e2", "b7a6", "a2a3", "a6a5", "g4g3", "g8d8", "f2f3", "c6b7"],
+              "san": ["Ke2", "Ka6", "a3", "Ka5", "Rg3", "Rd8", "f3", "Bb7"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 37 },
+              "uci": ["d2e1", "a4a3", "f2f3", "b7a6", "e3c1", "a6a5", "c1a3", "c6a4"],
+              "san": ["Ke1", "a3", "f3", "Ka6", "Bc1", "Ka5", "Bxa3", "Ba4"]
+            }
+          ],
+          "source": "engine"
+        },
+        "after": {
+          "ply": 53,
+          "fen": "6rr/1k3p2/1pb1p1np/2p1P2R/p1P3R1/2P1B3/P1B1KPP1/8 b - - 1 27",
+          "score": { "kind": "cp", "value": 48 },
+          "whiteExpected": 0.5419,
+          "depth": 18,
+          "lines": [
+            {
+              "rank": 1,
+              "score": { "kind": "cp", "value": 48 },
+              "uci": ["b7a6", "a2a3", "a6a5", "c2d3", "c6b7", "g4g3", "g8g7", "h5h6"],
+              "san": ["Ka6", "a3", "Ka5", "Bd3", "Bb7", "Rg3", "Rg7", "Rxh6"]
+            },
+            {
+              "rank": 2,
+              "score": { "kind": "cp", "value": 57 },
+              "uci": ["g6e7", "g4f4", "c6e8", "c2e4", "b7c8", "f4f6", "g8g4", "e2f3"],
+              "san": ["Ne7", "Rf4", "Be8", "Be4+", "Kc8", "Rf6", "Rg4", "Kf3"]
+            }
+          ],
+          "source": "engine"
+        }
+      }
+    }
+  ],
+  "engine": {
+    "name": "Stockfish",
+    "version": "17.1",
+    "variant": "full",
+    "depth": 18,
+    "multiPv": 2,
+    "file": "node_modules/stockfish/src/stockfish-17.1-single-a496a04.js"
+  }
+}

@@ -1,0 +1,34 @@
+/* The glass bar is shared with the move stepper of the review screen (FloatingBar.module.css). */
+.bar {
+  composes: glass from './FloatingBar.module.css';
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+}
+
+.tab {
+  height: 52px;
+  border-radius: var(--r-pill);
+  color: var(--text-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+/* Thai vowels above and tone marks need a little more room than the 13px line. */
+:lang(th) .tab span {
+  line-height: 15px;
+}
+
+@media (hover: hover) {
+  .tab:hover {
+    color: var(--text);
+  }
+}
+
+.on {
+  background: var(--tab-active-bg);
+  color: var(--text);
+}

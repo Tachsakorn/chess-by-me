@@ -1,0 +1,178 @@
+.header {
+  padding: var(--pad-top-56) var(--gutter) 0;
+}
+
+.titleRow {
+  margin-top: 2px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--avatar-bg);
+  color: var(--on-primary);
+  font: 700 16px var(--font-inter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ratings {
+  margin: 16px var(--gutter) 0;
+  padding: 14px 0;
+  border-radius: var(--r-card);
+  background: var(--fill);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Both sites connected: a tap anywhere on the bar, or on the line under it, shows the other
+   site's ratings; the bar takes the pressed look of every control while either is held. */
+.switchable {
+  position: relative;
+  transition: opacity var(--pressed-return) ease-out;
+}
+.switch {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.ratingsBlock:has(.switch:active) .switchable,
+.ratingsBlock:has(.lineSwitch:active) .switchable {
+  opacity: var(--pressed-opacity);
+  transition: none;
+}
+.lineSwitch {
+  cursor: pointer;
+}
+.swapIcon {
+  display: inline-block;
+  margin-left: 3px;
+  vertical-align: -2px;
+}
+
+.rating {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.rating + .rating {
+  border-left: var(--hairline);
+}
+
+.up {
+  color: var(--q-great);
+}
+.down {
+  color: var(--q-blunder);
+}
+
+.accountLine {
+  margin: 8px var(--gutter) 0;
+}
+
+.section {
+  padding: var(--section-gap) var(--gutter) 0;
+}
+
+.sectionTitle {
+  margin-bottom: var(--title-gap);
+}
+
+.hero {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  border-radius: var(--r-box);
+  background: var(--dark-card);
+  color: var(--on-primary);
+  box-shadow: var(--shadow-hero);
+}
+
+.heroBoard {
+  width: 120px;
+  height: 120px;
+  flex: none;
+  border-radius: var(--r-board);
+}
+
+.heroText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.heroDim {
+  color: var(--dark-card-text-2);
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recentHead {
+  margin-bottom: var(--title-gap);
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (hover: hover) {
+  .recentHead a:hover {
+    color: var(--text-2);
+  }
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tile {
+  min-width: 0;
+  display: block;
+}
+
+/*
+ * The second row of Recent Games (owner, 2026-11-15: iPad portrait looked empty below one row).
+ * Shown only from 1056px of height: one more row of the widest tiles (content 560px) takes
+ * 223px, and the screen must still fit with room above the tab bar (measured: 820x1180 has 364px
+ * free under the first row, 768x1024 only 208px). Every phone and iPad landscape keeps one row.
+ */
+.secondRow {
+  display: none;
+}
+
+@media (min-height: 1056px) {
+  .secondRow {
+    display: block;
+  }
+}
+
+.tileBoard {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--r-board);
+  box-shadow: var(--shadow-cover);
+}
+
+.tileTitle {
+  margin-top: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

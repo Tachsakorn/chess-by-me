@@ -1,0 +1,142 @@
+.header {
+  padding: var(--pad-top-76) var(--gutter) 0;
+  flex: none;
+}
+
+.sub {
+  margin-top: 2px;
+}
+
+.filter {
+  margin: 16px var(--gutter) 0;
+  flex: none;
+}
+
+/* Only the list scrolls; its last row clears the floating menu. */
+.list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px var(--gutter) var(--float-clearance);
+}
+
+.groupTitle {
+  margin-bottom: 4px;
+}
+
+.laterGroup {
+  margin-top: 20px;
+}
+
+.row {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: var(--hairline);
+}
+
+.thumb {
+  flex: none;
+}
+
+.thumbBoard {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-thumb-sm);
+  box-shadow: var(--shadow-cover-sm);
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The title, then (both sites connected) the game's site, 13px grey, 6px after it. */
+.titleLine {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+.site {
+  flex: none;
+  margin-left: 6px;
+  font-weight: 400;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accuracy {
+  flex: none;
+  text-align: right;
+}
+
+.analyze {
+  flex: none;
+  height: 32px;
+  min-width: 44px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  background: var(--fill);
+  color: var(--text);
+  /* the 32px button keeps a 44px target */
+  position: relative;
+}
+.analyze::after {
+  content: '';
+  position: absolute;
+  inset: -6px 0;
+}
+
+@media (hover: hover) {
+  .analyze:hover:not(:disabled) {
+    background: var(--eval-fill);
+  }
+  .rowText:hover p:first-child {
+    color: var(--text-2);
+  }
+}
+
+.empty {
+  height: 100%;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.skelBoard {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: var(--r-thumb-sm);
+  background: var(--fill);
+}
+
+.skelText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skelLine {
+  display: block;
+  height: 14px;
+  width: 60%;
+  border-radius: var(--r-pill);
+  background: var(--fill);
+}
+
+.skelShort {
+  width: 40%;
+}

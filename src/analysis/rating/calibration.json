@@ -1,0 +1,474 @@
+{
+  "generatedFrom": "https://database.lichess.org/standard/lichess_db_standard_rated_2026-10.pgn.zst",
+  "generatedAt": "2026-11-13T14:02:11.211Z",
+  "sampleSize": 32000,
+  "tables": {
+    "all": [
+      {
+        "accuracyFrom": 0,
+        "accuracyTo": 35,
+        "low": 926,
+        "high": 1504,
+        "n": 203,
+        "rawLow": 963,
+        "rawHigh": 1504
+      },
+      {
+        "accuracyFrom": 35,
+        "accuracyTo": 40,
+        "low": 926,
+        "high": 1545,
+        "n": 359,
+        "rawLow": 905,
+        "rawHigh": 1545
+      },
+      {
+        "accuracyFrom": 40,
+        "accuracyTo": 45,
+        "low": 1002,
+        "high": 1684,
+        "n": 677,
+        "rawLow": 1002,
+        "rawHigh": 1684
+      },
+      {
+        "accuracyFrom": 45,
+        "accuracyTo": 50,
+        "low": 1057,
+        "high": 1764,
+        "n": 986,
+        "rawLow": 1057,
+        "rawHigh": 1764
+      },
+      {
+        "accuracyFrom": 50,
+        "accuracyTo": 55,
+        "low": 1076,
+        "high": 1819,
+        "n": 1331,
+        "rawLow": 1076,
+        "rawHigh": 1829
+      },
+      {
+        "accuracyFrom": 55,
+        "accuracyTo": 60,
+        "low": 1093,
+        "high": 1819,
+        "n": 1576,
+        "rawLow": 1093,
+        "rawHigh": 1814
+      },
+      {
+        "accuracyFrom": 60,
+        "accuracyTo": 65,
+        "low": 1120,
+        "high": 1819,
+        "n": 1916,
+        "rawLow": 1120,
+        "rawHigh": 1817
+      },
+      {
+        "accuracyFrom": 65,
+        "accuracyTo": 70,
+        "low": 1149,
+        "high": 1862,
+        "n": 2820,
+        "rawLow": 1149,
+        "rawHigh": 1862
+      },
+      {
+        "accuracyFrom": 70,
+        "accuracyTo": 75,
+        "low": 1197,
+        "high": 1909,
+        "n": 3784,
+        "rawLow": 1197,
+        "rawHigh": 1909
+      },
+      {
+        "accuracyFrom": 75,
+        "accuracyTo": 80,
+        "low": 1248,
+        "high": 1958,
+        "n": 4871,
+        "rawLow": 1248,
+        "rawHigh": 1958
+      },
+      {
+        "accuracyFrom": 80,
+        "accuracyTo": 85,
+        "low": 1298,
+        "high": 2024,
+        "n": 5002,
+        "rawLow": 1298,
+        "rawHigh": 2024
+      },
+      {
+        "accuracyFrom": 85,
+        "accuracyTo": 90,
+        "low": 1320,
+        "high": 2078,
+        "n": 4063,
+        "rawLow": 1337,
+        "rawHigh": 2078
+      },
+      {
+        "accuracyFrom": 90,
+        "accuracyTo": 95,
+        "low": 1320,
+        "high": 2081,
+        "n": 2810,
+        "rawLow": 1341,
+        "rawHigh": 2081
+      },
+      {
+        "accuracyFrom": 95,
+        "accuracyTo": 100,
+        "low": 1320,
+        "high": 2087,
+        "n": 1602,
+        "rawLow": 1238,
+        "rawHigh": 2087
+      }
+    ],
+    "bullet": [
+      {
+        "accuracyFrom": 0,
+        "accuracyTo": 45,
+        "low": 1127,
+        "high": 1890,
+        "n": 332,
+        "rawLow": 1127,
+        "rawHigh": 1890
+      },
+      {
+        "accuracyFrom": 45,
+        "accuracyTo": 50,
+        "low": 1195,
+        "high": 1961,
+        "n": 268,
+        "rawLow": 1224,
+        "rawHigh": 1961
+      },
+      {
+        "accuracyFrom": 50,
+        "accuracyTo": 55,
+        "low": 1195,
+        "high": 1989,
+        "n": 316,
+        "rawLow": 1182,
+        "rawHigh": 2003
+      },
+      {
+        "accuracyFrom": 55,
+        "accuracyTo": 60,
+        "low": 1195,
+        "high": 1989,
+        "n": 358,
+        "rawLow": 1215,
+        "rawHigh": 1986
+      },
+      {
+        "accuracyFrom": 60,
+        "accuracyTo": 65,
+        "low": 1195,
+        "high": 1989,
+        "n": 506,
+        "rawLow": 1175,
+        "rawHigh": 1987
+      },
+      {
+        "accuracyFrom": 65,
+        "accuracyTo": 70,
+        "low": 1213,
+        "high": 1989,
+        "n": 645,
+        "rawLow": 1213,
+        "rawHigh": 1986
+      },
+      {
+        "accuracyFrom": 70,
+        "accuracyTo": 75,
+        "low": 1237,
+        "high": 2027,
+        "n": 866,
+        "rawLow": 1237,
+        "rawHigh": 2028
+      },
+      {
+        "accuracyFrom": 75,
+        "accuracyTo": 80,
+        "low": 1278,
+        "high": 2027,
+        "n": 1042,
+        "rawLow": 1278,
+        "rawHigh": 2027
+      },
+      {
+        "accuracyFrom": 80,
+        "accuracyTo": 85,
+        "low": 1317,
+        "high": 2130,
+        "n": 976,
+        "rawLow": 1321,
+        "rawHigh": 2130
+      },
+      {
+        "accuracyFrom": 85,
+        "accuracyTo": 90,
+        "low": 1317,
+        "high": 2131,
+        "n": 723,
+        "rawLow": 1334,
+        "rawHigh": 2148
+      },
+      {
+        "accuracyFrom": 90,
+        "accuracyTo": 95,
+        "low": 1317,
+        "high": 2131,
+        "n": 539,
+        "rawLow": 1331,
+        "rawHigh": 2113
+      },
+      {
+        "accuracyFrom": 95,
+        "accuracyTo": 100,
+        "low": 1317,
+        "high": 2131,
+        "n": 323,
+        "rawLow": 1240,
+        "rawHigh": 2124
+      }
+    ],
+    "blitz": [
+      {
+        "accuracyFrom": 0,
+        "accuracyTo": 40,
+        "low": 934,
+        "high": 1525,
+        "n": 215,
+        "rawLow": 934,
+        "rawHigh": 1525
+      },
+      {
+        "accuracyFrom": 40,
+        "accuracyTo": 45,
+        "low": 1028,
+        "high": 1712,
+        "n": 270,
+        "rawLow": 1028,
+        "rawHigh": 1712
+      },
+      {
+        "accuracyFrom": 45,
+        "accuracyTo": 50,
+        "low": 1058,
+        "high": 1766,
+        "n": 399,
+        "rawLow": 1059,
+        "rawHigh": 1766
+      },
+      {
+        "accuracyFrom": 50,
+        "accuracyTo": 55,
+        "low": 1058,
+        "high": 1818,
+        "n": 570,
+        "rawLow": 1058,
+        "rawHigh": 1818
+      },
+      {
+        "accuracyFrom": 55,
+        "accuracyTo": 60,
+        "low": 1123,
+        "high": 1840,
+        "n": 658,
+        "rawLow": 1123,
+        "rawHigh": 1857
+      },
+      {
+        "accuracyFrom": 60,
+        "accuracyTo": 65,
+        "low": 1141,
+        "high": 1840,
+        "n": 798,
+        "rawLow": 1141,
+        "rawHigh": 1826
+      },
+      {
+        "accuracyFrom": 65,
+        "accuracyTo": 70,
+        "low": 1172,
+        "high": 1896,
+        "n": 1262,
+        "rawLow": 1172,
+        "rawHigh": 1896
+      },
+      {
+        "accuracyFrom": 70,
+        "accuracyTo": 75,
+        "low": 1236,
+        "high": 1938,
+        "n": 1686,
+        "rawLow": 1236,
+        "rawHigh": 1938
+      },
+      {
+        "accuracyFrom": 75,
+        "accuracyTo": 80,
+        "low": 1308,
+        "high": 2025,
+        "n": 2278,
+        "rawLow": 1308,
+        "rawHigh": 2025
+      },
+      {
+        "accuracyFrom": 80,
+        "accuracyTo": 85,
+        "low": 1343,
+        "high": 2087,
+        "n": 2394,
+        "rawLow": 1343,
+        "rawHigh": 2087
+      },
+      {
+        "accuracyFrom": 85,
+        "accuracyTo": 90,
+        "low": 1373,
+        "high": 2148,
+        "n": 1977,
+        "rawLow": 1386,
+        "rawHigh": 2148
+      },
+      {
+        "accuracyFrom": 90,
+        "accuracyTo": 95,
+        "low": 1373,
+        "high": 2148,
+        "n": 1326,
+        "rawLow": 1395,
+        "rawHigh": 2156
+      },
+      {
+        "accuracyFrom": 95,
+        "accuracyTo": 100,
+        "low": 1373,
+        "high": 2148,
+        "n": 683,
+        "rawLow": 1289,
+        "rawHigh": 2133
+      }
+    ],
+    "rapid": [
+      {
+        "accuracyFrom": 0,
+        "accuracyTo": 45,
+        "low": 879,
+        "high": 1435,
+        "n": 399,
+        "rawLow": 879,
+        "rawHigh": 1435
+      },
+      {
+        "accuracyFrom": 45,
+        "accuracyTo": 50,
+        "low": 935,
+        "high": 1516,
+        "n": 306,
+        "rawLow": 935,
+        "rawHigh": 1516
+      },
+      {
+        "accuracyFrom": 50,
+        "accuracyTo": 55,
+        "low": 1019,
+        "high": 1631,
+        "n": 425,
+        "rawLow": 1040,
+        "rawHigh": 1667
+      },
+      {
+        "accuracyFrom": 55,
+        "accuracyTo": 60,
+        "low": 1019,
+        "high": 1631,
+        "n": 541,
+        "rawLow": 1002,
+        "rawHigh": 1603
+      },
+      {
+        "accuracyFrom": 60,
+        "accuracyTo": 65,
+        "low": 1027,
+        "high": 1653,
+        "n": 580,
+        "rawLow": 1027,
+        "rawHigh": 1653
+      },
+      {
+        "accuracyFrom": 65,
+        "accuracyTo": 70,
+        "low": 1080,
+        "high": 1722,
+        "n": 855,
+        "rawLow": 1080,
+        "rawHigh": 1722
+      },
+      {
+        "accuracyFrom": 70,
+        "accuracyTo": 75,
+        "low": 1132,
+        "high": 1784,
+        "n": 1164,
+        "rawLow": 1132,
+        "rawHigh": 1784
+      },
+      {
+        "accuracyFrom": 75,
+        "accuracyTo": 80,
+        "low": 1164,
+        "high": 1827,
+        "n": 1489,
+        "rawLow": 1164,
+        "rawHigh": 1827
+      },
+      {
+        "accuracyFrom": 80,
+        "accuracyTo": 85,
+        "low": 1216,
+        "high": 1894,
+        "n": 1554,
+        "rawLow": 1216,
+        "rawHigh": 1894
+      },
+      {
+        "accuracyFrom": 85,
+        "accuracyTo": 90,
+        "low": 1254,
+        "high": 1948,
+        "n": 1287,
+        "rawLow": 1272,
+        "rawHigh": 1948
+      },
+      {
+        "accuracyFrom": 90,
+        "accuracyTo": 95,
+        "low": 1254,
+        "high": 1955,
+        "n": 895,
+        "rawLow": 1271,
+        "rawHigh": 1955
+      },
+      {
+        "accuracyFrom": 95,
+        "accuracyTo": 100,
+        "low": 1254,
+        "high": 2003,
+        "n": 565,
+        "rawLow": 1185,
+        "rawHigh": 2003
+      }
+    ]
+  }
+}

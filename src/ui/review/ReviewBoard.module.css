@@ -1,0 +1,295 @@
+/* The board and, on top of it, the quality badge. The badge sits outside the rounded, clipped
+   frame so the board's edge never cuts it. */
+.wrap {
+  position: relative;
+  width: var(--board);
+  height: var(--board);
+  container-type: inline-size;
+}
+
+.frame {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-board);
+  overflow: hidden;
+  box-shadow: var(--shadow-cover);
+  isolation: isolate;
+}
+
+.wrap[data-palette='blue'] {
+  --sq-l: var(--board-blue-l);
+  --sq-d: var(--board-blue-d);
+}
+.wrap[data-palette='green'] {
+  --sq-l: var(--board-green-l);
+  --sq-d: var(--board-green-d);
+}
+.wrap[data-palette='orange'] {
+  --sq-l: var(--board-orange-l);
+  --sq-d: var(--board-orange-d);
+}
+.wrap[data-palette='purple'] {
+  --sq-l: var(--board-purple-l);
+  --sq-d: var(--board-purple-d);
+}
+
+.board {
+  width: 100%;
+  height: 100%;
+}
+
+/* The squares: one 2x2 tile (light top-left), repeated. A pattern, not a gradient effect. */
+.board :global(cg-board) {
+  background-color: var(--sq-l);
+  background-image: conic-gradient(
+    var(--sq-d) 0 25%,
+    var(--sq-l) 0 50%,
+    var(--sq-d) 0 75%,
+    var(--sq-l) 0
+  );
+  background-size: 25% 25%;
+}
+
+.board :global(cg-board square).hlLight {
+  background: var(--board-hl-l);
+}
+.board :global(cg-board square).hlDark {
+  background: var(--board-hl-d);
+}
+
+/* ---- trying a move (owner, 2026-11-16) ----
+   Where the picked-up piece can go: a dot in the middle of an empty square (12px on a phone's
+   board, growing with a bigger one), a ring 4px thick inside a square whose piece it can take. */
+.board :global(cg-board square.move-dest)::after {
+  --dot: max(12px, 3.43cqw);
+  content: '';
+  position: absolute;
+  left: calc(50% - var(--dot) / 2);
+  top: calc(50% - var(--dot) / 2);
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background: var(--board-dest);
+}
+.board :global(cg-board square.move-dest.oc)::after {
+  inset: 0;
+  width: auto;
+  height: auto;
+  border: max(4px, 1.14cqw) solid var(--board-dest);
+  background: none;
+}
+
+/* ---- coordinates (owner, 2026-11-15) ----
+   Inter 600 at about 9.5px on a 350px board, growing with it. Files in the bottom right corner of
+   the bottom row's squares, ranks in the top left corner of the left-hand file's squares. */
+.coords {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font: 600 2.7cqw / 1 var(--font-inter);
+  letter-spacing: 0;
+}
+
+.file,
+.rank {
+  --sq: 12.5cqw;
+  --pad: calc(var(--sq) * 0.06);
+  position: absolute;
+}
+.file {
+  left: calc((var(--col) + 1) * var(--sq) - var(--pad));
+  bottom: var(--pad);
+  transform: translateX(-100%);
+}
+.rank {
+  left: var(--pad);
+  top: calc(var(--row) * var(--sq) + var(--pad));
+}
+
+/* The shade of the other kind of square. */
+.onLight {
+  color: var(--sq-d);
+}
+.onDark {
+  color: var(--sq-l);
+}
+
+/* ---- the quality badge (owner, 2026-11-15) ----
+   A circle 41% of a square wide in the top right corner of the square the move landed on, 5% of
+   a square in from its top and right edges. 1cqw is 1% of the board. */
+.badges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.badge {
+  --sq: 12.5cqw;
+  --d: calc(var(--sq) * 0.41);
+  --inset: calc(var(--sq) * 0.05);
+  position: absolute;
+  left: calc((var(--col) + 1) * var(--sq) - var(--inset) - var(--d));
+  top: calc(var(--row) * var(--sq) + var(--inset));
+  box-sizing: border-box;
+  width: var(--d);
+  height: var(--d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: var(--badge-border-width) solid var(--badge-mark);
+  background: var(--tone);
+  box-shadow: var(--shadow-badge);
+  color: var(--tone-mark, var(--badge-mark));
+  font: 800 calc(var(--d) * 0.61) / 1 var(--font-inter);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.tone-brilliant {
+  --tone: var(--q-brilliant);
+}
+.tone-great {
+  --tone: var(--q-great);
+}
+.tone-best {
+  --tone: var(--q-best);
+}
+.tone-excellent {
+  --tone: var(--q-excellent);
+}
+/* Good: a green tick on a pale ground. */
+.tone-good {
+  --tone: var(--q-good-bg);
+  --tone-mark: var(--q-good);
+}
+.tone-book {
+  --tone: var(--q-book);
+}
+.tone-inaccuracy {
+  --tone: var(--q-inaccuracy);
+}
+.tone-mistake {
+  --tone: var(--q-mistake);
+}
+.tone-miss {
+  --tone: var(--q-miss);
+}
+.tone-blunder {
+  --tone: var(--q-blunder);
+}
+
+/* The book, the star and the tick: fill and stroke are set on each drawing. */
+.icon {
+  display: block;
+  width: calc(var(--d) * 0.64);
+  height: calc(var(--d) * 0.64);
+}
+
+/* Brilliant only: a white callout with the name rises over the square for a moment, its middle
+   on the middle of the square's top edge (placed by BoardBadge.tsx, 4px inside the board).
+   Height 60% of a square (26px on a 350px board); every size below is a share of it. */
+.callout {
+  --h: calc(12.5cqw * 0.6);
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  height: var(--h);
+  padding: 0 calc(var(--h) * 0.23) 0 calc(var(--h) * 0.12);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--h) * 0.19); /* 5px on a 350px board */
+  border-radius: calc(var(--h) / 2);
+  background: var(--surface);
+  box-shadow: var(--shadow-callout);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.calloutMark {
+  flex: none;
+  width: calc(var(--h) * 0.615); /* 16px */
+  height: calc(var(--h) * 0.615);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--q-brilliant);
+  color: var(--badge-mark);
+  font: 800 calc(var(--h) * 0.37) / 1 var(--font-inter);
+}
+
+.calloutName {
+  color: var(--q-brilliant);
+  font: 800 calc(var(--h) * 0.5) / 1 var(--font-inter); /* 13px */
+  letter-spacing: 0;
+}
+
+/* ---- the move is being checked (owner, 2026-11-16) ----
+   The badge's place and size, grey, with a white ring that turns. It stands still when the reader
+   asked for less motion. */
+.checking {
+  --tone: var(--q-checking);
+}
+
+.spinner {
+  box-sizing: border-box;
+  width: calc(var(--d) * 0.52);
+  height: calc(var(--d) * 0.52);
+  border-radius: 50%;
+  border: calc(var(--d) * 0.1) solid var(--badge-mark);
+  border-right-color: transparent;
+  animation: checking-turn 800ms linear infinite;
+}
+
+@keyframes checking-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+/* ---- which piece a pawn becomes (owner, 2026-11-16) ----
+   Four squares in the pawn's file, from the square it reached towards the middle of the board.
+   Over everything on the board, a dragged piece included. */
+.promotion {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+}
+
+.promotionList {
+  --sq: 12.5cqw;
+  position: absolute;
+  left: calc(var(--col) * var(--sq));
+  top: calc(var(--row) * var(--sq));
+  width: var(--sq);
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: hidden;
+  border-radius: var(--r-thumb-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-callout);
+}
+.promotionList[data-down] {
+  flex-direction: column;
+}
+
+.promotionPiece {
+  width: var(--sq);
+  height: var(--sq);
+  background-size: cover;
+  /* Inside the list, whose rounded edge would cut a ring drawn outside. */
+  outline-offset: -2px;
+}
+@media (hover: hover) {
+  .promotionPiece:hover {
+    background-color: var(--fill);
+  }
+}

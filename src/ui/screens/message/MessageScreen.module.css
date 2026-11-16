@@ -1,0 +1,42 @@
+/* The same column as Connect (ConnectScreen.module.css): board, title, text, one button low. */
+.page {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  min-height: 100dvh;
+  padding: var(--pad-top-92) var(--gutter) var(--pad-bottom-34);
+  display: flex;
+  flex-direction: column;
+}
+
+.board {
+  width: 88px;
+  height: 88px;
+  flex: none;
+  border-radius: var(--r-box);
+  box-shadow: var(--shadow-cover);
+}
+
+.title {
+  margin-top: 28px;
+}
+
+.body {
+  margin-top: 8px;
+}
+
+.spacer {
+  flex: 1;
+  min-height: 32px;
+}
+
+.primary {
+  height: 52px;
+  border-radius: var(--r-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}

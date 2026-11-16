@@ -1,0 +1,37 @@
+// chessby.me, the real site (Fable review A9-01, prepared 2026-11-15, live since 2026-11-16 with
+// 1.0.0). Its own Worker, "chessbyme", separate from the trial copy "preview".
+//
+// Never run wrangler at the root of the repository: run it from this folder, and always with
+// --dry-run first (README.md here).
+//   cd deploy/production
+//   npx wrangler deploy --dry-run
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "chessbyme",
+  "compatibility_date": "2026-11-01",
+  // Only the two custom domains below; no *.workers.dev address, no preview addresses.
+  "workers_dev": false,
+  "preview_urls": false,
+  // Sends www.chessby.me to chessby.me, then serves the files.
+  "main": "worker.js",
+  "routes": [
+    { "pattern": "chessby.me", "custom_domain": true },
+    { "pattern": "www.chessby.me", "custom_domain": true },
+  ],
+  // Wrangler builds the production files itself before every dry run and deploy, so the trial
+  // build (noindex) or a plain build (with Stockfish full) can never be uploaded by mistake.
+  "build": {
+    "command": "npm run build:production",
+    "cwd": "../..",
+  },
+  "assets": {
+    // Built by `npm run build:production`: _headers (security, caching), .assetsignore
+    // (Stockfish full left out) and robots.txt. No noindex.
+    "directory": "../../dist",
+    "binding": "ASSETS",
+    // The script runs first so it can redirect www; it passes everything else to the files.
+    "run_worker_first": true,
+    // Every address that is not a file is the app (/review/..., /settings, ...).
+    "not_found_handling": "single-page-application",
+  },
+}

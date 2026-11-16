@@ -1,0 +1,78 @@
+/*
+ * The evaluation bar (owner, 2026-11-15): as tall as the board, 6px to its left. Phones: 14px
+ * wide, no figure. iPad: 20px with the figure. Black's colour fills the bar; White's part grows
+ * from White's side. It slides in 300ms when the move changes (none with reduced motion).
+ */
+.bar {
+  position: relative;
+  flex: none;
+  width: var(--eval-w);
+  height: var(--board);
+  overflow: hidden;
+  border-radius: var(--eval-radius);
+  background: var(--eval-black);
+  box-shadow: var(--eval-edge);
+  transition: opacity 300ms ease-out;
+}
+
+/* Not analysed yet: at the middle, faded. */
+.pending {
+  opacity: 0.45;
+}
+
+.white {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--eval-white);
+  transition: height 300ms ease-out;
+}
+.bar[data-white='bottom'] .white {
+  bottom: 0;
+}
+.bar[data-white='top'] .white {
+  top: 0;
+}
+
+/* Where the two sides are level. */
+.middle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 0.5px);
+  height: 1px;
+  background: var(--eval-mid);
+}
+
+/* The figure: iPads only (700px wide and up, either way round). */
+.figure {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 700 10px / 1 var(--font-inter);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (min-width: 700px) {
+  .figure {
+    display: block;
+  }
+}
+.figure[data-long] {
+  font-size: 8px;
+}
+.figure[data-end='bottom'] {
+  bottom: 5px;
+}
+.figure[data-end='top'] {
+  top: 5px;
+}
+.onWhite {
+  color: var(--eval-black);
+}
+.onBlack {
+  color: var(--eval-white);
+}

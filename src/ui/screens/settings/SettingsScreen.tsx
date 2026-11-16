@@ -1,0 +1,108 @@
+import { APP_ANALYSIS_OPTIONS, ENGINE_VERSION } from '@/analysis';
+import { LOCALES, type Locale } from '@/i18n';
+import { useApp } from '@/ui/app/appStore';
+import { useState } from 'react';
+import { BUY_ME_A_COFFEE_URL } from '@/ui/app/config';
+import { contactMailto } from '@/ui/app/contact';
+import { BackButton } from '@/ui/components/BackButton';
+import { Group, Row, SwitchRow } from '@/ui/components/GroupedList';
+import { Page } from '@/ui/components/Page';
+import { useLanguage } from '@/ui/i18n/LanguageContext';
+import type { LanguageSetting } from '@/ui/i18n/language';
+import { setSoundEnabled, soundEnabled } from '@/ui/sound/player';
+import styles from './SettingsScreen.module.css';
+
+/** Settings (BRIEF-UI 6.6). Rows that only inform have no chevron. Appearance is hidden until
+ *  there is a dark mode (BRIEF-UI 9, item 1); the Sound switch takes its place (owner,
+ *  2026-11-16). */
+export function SettingsScreen() {
+  const { messages: text, locale, setting, setSetting } = useLanguage();
+  const accounts = useApp((s) => s.accounts);
+  const [sound, setSound] = useState(soundEnabled);
+  const t = text.settings;
+  const languageName = (code: Locale) => t.languageNames[code];
+  const languageValue =
+    setting === 'auto' ? t.languageAuto(languageName(locale)) : languageName(setting);
+
+  const account = (site: 'lichess' | 'chesscom') => {
+    const name = accounts?.[site] ?? null;
+    return (
+      <Row
+        label={text.sites[site]}
+        value={name ?? t.connect}
+        dot={name !== null}
+        dotLabel={name !== null ? t.connected : undefined}
+        to={`/connect?site=${site}`}
+        state={{ from: 'settings' }}
+      />
+    );
+  };
+
+  return (
+    <Page mode="scrollWhenShort" floatingBar={false} className={styles.page}>
+      <header className={styles.header}>
+        <BackButton />
+        <h1 className={`${styles.title} t-large-title`}>{t.title}</h1>
+      </header>
+      <Group title={t.groups.accounts} note={t.accountsNote} className={styles.group}>
+        {account('lichess')}
+        {account('chesscom')}
+      </Group>
+      <Group title={t.groups.general} note={t.languageNote} className={styles.group}>
+        <Row
+          label={t.language}
+          value={languageValue}
+          overlay={
+            <select
+              aria-label={t.language}
+              className={styles.select}
+              value={setting}
+              onChange={(event) => setSetting(event.target.value as LanguageSetting)}
+            >
+              <option value="auto">{t.automatic}</option>
+              {LOCALES.map((code) => (
+                <option key={code} value={code}>
+                  {languageName(code)}
+                </option>
+              ))}
+            </select>
+          }
+        />
+        <SwitchRow
+          label={t.sound}
+          checked={sound}
+          onChange={(on) => {
+            setSoundEnabled(on);
+            setSound(on);
+          }}
+        />
+      </Group>
+      <Group title={t.groups.analysis} className={styles.group}>
+        {/* One row since the Sound switch came in, so Settings still fits a 390×844 screen. */}
+        <Row
+          label={t.engine}
+          value={t.engineDepth(
+            t.engineValue(ENGINE_VERSION, APP_ANALYSIS_OPTIONS.engine),
+            APP_ANALYSIS_OPTIONS.depth,
+          )}
+        />
+      </Group>
+      <Group title={t.groups.about} className={styles.group}>
+        {BUY_ME_A_COFFEE_URL && <Row label={t.buyCoffee} href={BUY_ME_A_COFFEE_URL} />}
+        <Row label={t.version} value={__APP_VERSION__} />
+        <Row
+          label={t.contact}
+          // Built at the tap, so the language and the window size are the ones of that moment.
+          onClick={() => {
+            window.location.href = contactMailto(text, locale, {
+              version: __APP_VERSION__,
+              screen: { width: window.innerWidth, height: window.innerHeight },
+            });
+          }}
+        />
+        <Row label={t.privacy} to="/settings/privacy" />
+        <Row label={t.licenses} to="/settings/licenses" />
+      </Group>
+    </Page>
+  );
+}

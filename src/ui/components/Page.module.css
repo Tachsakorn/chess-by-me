@@ -1,0 +1,46 @@
+/*
+ * One screen. Every screen fits the height of the device and does not scroll as a whole
+ * (BRIEF-UI section 4); only a list inside it may scroll. Courses scrolls as a whole, and Home and
+ * Settings do so when their content does not fit above the floating bar (measured in Page.tsx).
+ * On a wide screen the content sits in the middle, at most 560px wide on every screen but the
+ * review (owner, 2026-11-15).
+ */
+.fixed,
+.scroll,
+.fit {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+
+.fixed {
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.scroll {
+  min-height: 100dvh;
+  padding-bottom: var(--float-clearance);
+}
+
+.fit {
+  position: relative;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* How much room the floating bar takes at the bottom, measured by Page.tsx. */
+.probe {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: var(--float-clearance);
+  visibility: hidden;
+  pointer-events: none;
+}
+.probeNoBar {
+  height: var(--pad-bottom-34);
+}

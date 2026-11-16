@@ -1,0 +1,97 @@
+/* A column from the top to the bottom of the visible screen; the keyboard shrinks it
+   (interactive-widget=resizes-content), so Continue stays above the keyboard. */
+.page {
+  position: relative;
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  min-height: 100dvh;
+  padding: var(--pad-top-92) var(--gutter) var(--pad-bottom-34);
+  display: flex;
+  flex-direction: column;
+}
+
+.back {
+  position: absolute;
+  top: var(--pad-top-56);
+  left: var(--gutter);
+}
+
+.board {
+  width: 88px;
+  height: 88px;
+  flex: none;
+  border-radius: var(--r-box);
+  box-shadow: var(--shadow-cover);
+}
+
+.title {
+  margin-top: 28px;
+}
+
+.intro {
+  margin-top: 8px;
+}
+
+.form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+}
+
+.label {
+  margin-top: 20px;
+}
+
+.input {
+  margin-top: 6px;
+  height: 50px;
+  border: 0;
+  border-radius: var(--r-board);
+  background: var(--fill);
+  padding: 0 16px;
+  font-size: 17px;
+  font-weight: 500;
+}
+.input::placeholder {
+  color: var(--text-3);
+}
+
+.error {
+  margin-top: 6px;
+  color: var(--danger);
+}
+
+.spacer {
+  flex: 1;
+  min-height: 24px;
+}
+
+.primary {
+  height: 52px;
+  border-radius: var(--r-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+/* "Checking…" keeps the button's look; only Continue with an empty field is dimmed. */
+.primary.checking:disabled {
+  opacity: 1;
+}
+
+.link {
+  margin-top: 4px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+}
+.danger {
+  color: var(--danger);
+}
+
+.note {
+  margin-top: 4px;
+  text-align: center;
+}

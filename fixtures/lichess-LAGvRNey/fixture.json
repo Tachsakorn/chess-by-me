@@ -1,0 +1,20 @@
+{
+ "note": "Development fixture: a real game analysed by the real analysis code. Not product data.",
+ "game": "game.pgn read with gameFromPgn, known facts from source.json",
+ "evaluations": {
+  "engine": {
+   "name": "Stockfish",
+   "version": "17.1",
+   "variant": "full",
+   "depth": 18,
+   "multiPv": 2
+  },
+  "cloudEval": false,
+  "runBy": "Node, by the earlier scripts/make-fixture.mjs (removed); no ucinewgame between positions",
+  "seconds": 122,
+  "machine": "the owner's other PC, as recorded in docs/STATUS.md at the time",
+  "evaluatedAt": "2026-11-13"
+ },
+ "derived": "opening, move categories, accuracy and rating ranges built by buildAnalysis (src/analysis)",
+ "builtAt": "2026-11-15T16:05:20.467Z"
+}

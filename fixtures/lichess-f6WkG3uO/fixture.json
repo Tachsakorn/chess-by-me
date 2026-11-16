@@ -1,0 +1,20 @@
+{
+ "note": "Development fixture: a real game analysed by the real analysis code. Not product data.",
+ "game": "fetched with importGames (lichess:ni5hu:f6WkG3uO)",
+ "evaluations": {
+  "engine": {
+   "name": "Stockfish",
+   "version": "17.1",
+   "variant": "full",
+   "depth": 18,
+   "multiPv": 2
+  },
+  "cloudEval": false,
+  "runBy": "Node (child process), one engine process",
+  "seconds": 53,
+  "machine": "AMD Ryzen 5 5600 6-Core Processor, 12 logical cores",
+  "evaluatedAt": "2026-11-13T15:26:01.195Z"
+ },
+ "derived": "opening, move categories, accuracy and rating ranges built by buildAnalysis (src/analysis)",
+ "builtAt": "2026-11-15T16:05:25.385Z"
+}

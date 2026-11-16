@@ -1,0 +1,17 @@
+.back {
+  width: var(--tap);
+  height: var(--tap);
+  flex: none;
+  border-radius: 50%;
+  background: var(--fill);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (hover: hover) {
+  .back:hover {
+    background: var(--eval-fill);
+  }
+}

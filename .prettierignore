@@ -1,0 +1,12 @@
+dist
+coverage
+node_modules
+spikes
+public/engines
+fixtures
+package-lock.json
+PROJECT_BRIEF.md
+docs
+*.md
+.claude
+.mcp.json

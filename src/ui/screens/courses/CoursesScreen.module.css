@@ -1,0 +1,93 @@
+.header {
+  padding: var(--pad-top-76) var(--gutter) 0;
+}
+.intro {
+  margin-top: 4px;
+}
+
+.start {
+  padding: 24px var(--gutter) 0;
+}
+
+.phases {
+  padding: var(--section-gap-lg) var(--gutter) 0;
+}
+
+.sectionTitle {
+  margin-bottom: var(--title-gap);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 12px;
+}
+
+.hero,
+.cover {
+  border-radius: var(--r-box);
+  background: var(--fill);
+  box-shadow: var(--shadow-tile);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  --course: var(--text);
+  --me: var(--text-3);
+}
+.hero {
+  height: 180px;
+  padding: 20px 16px 14px;
+}
+.cover {
+  aspect-ratio: 1;
+  padding: 16px 10px 12px;
+}
+
+.coverWord {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--course);
+}
+
+/* One line of the word per span, broken where the drawing breaks it ("Open / ings"). */
+.coverLine {
+  display: block;
+}
+
+/* The signature is always Inter, as drawn. */
+.signature {
+  font: 800 12px var(--font-inter);
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.me {
+  color: var(--me);
+}
+
+.red {
+  --course: var(--course-red);
+  --me: var(--course-red);
+}
+.blue {
+  --course: var(--course-blue);
+  --me: var(--course-blue);
+}
+.pink {
+  --course: var(--course-pink);
+  --me: var(--course-pink);
+}
+.amber {
+  --course: var(--course-amber);
+  --me: var(--course-amber);
+}
+.green {
+  --course: var(--course-green);
+  --me: var(--course-green);
+}
+
+.name {
+  margin-top: 8px;
+}

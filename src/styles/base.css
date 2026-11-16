@@ -1,0 +1,236 @@
+/*
+ * Page-wide rules and the type scale (BRIEF-UI section 3). A component takes its text size from
+ * one of the .t-* classes below rather than writing a size of its own.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* The same width whether a screen scrolls or not, so switching tabs never shifts the page. */
+  scrollbar-gutter: stable;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* Every control: a 2px ring in the text colour, 2px away, only when reached from the keyboard. */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Something that can be pressed: dims at once under a finger and comes back in 150ms. */
+.pressable {
+  transition: opacity var(--pressed-return) ease-out;
+}
+.pressable:active:not(:disabled):not([aria-disabled='true']) {
+  opacity: var(--pressed-opacity);
+  transition: none;
+}
+.pressable:disabled,
+.pressable[aria-disabled='true'] {
+  opacity: var(--disabled-opacity);
+  cursor: default;
+}
+
+.squircle {
+  corner-shape: squircle;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- type scale ----------------------------------------------------------------------------- */
+.t-large-title {
+  font-size: 34px;
+  line-height: 40px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+.t-course-hero {
+  font-size: 52px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.t-course-title {
+  font-size: 36px;
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+.t-section {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.t-stat {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.t-move-title {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.t-headline {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.t-nav-title {
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+}
+.t-body-lg {
+  font-size: 17px;
+  line-height: 23px;
+  font-weight: 400;
+}
+.t-row {
+  font-size: 16px;
+  line-height: 21px;
+}
+.t-body {
+  font-size: 15px;
+  line-height: 20px;
+}
+.t-caption {
+  font-size: 13px;
+  line-height: 18px;
+}
+.t-tab {
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: 600;
+}
+.w-400 {
+  font-weight: 400;
+}
+.w-500 {
+  font-weight: 500;
+}
+.w-600 {
+  font-weight: 600;
+}
+.w-700 {
+  font-weight: 700;
+}
+.c-2 {
+  color: var(--text-2);
+}
+.c-3 {
+  color: var(--text-3);
+}
+
+/* Thai squeezed together is hard to read: no negative tracking in Thai. */
+:lang(th) .t-large-title,
+:lang(th) .t-course-hero,
+:lang(th) .t-course-title,
+:lang(th) .t-section,
+:lang(th) .t-stat,
+:lang(th) .t-move-title,
+:lang(th) .t-headline {
+  letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+/* The note after a save failed (src/ui/app/StorageScreen.tsx): on top of every screen, below the
+   status bar, until closed. */
+.save-failed {
+  position: fixed;
+  z-index: 50;
+  top: calc(var(--safe-top) + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(calc(100% - 2 * var(--gutter)), var(--content-max));
+  padding: 10px 12px 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: var(--r-card);
+  background: var(--dark-card);
+  color: var(--on-primary);
+  box-shadow: var(--shadow-hero);
+}
+.save-failed > span {
+  flex: 1;
+}
+.save-failed-close {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  color: var(--on-primary);
+}

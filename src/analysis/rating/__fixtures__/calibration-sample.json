@@ -1,0 +1,1205 @@
+{
+  "note": "200 random held-out rows from https://database.lichess.org/standard/lichess_db_standard_rated_2026-10.pgn.zst (CC0), produced by scripts/calibrate-rating.script.ts. accuracy is ours (computeAccuracy) from the game's Lichess server evaluations; rating is the player's Lichess rating.",
+  "rows": [
+    {
+      "rating": 2020,
+      "accuracy": 80.91,
+      "timeClass": "rapid",
+      "moves": 39
+    },
+    {
+      "rating": 1809,
+      "accuracy": 85.68,
+      "timeClass": "bullet",
+      "moves": 22
+    },
+    {
+      "rating": 1003,
+      "accuracy": 90.83,
+      "timeClass": "blitz",
+      "moves": 37
+    },
+    {
+      "rating": 1540,
+      "accuracy": 73.07,
+      "timeClass": "blitz",
+      "moves": 28
+    },
+    {
+      "rating": 1866,
+      "accuracy": 79.38,
+      "timeClass": "blitz",
+      "moves": 60
+    },
+    {
+      "rating": 2127,
+      "accuracy": 74.26,
+      "timeClass": "blitz",
+      "moves": 22
+    },
+    {
+      "rating": 2144,
+      "accuracy": 90.92,
+      "timeClass": "rapid",
+      "moves": 44
+    },
+    {
+      "rating": 994,
+      "accuracy": 83.46,
+      "timeClass": "bullet",
+      "moves": 37
+    },
+    {
+      "rating": 841,
+      "accuracy": 57.37,
+      "timeClass": "blitz",
+      "moves": 47
+    },
+    {
+      "rating": 1968,
+      "accuracy": 83.69,
+      "timeClass": "rapid",
+      "moves": 36
+    },
+    {
+      "rating": 2057,
+      "accuracy": 75.53,
+      "timeClass": "blitz",
+      "moves": 27
+    },
+    {
+      "rating": 2078,
+      "accuracy": 70.26,
+      "timeClass": "blitz",
+      "moves": 33
+    },
+    {
+      "rating": 1867,
+      "accuracy": 95.57,
+      "timeClass": "blitz",
+      "moves": 37
+    },
+    {
+      "rating": 1342,
+      "accuracy": 81.06,
+      "timeClass": "blitz",
+      "moves": 29
+    },
+    {
+      "rating": 2097,
+      "accuracy": 87.55,
+      "timeClass": "blitz",
+      "moves": 56
+    },
+    {
+      "rating": 2332,
+      "accuracy": 78.74,
+      "timeClass": "bullet",
+      "moves": 26
+    },
+    {
+      "rating": 1403,
+      "accuracy": 42.78,
+      "timeClass": "blitz",
+      "moves": 24
+    },
+    {
+      "rating": 1434,
+      "accuracy": 77.63,
+      "timeClass": "bullet",
+      "moves": 24
+    },
+    {
+      "rating": 1436,
+      "accuracy": 49.51,
+      "timeClass": "rapid",
+      "moves": 21
+    },
+    {
+      "rating": 1613,
+      "accuracy": 79.21,
+      "timeClass": "bullet",
+      "moves": 29
+    },
+    {
+      "rating": 1766,
+      "accuracy": 82.75,
+      "timeClass": "bullet",
+      "moves": 36
+    },
+    {
+      "rating": 1275,
+      "accuracy": 59.11,
+      "timeClass": "blitz",
+      "moves": 23
+    },
+    {
+      "rating": 1030,
+      "accuracy": 82.94,
+      "timeClass": "bullet",
+      "moves": 28
+    },
+    {
+      "rating": 1482,
+      "accuracy": 79.09,
+      "timeClass": "rapid",
+      "moves": 23
+    },
+    {
+      "rating": 1431,
+      "accuracy": 70.73,
+      "timeClass": "blitz",
+      "moves": 25
+    },
+    {
+      "rating": 2912,
+      "accuracy": 79.1,
+      "timeClass": "bullet",
+      "moves": 44
+    },
+    {
+      "rating": 1072,
+      "accuracy": 55.18,
+      "timeClass": "blitz",
+      "moves": 27
+    },
+    {
+      "rating": 1312,
+      "accuracy": 81.32,
+      "timeClass": "rapid",
+      "moves": 55
+    },
+    {
+      "rating": 1804,
+      "accuracy": 82.14,
+      "timeClass": "classical",
+      "moves": 23
+    },
+    {
+      "rating": 1285,
+      "accuracy": 49.17,
+      "timeClass": "blitz",
+      "moves": 37
+    },
+    {
+      "rating": 1643,
+      "accuracy": 40.86,
+      "timeClass": "blitz",
+      "moves": 22
+    },
+    {
+      "rating": 1154,
+      "accuracy": 50.97,
+      "timeClass": "blitz",
+      "moves": 20
+    },
+    {
+      "rating": 2114,
+      "accuracy": 66.8,
+      "timeClass": "blitz",
+      "moves": 26
+    },
+    {
+      "rating": 1567,
+      "accuracy": 72.78,
+      "timeClass": "rapid",
+      "moves": 35
+    },
+    {
+      "rating": 1014,
+      "accuracy": 72.02,
+      "timeClass": "rapid",
+      "moves": 22
+    },
+    {
+      "rating": 1811,
+      "accuracy": 68.74,
+      "timeClass": "blitz",
+      "moves": 23
+    },
+    {
+      "rating": 1779,
+      "accuracy": 64.82,
+      "timeClass": "bullet",
+      "moves": 20
+    },
+    {
+      "rating": 1379,
+      "accuracy": 84.12,
+      "timeClass": "blitz",
+      "moves": 37
+    },
+    {
+      "rating": 1964,
+      "accuracy": 52.74,
+      "timeClass": "bullet",
+      "moves": 37
+    },
+    {
+      "rating": 1004,
+      "accuracy": 56.32,
+      "timeClass": "blitz",
+      "moves": 46
+    },
+    {
+      "rating": 1960,
+      "accuracy": 76.61,
+      "timeClass": "bullet",
+      "moves": 21
+    },
+    {
+      "rating": 1907,
+      "accuracy": 82.69,
+      "timeClass": "blitz",
+      "moves": 23
+    },
+    {
+      "rating": 2087,
+      "accuracy": 70.08,
+      "timeClass": "blitz",
+      "moves": 36
+    },
+    {
+      "rating": 1423,
+      "accuracy": 78.14,
+      "timeClass": "rapid",
+      "moves": 22
+    },
+    {
+      "rating": 1968,
+      "accuracy": 70.35,
+      "timeClass": "blitz",
+      "moves": 41
+    },
+    {
+      "rating": 1832,
+      "accuracy": 86.36,
+      "timeClass": "rapid",
+      "moves": 30
+    },
+    {
+      "rating": 2207,
+      "accuracy": 73.14,
+      "timeClass": "blitz",
+      "moves": 33
+    },
+    {
+      "rating": 1498,
+      "accuracy": 62.88,
+      "timeClass": "rapid",
+      "moves": 32
+    },
+    {
+      "rating": 1118,
+      "accuracy": 91.99,
+      "timeClass": "blitz",
+      "moves": 11
+    },
+    {
+      "rating": 1638,
+      "accuracy": 68.78,
+      "timeClass": "bullet",
+      "moves": 15
+    },
+    {
+      "rating": 2260,
+      "accuracy": 88.35,
+      "timeClass": "blitz",
+      "moves": 45
+    },
+    {
+      "rating": 1407,
+      "accuracy": 82.33,
+      "timeClass": "bullet",
+      "moves": 33
+    },
+    {
+      "rating": 1050,
+      "accuracy": 88,
+      "timeClass": "bullet",
+      "moves": 31
+    },
+    {
+      "rating": 1562,
+      "accuracy": 83.6,
+      "timeClass": "blitz",
+      "moves": 42
+    },
+    {
+      "rating": 1694,
+      "accuracy": 92.47,
+      "timeClass": "blitz",
+      "moves": 24
+    },
+    {
+      "rating": 1289,
+      "accuracy": 85.57,
+      "timeClass": "blitz",
+      "moves": 30
+    },
+    {
+      "rating": 1962,
+      "accuracy": 88.28,
+      "timeClass": "blitz",
+      "moves": 39
+    },
+    {
+      "rating": 1087,
+      "accuracy": 80.9,
+      "timeClass": "blitz",
+      "moves": 44
+    },
+    {
+      "rating": 1803,
+      "accuracy": 79.57,
+      "timeClass": "blitz",
+      "moves": 28
+    },
+    {
+      "rating": 2291,
+      "accuracy": 95.85,
+      "timeClass": "blitz",
+      "moves": 27
+    },
+    {
+      "rating": 1377,
+      "accuracy": 86.81,
+      "timeClass": "blitz",
+      "moves": 39
+    },
+    {
+      "rating": 1378,
+      "accuracy": 53.2,
+      "timeClass": "bullet",
+      "moves": 34
+    },
+    {
+      "rating": 1075,
+      "accuracy": 73.14,
+      "timeClass": "rapid",
+      "moves": 34
+    },
+    {
+      "rating": 1979,
+      "accuracy": 68.17,
+      "timeClass": "bullet",
+      "moves": 33
+    },
+    {
+      "rating": 1095,
+      "accuracy": 55.86,
+      "timeClass": "blitz",
+      "moves": 33
+    },
+    {
+      "rating": 1567,
+      "accuracy": 70.09,
+      "timeClass": "rapid",
+      "moves": 41
+    },
+    {
+      "rating": 1468,
+      "accuracy": 90.44,
+      "timeClass": "blitz",
+      "moves": 52
+    },
+    {
+      "rating": 2414,
+      "accuracy": 85.91,
+      "timeClass": "blitz",
+      "moves": 45
+    },
+    {
+      "rating": 2277,
+      "accuracy": 61.91,
+      "timeClass": "blitz",
+      "moves": 38
+    },
+    {
+      "rating": 1873,
+      "accuracy": 37.4,
+      "timeClass": "blitz",
+      "moves": 19
+    },
+    {
+      "rating": 1110,
+      "accuracy": 82.09,
+      "timeClass": "bullet",
+      "moves": 31
+    },
+    {
+      "rating": 2293,
+      "accuracy": 56.83,
+      "timeClass": "bullet",
+      "moves": 24
+    },
+    {
+      "rating": 2077,
+      "accuracy": 79.3,
+      "timeClass": "bullet",
+      "moves": 37
+    },
+    {
+      "rating": 1286,
+      "accuracy": 65.28,
+      "timeClass": "blitz",
+      "moves": 61
+    },
+    {
+      "rating": 1653,
+      "accuracy": 89.51,
+      "timeClass": "blitz",
+      "moves": 39
+    },
+    {
+      "rating": 1470,
+      "accuracy": 85.71,
+      "timeClass": "blitz",
+      "moves": 33
+    },
+    {
+      "rating": 714,
+      "accuracy": 49.09,
+      "timeClass": "blitz",
+      "moves": 36
+    },
+    {
+      "rating": 788,
+      "accuracy": 93.2,
+      "timeClass": "blitz",
+      "moves": 26
+    },
+    {
+      "rating": 1944,
+      "accuracy": 82.44,
+      "timeClass": "blitz",
+      "moves": 43
+    },
+    {
+      "rating": 1818,
+      "accuracy": 95.59,
+      "timeClass": "blitz",
+      "moves": 22
+    },
+    {
+      "rating": 1713,
+      "accuracy": 46.46,
+      "timeClass": "rapid",
+      "moves": 41
+    },
+    {
+      "rating": 1264,
+      "accuracy": 86.23,
+      "timeClass": "rapid",
+      "moves": 45
+    },
+    {
+      "rating": 2217,
+      "accuracy": 51.78,
+      "timeClass": "bullet",
+      "moves": 32
+    },
+    {
+      "rating": 2380,
+      "accuracy": 85.17,
+      "timeClass": "blitz",
+      "moves": 41
+    },
+    {
+      "rating": 1985,
+      "accuracy": 83.44,
+      "timeClass": "rapid",
+      "moves": 43
+    },
+    {
+      "rating": 1503,
+      "accuracy": 75.27,
+      "timeClass": "blitz",
+      "moves": 22
+    },
+    {
+      "rating": 2097,
+      "accuracy": 71.03,
+      "timeClass": "blitz",
+      "moves": 46
+    },
+    {
+      "rating": 2187,
+      "accuracy": 80.35,
+      "timeClass": "bullet",
+      "moves": 45
+    },
+    {
+      "rating": 1809,
+      "accuracy": 61.23,
+      "timeClass": "rapid",
+      "moves": 26
+    },
+    {
+      "rating": 1368,
+      "accuracy": 89.42,
+      "timeClass": "rapid",
+      "moves": 40
+    },
+    {
+      "rating": 1535,
+      "accuracy": 67.22,
+      "timeClass": "blitz",
+      "moves": 66
+    },
+    {
+      "rating": 1376,
+      "accuracy": 82.88,
+      "timeClass": "bullet",
+      "moves": 37
+    },
+    {
+      "rating": 2161,
+      "accuracy": 63.57,
+      "timeClass": "rapid",
+      "moves": 41
+    },
+    {
+      "rating": 1444,
+      "accuracy": 75.37,
+      "timeClass": "blitz",
+      "moves": 31
+    },
+    {
+      "rating": 1863,
+      "accuracy": 71.07,
+      "timeClass": "blitz",
+      "moves": 27
+    },
+    {
+      "rating": 872,
+      "accuracy": 95.07,
+      "timeClass": "rapid",
+      "moves": 28
+    },
+    {
+      "rating": 1659,
+      "accuracy": 85.23,
+      "timeClass": "blitz",
+      "moves": 61
+    },
+    {
+      "rating": 2263,
+      "accuracy": 85.91,
+      "timeClass": "bullet",
+      "moves": 62
+    },
+    {
+      "rating": 1496,
+      "accuracy": 93.22,
+      "timeClass": "blitz",
+      "moves": 12
+    },
+    {
+      "rating": 1070,
+      "accuracy": 45.31,
+      "timeClass": "bullet",
+      "moves": 20
+    },
+    {
+      "rating": 1738,
+      "accuracy": 74.57,
+      "timeClass": "rapid",
+      "moves": 47
+    },
+    {
+      "rating": 1999,
+      "accuracy": 91.9,
+      "timeClass": "rapid",
+      "moves": 48
+    },
+    {
+      "rating": 1129,
+      "accuracy": 75.34,
+      "timeClass": "classical",
+      "moves": 31
+    },
+    {
+      "rating": 907,
+      "accuracy": 58.99,
+      "timeClass": "rapid",
+      "moves": 22
+    },
+    {
+      "rating": 1929,
+      "accuracy": 49.99,
+      "timeClass": "bullet",
+      "moves": 37
+    },
+    {
+      "rating": 1551,
+      "accuracy": 88.38,
+      "timeClass": "rapid",
+      "moves": 25
+    },
+    {
+      "rating": 1675,
+      "accuracy": 69.5,
+      "timeClass": "bullet",
+      "moves": 23
+    },
+    {
+      "rating": 1877,
+      "accuracy": 91.5,
+      "timeClass": "rapid",
+      "moves": 28
+    },
+    {
+      "rating": 902,
+      "accuracy": 54.64,
+      "timeClass": "rapid",
+      "moves": 10
+    },
+    {
+      "rating": 1784,
+      "accuracy": 69.55,
+      "timeClass": "blitz",
+      "moves": 42
+    },
+    {
+      "rating": 968,
+      "accuracy": 78.03,
+      "timeClass": "rapid",
+      "moves": 47
+    },
+    {
+      "rating": 1553,
+      "accuracy": 71.49,
+      "timeClass": "blitz",
+      "moves": 21
+    },
+    {
+      "rating": 787,
+      "accuracy": 89.5,
+      "timeClass": "bullet",
+      "moves": 31
+    },
+    {
+      "rating": 1775,
+      "accuracy": 87.09,
+      "timeClass": "blitz",
+      "moves": 57
+    },
+    {
+      "rating": 1426,
+      "accuracy": 57.74,
+      "timeClass": "bullet",
+      "moves": 42
+    },
+    {
+      "rating": 1864,
+      "accuracy": 90.01,
+      "timeClass": "bullet",
+      "moves": 33
+    },
+    {
+      "rating": 1913,
+      "accuracy": 75.09,
+      "timeClass": "rapid",
+      "moves": 70
+    },
+    {
+      "rating": 682,
+      "accuracy": 59.95,
+      "timeClass": "bullet",
+      "moves": 22
+    },
+    {
+      "rating": 1021,
+      "accuracy": 96.77,
+      "timeClass": "blitz",
+      "moves": 30
+    },
+    {
+      "rating": 1369,
+      "accuracy": 73.03,
+      "timeClass": "rapid",
+      "moves": 14
+    },
+    {
+      "rating": 1640,
+      "accuracy": 90.44,
+      "timeClass": "blitz",
+      "moves": 23
+    },
+    {
+      "rating": 1550,
+      "accuracy": 78.1,
+      "timeClass": "blitz",
+      "moves": 53
+    },
+    {
+      "rating": 1207,
+      "accuracy": 77.11,
+      "timeClass": "rapid",
+      "moves": 20
+    },
+    {
+      "rating": 1499,
+      "accuracy": 83.85,
+      "timeClass": "blitz",
+      "moves": 55
+    },
+    {
+      "rating": 913,
+      "accuracy": 74.72,
+      "timeClass": "blitz",
+      "moves": 18
+    },
+    {
+      "rating": 2523,
+      "accuracy": 67.27,
+      "timeClass": "blitz",
+      "moves": 31
+    },
+    {
+      "rating": 1934,
+      "accuracy": 95.31,
+      "timeClass": "rapid",
+      "moves": 22
+    },
+    {
+      "rating": 1843,
+      "accuracy": 84.89,
+      "timeClass": "classical",
+      "moves": 56
+    },
+    {
+      "rating": 1801,
+      "accuracy": 43.1,
+      "timeClass": "rapid",
+      "moves": 26
+    },
+    {
+      "rating": 1381,
+      "accuracy": 74.77,
+      "timeClass": "blitz",
+      "moves": 32
+    },
+    {
+      "rating": 1547,
+      "accuracy": 87.99,
+      "timeClass": "bullet",
+      "moves": 41
+    },
+    {
+      "rating": 1638,
+      "accuracy": 74.35,
+      "timeClass": "bullet",
+      "moves": 24
+    },
+    {
+      "rating": 1873,
+      "accuracy": 81.46,
+      "timeClass": "blitz",
+      "moves": 49
+    },
+    {
+      "rating": 940,
+      "accuracy": 81.77,
+      "timeClass": "blitz",
+      "moves": 21
+    },
+    {
+      "rating": 1492,
+      "accuracy": 65.72,
+      "timeClass": "bullet",
+      "moves": 41
+    },
+    {
+      "rating": 1972,
+      "accuracy": 92.38,
+      "timeClass": "blitz",
+      "moves": 45
+    },
+    {
+      "rating": 1025,
+      "accuracy": 52.02,
+      "timeClass": "blitz",
+      "moves": 38
+    },
+    {
+      "rating": 1783,
+      "accuracy": 53.16,
+      "timeClass": "blitz",
+      "moves": 42
+    },
+    {
+      "rating": 2378,
+      "accuracy": 61.41,
+      "timeClass": "bullet",
+      "moves": 46
+    },
+    {
+      "rating": 1480,
+      "accuracy": 90.43,
+      "timeClass": "bullet",
+      "moves": 21
+    },
+    {
+      "rating": 1225,
+      "accuracy": 44.74,
+      "timeClass": "blitz",
+      "moves": 23
+    },
+    {
+      "rating": 2298,
+      "accuracy": 78,
+      "timeClass": "blitz",
+      "moves": 59
+    },
+    {
+      "rating": 761,
+      "accuracy": 69.15,
+      "timeClass": "blitz",
+      "moves": 33
+    },
+    {
+      "rating": 837,
+      "accuracy": 82.46,
+      "timeClass": "rapid",
+      "moves": 28
+    },
+    {
+      "rating": 1928,
+      "accuracy": 86.84,
+      "timeClass": "blitz",
+      "moves": 34
+    },
+    {
+      "rating": 1859,
+      "accuracy": 76.91,
+      "timeClass": "blitz",
+      "moves": 43
+    },
+    {
+      "rating": 1791,
+      "accuracy": 81.25,
+      "timeClass": "blitz",
+      "moves": 34
+    },
+    {
+      "rating": 1790,
+      "accuracy": 54.98,
+      "timeClass": "bullet",
+      "moves": 35
+    },
+    {
+      "rating": 2450,
+      "accuracy": 72.06,
+      "timeClass": "blitz",
+      "moves": 57
+    },
+    {
+      "rating": 2078,
+      "accuracy": 70.27,
+      "timeClass": "bullet",
+      "moves": 41
+    },
+    {
+      "rating": 1999,
+      "accuracy": 84.61,
+      "timeClass": "blitz",
+      "moves": 35
+    },
+    {
+      "rating": 2594,
+      "accuracy": 86.18,
+      "timeClass": "blitz",
+      "moves": 44
+    },
+    {
+      "rating": 1982,
+      "accuracy": 83.88,
+      "timeClass": "blitz",
+      "moves": 36
+    },
+    {
+      "rating": 1573,
+      "accuracy": 38.84,
+      "timeClass": "rapid",
+      "moves": 18
+    },
+    {
+      "rating": 1674,
+      "accuracy": 88.61,
+      "timeClass": "blitz",
+      "moves": 44
+    },
+    {
+      "rating": 1644,
+      "accuracy": 86.23,
+      "timeClass": "blitz",
+      "moves": 61
+    },
+    {
+      "rating": 887,
+      "accuracy": 36.06,
+      "timeClass": "bullet",
+      "moves": 25
+    },
+    {
+      "rating": 1156,
+      "accuracy": 67,
+      "timeClass": "rapid",
+      "moves": 83
+    },
+    {
+      "rating": 1443,
+      "accuracy": 81.05,
+      "timeClass": "blitz",
+      "moves": 27
+    },
+    {
+      "rating": 936,
+      "accuracy": 44.63,
+      "timeClass": "bullet",
+      "moves": 33
+    },
+    {
+      "rating": 1357,
+      "accuracy": 71.74,
+      "timeClass": "blitz",
+      "moves": 25
+    },
+    {
+      "rating": 1731,
+      "accuracy": 81.85,
+      "timeClass": "rapid",
+      "moves": 38
+    },
+    {
+      "rating": 1813,
+      "accuracy": 67.49,
+      "timeClass": "blitz",
+      "moves": 24
+    },
+    {
+      "rating": 1038,
+      "accuracy": 57.99,
+      "timeClass": "blitz",
+      "moves": 23
+    },
+    {
+      "rating": 2198,
+      "accuracy": 88.68,
+      "timeClass": "blitz",
+      "moves": 33
+    },
+    {
+      "rating": 1864,
+      "accuracy": 80.48,
+      "timeClass": "bullet",
+      "moves": 25
+    },
+    {
+      "rating": 2269,
+      "accuracy": 86.31,
+      "timeClass": "blitz",
+      "moves": 50
+    },
+    {
+      "rating": 1564,
+      "accuracy": 85.31,
+      "timeClass": "blitz",
+      "moves": 97
+    },
+    {
+      "rating": 2265,
+      "accuracy": 52.3,
+      "timeClass": "blitz",
+      "moves": 25
+    },
+    {
+      "rating": 1933,
+      "accuracy": 92.65,
+      "timeClass": "blitz",
+      "moves": 35
+    },
+    {
+      "rating": 1391,
+      "accuracy": 77.45,
+      "timeClass": "blitz",
+      "moves": 25
+    },
+    {
+      "rating": 1868,
+      "accuracy": 76.46,
+      "timeClass": "blitz",
+      "moves": 27
+    },
+    {
+      "rating": 1997,
+      "accuracy": 83.88,
+      "timeClass": "rapid",
+      "moves": 21
+    },
+    {
+      "rating": 864,
+      "accuracy": 32.73,
+      "timeClass": "blitz",
+      "moves": 12
+    },
+    {
+      "rating": 1500,
+      "accuracy": 83.74,
+      "timeClass": "blitz",
+      "moves": 43
+    },
+    {
+      "rating": 2079,
+      "accuracy": 87.08,
+      "timeClass": "bullet",
+      "moves": 50
+    },
+    {
+      "rating": 2220,
+      "accuracy": 77.27,
+      "timeClass": "blitz",
+      "moves": 45
+    },
+    {
+      "rating": 1063,
+      "accuracy": 93.74,
+      "timeClass": "rapid",
+      "moves": 26
+    },
+    {
+      "rating": 1187,
+      "accuracy": 74.42,
+      "timeClass": "blitz",
+      "moves": 23
+    },
+    {
+      "rating": 1743,
+      "accuracy": 78.91,
+      "timeClass": "rapid",
+      "moves": 26
+    },
+    {
+      "rating": 1979,
+      "accuracy": 80.27,
+      "timeClass": "blitz",
+      "moves": 40
+    },
+    {
+      "rating": 1213,
+      "accuracy": 76.99,
+      "timeClass": "rapid",
+      "moves": 22
+    },
+    {
+      "rating": 904,
+      "accuracy": 79.75,
+      "timeClass": "rapid",
+      "moves": 31
+    },
+    {
+      "rating": 1404,
+      "accuracy": 69.73,
+      "timeClass": "blitz",
+      "moves": 47
+    },
+    {
+      "rating": 1701,
+      "accuracy": 85.92,
+      "timeClass": "bullet",
+      "moves": 41
+    },
+    {
+      "rating": 1584,
+      "accuracy": 64.59,
+      "timeClass": "bullet",
+      "moves": 43
+    },
+    {
+      "rating": 854,
+      "accuracy": 26.75,
+      "timeClass": "bullet",
+      "moves": 19
+    },
+    {
+      "rating": 1584,
+      "accuracy": 80.74,
+      "timeClass": "blitz",
+      "moves": 24
+    },
+    {
+      "rating": 1828,
+      "accuracy": 81.66,
+      "timeClass": "blitz",
+      "moves": 31
+    },
+    {
+      "rating": 2012,
+      "accuracy": 86.54,
+      "timeClass": "bullet",
+      "moves": 39
+    },
+    {
+      "rating": 1542,
+      "accuracy": 78.35,
+      "timeClass": "blitz",
+      "moves": 32
+    },
+    {
+      "rating": 1832,
+      "accuracy": 83.72,
+      "timeClass": "blitz",
+      "moves": 20
+    },
+    {
+      "rating": 1244,
+      "accuracy": 77.33,
+      "timeClass": "blitz",
+      "moves": 78
+    },
+    {
+      "rating": 2152,
+      "accuracy": 72.9,
+      "timeClass": "rapid",
+      "moves": 26
+    },
+    {
+      "rating": 1360,
+      "accuracy": 96.82,
+      "timeClass": "bullet",
+      "moves": 34
+    },
+    {
+      "rating": 1450,
+      "accuracy": 66.76,
+      "timeClass": "rapid",
+      "moves": 24
+    },
+    {
+      "rating": 1389,
+      "accuracy": 74.02,
+      "timeClass": "blitz",
+      "moves": 33
+    },
+    {
+      "rating": 1973,
+      "accuracy": 86.58,
+      "timeClass": "blitz",
+      "moves": 25
+    },
+    {
+      "rating": 1726,
+      "accuracy": 79.06,
+      "timeClass": "blitz",
+      "moves": 25
+    },
+    {
+      "rating": 1007,
+      "accuracy": 76.83,
+      "timeClass": "bullet",
+      "moves": 27
+    }
+  ]
+}

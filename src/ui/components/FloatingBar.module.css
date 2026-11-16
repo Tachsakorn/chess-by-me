@@ -1,0 +1,26 @@
+/*
+ * The floating glass of the two bars (menu and move stepper), and the only glass in the app
+ * (BRIEF-UI section 2). Pinned 20px from the sides; on a wide screen it stays 440px wide, centred.
+ */
+.glass {
+  position: fixed;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: var(--float-bottom);
+  max-width: 440px;
+  margin-inline: auto;
+  height: var(--float-height);
+  border-radius: var(--float-radius);
+  padding: 0 var(--float-inset);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  z-index: 10;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--glass-bg-solid);
+  }
+}

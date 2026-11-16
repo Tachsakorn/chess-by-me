@@ -1,0 +1,62 @@
+.track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+  padding: 3px;
+  background: var(--fill);
+}
+
+.large {
+  height: 36px;
+  border-radius: var(--r-pill);
+  --segment-h: 30px;
+}
+
+.small {
+  height: 32px;
+  border-radius: var(--r-pill);
+  --segment-h: 26px;
+}
+
+.thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / var(--count));
+  height: var(--segment-h);
+  border-radius: calc(var(--segment-h) / 2);
+  background: var(--surface);
+  box-shadow: var(--shadow-segment-on);
+  transform: translateX(calc(100% * var(--index)));
+  transition: transform var(--segment-slide);
+}
+
+.segment {
+  position: relative;
+  height: var(--segment-h);
+  border-radius: calc(var(--segment-h) / 2);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Thai marks above and below the line need 2px more than the 18px line; the box stays the same. */
+:lang(th) .segment {
+  line-height: 20px;
+}
+
+.segment:active {
+  opacity: var(--pressed-opacity);
+}
+
+.segment:not(:active) {
+  transition: opacity var(--pressed-return) ease-out;
+}
+
+@media (hover: hover) {
+  .segment[aria-selected='false']:hover,
+  .segment[aria-checked='false']:hover {
+    color: var(--text-2);
+  }
+}

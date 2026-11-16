@@ -1,0 +1,24 @@
+/* Sizes, corners and shadows of the still boards as each place in the drawings shows them. */
+.hero {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--r-board);
+}
+.tile {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--r-board);
+  box-shadow: var(--shadow-cover);
+}
+.row {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-thumb-sm);
+  box-shadow: var(--shadow-cover-sm);
+}
+.connect {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--r-box);
+  box-shadow: var(--shadow-cover);
+}

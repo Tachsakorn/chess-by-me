@@ -1,0 +1,48 @@
+/* The confirm sheet: the same sheet as Paste PGN (SearchScreen.module.css). */
+.sheet {
+  margin: auto auto 0;
+  width: 100%;
+  max-width: var(--content-max);
+  max-height: none;
+  border: 0;
+  padding: 0;
+  border-radius: var(--r-box) var(--r-box) 0 0;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--shadow-hero);
+}
+.sheet::backdrop {
+  background: transparent;
+}
+.sheet[open] {
+  animation: rise var(--sheet-slide);
+}
+@keyframes rise {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.body {
+  padding: 20px var(--gutter) var(--pad-bottom-34);
+  display: flex;
+  flex-direction: column;
+}
+
+.text {
+  margin-top: var(--title-gap);
+}
+
+.confirm {
+  margin-top: 20px;
+  height: 52px;
+  border-radius: var(--r-pill);
+  background: var(--danger);
+  color: var(--on-primary);
+}
+
+.cancel {
+  margin-top: 4px;
+  height: var(--tap);
+  color: var(--text-2);
+}

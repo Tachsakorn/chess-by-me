@@ -13,25 +13,62 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/icons/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    <title>Chess by me</title>
+    <title>Chess by me: free, unlimited chess game review · รีวิวเกมหมากรุกฟรี</title>
     <meta
       name="description"
-      content="Review your Lichess and Chess.com games in your browser with Stockfish: move labels, accuracy and better moves. Free, no account, nothing to install."
+      content="Free, unlimited review of your Lichess and Chess.com games. Stockfish analyses every move on your own device: move labels, accuracy and better moves. No account, nothing to install. รีวิวเกมหมากรุกจาก Lichess และ Chess.com ฟรี ไม่จำกัด วิเคราะห์ในเครื่องของคุณ"
     />
-    <!-- How a shared link looks (Fable review A9-01) -->
+    <link rel="canonical" href="https://chessby.me/" />
+    <!-- How a shared link looks (Fable review A9-01; picture from scripts/make-og.mjs, 1.0.2) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Chess by me" />
-    <meta property="og:title" content="Chess by me" />
+    <meta property="og:title" content="Chess by me: free, unlimited chess game review" />
     <meta
       property="og:description"
-      content="Review your Lichess and Chess.com games in your browser with Stockfish. Free, no account."
+      content="Review your Lichess and Chess.com games for free, as many as you like. Stockfish runs on your own device. รีวิวเกมหมากรุกฟรี ไม่จำกัด วิเคราะห์ในเครื่อง"
     />
     <meta property="og:url" content="https://chessby.me/" />
-    <meta property="og:image" content="https://chessby.me/icons/icon-512.png" />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
-    <meta property="og:image:alt" content="A white knight on a blue chessboard" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="th_TH" />
+    <meta property="og:image" content="https://chessby.me/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Chess by me: free, unlimited chess game review, next to a chessboard"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Chess by me: free, unlimited chess game review" />
+    <meta
+      name="twitter:description"
+      content="Review your Lichess and Chess.com games for free, as many as you like. Stockfish runs on your own device."
+    />
+    <meta name="twitter:image" content="https://chessby.me/og.png" />
+    <meta
+      name="twitter:image:alt"
+      content="Chess by me: free, unlimited chess game review, next to a chessboard"
+    />
+    <!-- Structured data for search engines (data, never run; the CSP does not apply to it) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Chess by me",
+        "url": "https://chessby.me/",
+        "description": "Free, unlimited review of your Lichess and Chess.com chess games. Stockfish analyses every move on your own device: move labels, accuracy and better moves. No account needed.",
+        "inLanguage": ["en", "th"],
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Any (web browser)",
+        "browserRequirements": "Requires JavaScript and WebAssembly",
+        "image": "https://chessby.me/og.png",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+        "codeRepository": "https://github.com/Tachsakorn/chess-by-me",
+        "sameAs": ["https://github.com/Tachsakorn/chess-by-me"]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

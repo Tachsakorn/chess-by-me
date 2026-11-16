@@ -45,21 +45,20 @@ export function headersFile({ noindex }) {
     '  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()',
     '  X-Frame-Options: DENY',
     ...(noindex ? ['  X-Robots-Tag: noindex'] : []),
+    // Every address is asked again, so a new version reaches everyone at their next visit (the
+    // page, /review/... and the other app addresses, sw.js, the manifest). "no-transform" keeps
+    // Cloudflare from changing the page on its way, such as adding its analytics script (found at
+    // the launch, 2026-11-16: the CSP blocked it and the console showed errors).
+    '  Cache-Control: no-cache, no-transform',
     '',
-    // File names that carry a hash never change: keep them a year.
+    // File names that carry a hash never change: keep them a year. "! Cache-Control" drops the
+    // value of /* first; two values of one header would otherwise be joined.
     '/assets/*',
-    '  Cache-Control: public, max-age=31536000, immutable',
+    '  ! Cache-Control',
+    '  Cache-Control: public, max-age=31536000, immutable, no-transform',
     '/engines/stockfish-*',
-    '  Cache-Control: public, max-age=31536000, immutable',
-    // Always asked again, so a new version reaches everyone at their next visit.
-    '/',
-    '  Cache-Control: no-cache',
-    '/index.html',
-    '  Cache-Control: no-cache',
-    '/sw.js',
-    '  Cache-Control: no-cache',
-    '/manifest.webmanifest',
-    '  Cache-Control: no-cache',
+    '  ! Cache-Control',
+    '  Cache-Control: public, max-age=31536000, immutable, no-transform',
     '',
   ].join('\n');
 }

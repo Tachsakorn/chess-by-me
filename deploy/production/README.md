@@ -26,8 +26,10 @@ Headers on every file (`scripts/site-files.mjs`): Content-Security-Policy (only 
 Lichess and Chess.com; WebAssembly allowed for Stockfish; no framing), `X-Content-Type-Options:
 nosniff`, `Referrer-Policy: strict-origin-when-cross-origin` (Lichess and Chess.com still see the
 site's origin), `Permissions-Policy`, `X-Frame-Options: DENY`. Caching: `/assets/*` and
-`/engines/stockfish-*` a year (their names carry a hash); `/`, `/index.html`, `/sw.js`,
-`/manifest.webmanifest` always asked again.
+`/engines/stockfish-*` a year (their names carry a hash); everything else (the page, every app
+address, `/sw.js`, `/manifest.webmanifest`) always asked again. Every `Cache-Control` also says
+`no-transform` (1.0.1), so Cloudflare does not change the page on its way (at the launch it added
+its analytics script, which the CSP blocked).
 
 `run_worker_first: true` makes every request go through `worker.js` (to catch www). On the free
 plan that counts against 100,000 Worker requests a day. If that ever matters: set it to `false`,

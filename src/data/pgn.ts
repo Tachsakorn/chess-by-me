@@ -175,6 +175,27 @@ function splitGames(text: string): string[] {
   return chunks.map((c) => c.join('\n').trim()).filter((c) => c !== '');
 }
 
+/** The value of one header tag of a PGN game, read from its text (null when absent). */
+function headerValue(chunk: string, tag: string): string | null {
+  const match = new RegExp(String.raw`^\s*\[${tag}\s+"([^"]*)"\s*\]`, 'm').exec(chunk);
+  return match ? (match[1] ?? '') : null;
+}
+
+/**
+ * True when nothing in the text can be opened and at least one game in it is a variant or starts
+ * from a position of its own (Fable review A1-06): the user is then told it is not supported yet,
+ * not that the PGN is unreadable. Read from the headers, since a variant's moves (a Crazyhouse
+ * drop) may not even parse.
+ */
+export function isUnsupportedPgn(text: string): boolean {
+  if (parsePgn(text).ok) return false;
+  return splitGames(text).some((chunk) => {
+    const variant = headerValue(chunk, 'Variant');
+    if (variant !== null && !/^standard$/i.test(variant.trim())) return true;
+    return headerValue(chunk, 'FEN') !== null || headerValue(chunk, 'SetUp') === '1';
+  });
+}
+
 /**
  * Imports pasted text holding one or many games. Games that cannot be imported (variants,
  * custom start positions, no moves, unreadable) are counted in `skipped`. When nothing at all

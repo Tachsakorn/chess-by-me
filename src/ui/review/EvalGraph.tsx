@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState, type PointerEvent } from 'react';
 import type { PositionEval } from '@/contract';
 import { useMessages } from '@/ui/i18n/LanguageContext';
-import { graphPoints, plyAtFraction } from './graph';
+import { GRAPH_DOT_R, GRAPH_DOT_R_CURRENT, graphPoints, graphX, graphY, plyAtX } from './graph';
 import type { KeyMoment } from './panel';
 import { qualityTone } from './panel';
 import styles from './ReviewScreen.module.css';
@@ -46,20 +46,23 @@ export function EvalGraph({
   const { width, height } = size;
   const points = graphPoints(positions, lastPly).map((point) => ({
     ply: point.ply,
-    x: point.x * width,
-    y: point.y * height,
+    x: graphX(point.x, width),
+    y: graphY(point.y, height),
   }));
   const line = points.map((point) => `${point.x},${point.y}`).join(' ');
+  const first = points[0];
   const last = points.at(-1);
+  // The area starts below the first point: since round 4 of 1.1 the drawing keeps free room at
+  // the left and the right too.
   const area =
-    points.length > 1 && last
-      ? `M0 ${height} L${points.map((p) => `${p.x} ${p.y}`).join(' L')} L${last.x} ${height} Z`
+    points.length > 1 && first && last
+      ? `M${first.x} ${height} L${points.map((p) => `${p.x} ${p.y}`).join(' L')} L${last.x} ${height} Z`
       : '';
-  const xOf = (target: number) => (lastPly > 0 ? (target / lastPly) * width : 0);
+  const xOf = (target: number) => graphX(lastPly > 0 ? target / lastPly : 0, width);
 
   const jump = (event: PointerEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    onGoTo(plyAtFraction((event.clientX - rect.left) / rect.width, lastPly));
+    onGoTo(plyAtX(event.clientX - rect.left, rect.width, lastPly));
   };
 
   return (
@@ -75,6 +78,11 @@ export function EvalGraph({
       onPointerMove={(event) => {
         if (event.currentTarget.hasPointerCapture(event.pointerId)) jump(event);
       }}
+      // Does nothing (the pointer handlers above do the work) but tells a phone browser that the
+      // graph takes taps: React then puts a click handler on the element itself. Without it,
+      // Chrome moves a finger landing near the graph's foot onto the Move/Summary/Moves control
+      // below, whose touch area is 44px tall (1.1 round 3).
+      onClick={() => {}}
     >
       {width > 0 && (
         <svg aria-hidden="true" width={width} height={height} className={styles.graphSvg}>
@@ -90,7 +98,7 @@ export function EvalGraph({
                 key={moment.ply}
                 cx={point.x}
                 cy={point.y}
-                r={moment.ply === ply ? 4 : 3.5}
+                r={moment.ply === ply ? GRAPH_DOT_R_CURRENT : GRAPH_DOT_R}
                 className={tone ? styles[`fill-${tone}`] : styles['fill-neutral']}
               />
             );

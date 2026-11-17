@@ -31,6 +31,7 @@ import type {
 import { buildAnalysis, reviewMove } from './buildAnalysis';
 import { expectedPoints, findOpening, moveInputAt, type OpeningBook } from './classify';
 import { ENGINE_VERSION, EngineError, evaluateGame, fetchCloudEval, type RawEval } from './engine';
+import { searchTimeoutMs as searchTimeoutFor } from './searchTimeout';
 
 /** What `analyzeGame` needs from an engine; `UciEngine` fits. */
 export interface AnalysisEngine {
@@ -56,7 +57,10 @@ export interface AnalyzeGameDeps {
   /** Used for Lichess cloud eval only. Defaults to the global `fetch`. */
   fetch?: typeof fetch;
   now?: () => Date;
-  /** A single search that takes longer than this counts as a dead engine. Default 120 s. */
+  /**
+   * A single search that takes longer than this counts as a dead engine. Default: by depth
+   * (the table in `searchTimeout.ts`).
+   */
   searchTimeoutMs?: number;
   /**
    * Gets the engine's files ready before `createEngine` (the browser downloads them, reporting
@@ -83,7 +87,6 @@ export const MULTI_PV = 2;
  * engines on a phone.
  */
 export const ENGINE_HASH_MB = 16;
-const DEFAULT_SEARCH_TIMEOUT_MS = 120_000;
 const STANDARD_START = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 function toAnalysisError(error: unknown): AnalysisError {
@@ -212,7 +215,7 @@ async function analyze(
   if (run.signal.aborted) return;
   const idle = [...pool];
 
-  const searchTimeoutMs = deps.searchTimeoutMs ?? DEFAULT_SEARCH_TIMEOUT_MS;
+  const searchTimeoutMs = deps.searchTimeoutMs ?? searchTimeoutFor(options.depth);
   /** Restart the time limits of the searches in progress. */
   const restarts = new Set<() => void>();
   const stopListening =

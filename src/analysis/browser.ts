@@ -92,16 +92,21 @@ const onResume = (listener: () => void) => {
 /**
  * The evaluator behind "try your own move" on the review screen (owner, 2026-11-16): one engine
  * of the app's own kind and settings (APP_ANALYSIS_OPTIONS), made when the first move is tried
- * and closed by the screen when it is left.
+ * and closed by the screen when it is left. It searches to `depth`, the depth the game itself was
+ * analysed at (1.1: the depth is picked in Settings), so a tried move and the game move are
+ * judged alike.
  */
-export function createTryEvaluator(onChange: () => void): PositionEvaluator {
+export function createTryEvaluator(
+  onChange: () => void,
+  depth: number = APP_ANALYSIS_OPTIONS.depth,
+): PositionEvaluator {
   return createPositionEvaluator(
     {
       prepareEngine,
       createEngine: (variant) => new UciEngine(createWorkerTransport(scripts[variant])),
       onResume,
     },
-    APP_ANALYSIS_OPTIONS,
+    { ...APP_ANALYSIS_OPTIONS, depth },
     onChange,
   );
 }

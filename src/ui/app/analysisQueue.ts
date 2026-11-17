@@ -9,11 +9,13 @@
  * finished and saved only the latest one is kept (Fable review A8-03); the review screen keeps
  * its own copy of the game it shows.
  *
+ * The depth comes from Settings (`analysisDepth.ts`) and is read when a game starts.
+ *
  * A run stopped because another game was opened is not done again later unless the user asked
  * for it with Analyze (or opens it again): nobody may come back to it (A8-03).
  */
 import { create } from 'zustand';
-import { analyzeGame, APP_ANALYSIS_OPTIONS } from '@/analysis';
+import { analyzeGame } from '@/analysis';
 import type { AnalysisHandle, GameRecord } from '@/contract';
 import { local } from '@/data/local';
 import {
@@ -21,6 +23,7 @@ import {
   initialAnalysisState,
   type AnalysisState,
 } from '@/ui/review/analysisState';
+import { analysisOptions } from './analysisDepth';
 import { useApp } from './appStore';
 import { setQueuedGames } from './queuedGames';
 
@@ -64,7 +67,9 @@ export const useAnalysisQueue = create<QueueState>()((set, get) => {
     });
     const mine = {};
     token = mine;
-    handle = analyzeGame(game, APP_ANALYSIS_OPTIONS, (event) => {
+    // The depth picked in Settings is read here, as each game starts: a game already running
+    // keeps the depth it started with (owner, 1.1 round 1).
+    handle = analyzeGame(game, analysisOptions(), (event) => {
       if (token !== mine) return;
       const state = get().live[id];
       if (state) set({ live: { ...get().live, [id]: analysisReducer(state, event) } });

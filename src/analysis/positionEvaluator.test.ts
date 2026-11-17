@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { AnalysisOptions, PositionEval } from '@/contract';
 import type { AnalysisEngine } from './analyzeGame';
 import { EngineError, type RawEval } from './engine';
@@ -275,5 +275,39 @@ describe('createPositionEvaluator', () => {
     await settle();
     expect(made).toHaveLength(1);
     expect(changes()).toBe(0);
+  });
+});
+
+describe('the time limit of a search, by depth (1.1)', () => {
+  /** An evaluator whose engine never answers; the limit is the default one for `depth`. */
+  async function stuck(depth: number) {
+    const { engine } = manualEngine();
+    const evaluator = createPositionEvaluator(
+      { createEngine: () => engine },
+      { ...options, depth },
+      () => {},
+    );
+    evaluator.want([AFTER_E4]);
+    await vi.advanceTimersByTimeAsync(0);
+    return evaluator;
+  }
+
+  it('gives up at 120 s at depth 18 and at 480 s at depth 22', async () => {
+    vi.useFakeTimers();
+    try {
+      const at18 = await stuck(18);
+      await vi.advanceTimersByTimeAsync(119_000);
+      expect(at18.error()).toBeNull();
+      await vi.advanceTimersByTimeAsync(2_000);
+      expect(at18.error()?.detail).toBe('no answer from the engine within 120000 ms');
+
+      const at22 = await stuck(22);
+      await vi.advanceTimersByTimeAsync(479_000);
+      expect(at22.error()).toBeNull();
+      await vi.advanceTimersByTimeAsync(2_000);
+      expect(at22.error()?.detail).toBe('no answer from the engine within 480000 ms');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

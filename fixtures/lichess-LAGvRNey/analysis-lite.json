@@ -6500,7 +6500,7 @@
   },
   {
    "ply": 14,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.05939636089827738,
    "accuracy": 76.46100916192897,
    "playedIsBest": false,
@@ -6524,7 +6524,7 @@
   },
   {
    "ply": 16,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.06290950503778658,
    "accuracy": 75.35889398438192,
    "playedIsBest": false,
@@ -6584,7 +6584,7 @@
   },
   {
    "ply": 21,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.0600481177719725,
    "accuracy": 76.38927646159972,
    "playedIsBest": false,
@@ -6716,7 +6716,7 @@
   },
   {
    "ply": 32,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.06352691546913891,
    "accuracy": 75.39070093396829,
    "playedIsBest": false,
@@ -6872,7 +6872,7 @@
   },
   {
    "ply": 45,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.06149875810172323,
    "accuracy": 76.09576012948014,
    "playedIsBest": false,
@@ -6884,7 +6884,7 @@
   },
   {
    "ply": 46,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.06554490093238052,
    "accuracy": 74.69582074250762,
    "playedIsBest": false,
@@ -7244,7 +7244,7 @@
   },
   {
    "ply": 76,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.062488015963425014,
    "accuracy": 76.17402674706831,
    "playedIsBest": false,
@@ -7282,7 +7282,7 @@
   },
   {
    "ply": 79,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.051671397764004756,
    "accuracy": 80.00565508671431,
    "playedIsBest": false,
@@ -7378,9 +7378,9 @@
    "great": 0,
    "best": 22,
    "excellent": 13,
-   "good": 3,
+   "good": 0,
    "book": 5,
-   "inaccuracy": 0,
+   "inaccuracy": 3,
    "mistake": 0,
    "miss": 0,
    "blunder": 0
@@ -7397,13 +7397,13 @@
    "great": 0,
    "best": 19,
    "excellent": 9,
-   "good": 8,
+   "good": 3,
    "book": 5,
-   "inaccuracy": 0,
+   "inaccuracy": 5,
    "mistake": 0,
    "miss": 0,
    "blunder": 1
   }
  },
- "rulesVersion": 5
+ "rulesVersion": 6
 }

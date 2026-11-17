@@ -35,8 +35,9 @@ export type MoveClassification = Omit<MoveReview, 'accuracy'>;
 export { AT_LEAST_EQUAL_EXPECTED };
 
 /**
- * "Losing" for the throws-away-advantage tag: a blunder's worth (0.22) below a
- * level game. About -270 centipawns, or any forced mate against the mover.
+ * "Losing" for the throws-away-advantage tag: WintrChess's blunder line (0.22) below a
+ * level game. About -270 centipawns, or any forced mate against the mover. A number of its own:
+ * it stayed 0.28 when the ladder's Blunder line moved to 0.20 (owner, 2026-11-17).
  */
 export const LOSING_EXPECTED = 0.28;
 

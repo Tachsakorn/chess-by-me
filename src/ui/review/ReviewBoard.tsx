@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { Chessground } from '@lichess-org/chessground';
 import type { Api } from '@lichess-org/chessground/api';
 import type { Key } from '@lichess-org/chessground/types';
@@ -234,9 +234,27 @@ function PromotionPicker({
   const first = useRef<HTMLButtonElement>(null);
   const spot = badgeSpot(square, bottom);
   const down = spot.row === 0;
+  const cancel = useRef(onCancel);
+  useLayoutEffect(() => {
+    cancel.current = onCancel;
+  });
 
-  useEffect(() => {
+  // In the same task as the list is put on the page, before the browser paints it: with a passive
+  // effect there was a moment when the list showed but Escape went to the page, which ignores it
+  // while no line is on the board (a flaky e2e run, 1.1 round 1).
+  useLayoutEffect(() => {
     first.current?.focus({ preventScroll: true });
+    // Escape closes the list wherever the keyboard is, also after a click beside the board. Taken
+    // first, on the way down: the screen's own Escape (leave the line) is not meant while it is
+    // open.
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.stopPropagation();
+      event.preventDefault();
+      cancel.current();
+    };
+    window.addEventListener('keydown', onKeyDown, { capture: true });
+    return () => window.removeEventListener('keydown', onKeyDown, { capture: true });
   }, []);
 
   return (
@@ -246,12 +264,6 @@ function PromotionPicker({
       className={styles.promotion}
       onPointerDown={(event) => {
         if (event.target === event.currentTarget) onCancel();
-      }}
-      onKeyDown={(event) => {
-        if (event.key !== 'Escape') return;
-        // The screen's own Escape (leave the line) is not meant while this is open.
-        event.stopPropagation();
-        onCancel();
       }}
     >
       <div

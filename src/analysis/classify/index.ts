@@ -17,8 +17,10 @@ export { expectedPoints, pointLoss } from './expectedPoints';
  * labelled as that error, not Book (owner, 2026-11-15, Fable review A1-05). Never released.
  * 5: the same, for Mistake and Blunder only; an Inaccuracy in the book stays Book (owner,
  * 2026-11-15).
+ * 6: the error lines of the ladder are Chess.com's published 0.05 / 0.10 / 0.20 instead of
+ * WintrChess's 0.08 / 0.12 / 0.22 (owner, 2026-11-17, 1.1 round 4).
  */
-export const RULES_VERSION = 5;
+export const RULES_VERSION = 6;
 export { findOpening, loadOpeningBook, type OpeningBook } from './opening';
 export {
   classifyGame,

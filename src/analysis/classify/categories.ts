@@ -1,7 +1,7 @@
 /**
  * The ladder of categories from Best down to Blunder.
  *
- * The thresholds and the treatment of mate scores follow WintrChess (GPL-3.0,
+ * The Best and Excellent thresholds and the treatment of mate scores follow WintrChess (GPL-3.0,
  * WintrCat/wintrchess at commit d145b2096895,
  * shared/src/lib/reporter/classification/pointLoss.ts). The code is written
  * for this project's `Score` type; nothing is copied. Every number below is
@@ -17,13 +17,22 @@ export type LadderCategory = Extract<
   'best' | 'excellent' | 'good' | 'inaccuracy' | 'mistake' | 'blunder'
 >;
 
-/** Upper bounds (exclusive) of expected-point loss for each step of the ladder. */
+/**
+ * Upper bounds (exclusive) of expected-point loss for each step of the ladder.
+ *
+ * Since 2026-11-17 (owner, 1.1 round 4) the three error lines are the ones Chess.com publishes
+ * (Chess.com Support, "How are moves classified?"): Inaccuracy from 0.05, Mistake from 0.10,
+ * Blunder from 0.20. Only the numbers were taken; no code. Before, they were WintrChess's
+ * 0.08 / 0.12 / 0.22. Best (0.01) and Excellent (0.045) stay WintrChess's: Chess.com's 0.02 for
+ * Excellent was measured on 23 games and was further from Chess.com's own counts.
+ * docs/sources/classification.md has the details.
+ */
 export const LOSS_BELOW = {
   best: 0.01,
   excellent: 0.045,
-  good: 0.08,
-  inaccuracy: 0.12,
-  mistake: 0.22,
+  good: 0.05,
+  inaccuracy: 0.1,
+  mistake: 0.2,
 } as const;
 
 /** The plain point-loss ladder, used when both scores are in centipawns. */

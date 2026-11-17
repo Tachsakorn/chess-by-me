@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { GameRecord } from '@/contract';
+import type { Color, GameRecord } from '@/contract';
 import { useMessages } from '@/ui/i18n/LanguageContext';
-import { formatAccuracy } from '@/ui/model/games';
+import { sideAccuracy } from '@/ui/model/games';
 import type { AnalysisState } from './analysisState';
 import { bookRange, listBadge, type Badge } from './badge';
 import { BadgeMark } from './BoardBadge';
@@ -253,8 +253,8 @@ export function SummaryPanel({ game, state, moments, onPick }: SummaryPanelProps
     }
   }, [count, key]);
 
-  const accuracy = (value: number | undefined) =>
-    value === undefined ? text.game.noValue : formatAccuracy(value);
+  const accuracy = (value: number | undefined, side: Color) =>
+    sideAccuracy(value, game, side, text.game.noValue);
 
   return (
     <>
@@ -263,13 +263,13 @@ export function SummaryPanel({ game, state, moments, onPick }: SummaryPanelProps
           <p className={`${styles.ellipsis} t-caption w-600 c-3`}>
             {text.review.accuracyOf(game.white.name)}
           </p>
-          <p className="t-stat">{accuracy(state.white?.accuracy)}</p>
+          <p className="t-stat">{accuracy(state.white?.accuracy, 'white')}</p>
         </div>
         <div className={styles.accuracyRight}>
           <p className={`${styles.ellipsis} t-caption w-600 c-3`}>
             {text.review.accuracyOf(game.black.name)}
           </p>
-          <p className="t-stat">{accuracy(state.black?.accuracy)}</p>
+          <p className="t-stat">{accuracy(state.black?.accuracy, 'black')}</p>
         </div>
       </div>
       <div ref={row} className={styles.chips}>

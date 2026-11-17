@@ -190,6 +190,21 @@ export function formatAccuracy(value: number): string {
   return value.toFixed(1);
 }
 
+/**
+ * A side's accuracy as shown everywhere (review, My Games, the Continue card): `noValue` (a dash)
+ * for a side that made no move, whose accuracy says nothing (Fable review A1-07, owner 1.1
+ * round 2), or while it is not known yet.
+ */
+export function sideAccuracy(
+  value: number | undefined,
+  game: GameRecord,
+  side: Color,
+  noValue: string,
+): string {
+  if (value === undefined || !game.moves.some((move) => move.color === side)) return noValue;
+  return formatAccuracy(value);
+}
+
 export function formatToday(date: Date, locale: Locale): string {
   return new Intl.DateTimeFormat(intlLocale(locale), {
     weekday: 'long',

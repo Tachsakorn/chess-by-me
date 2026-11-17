@@ -33,12 +33,32 @@
 
 .segment {
   position: relative;
+  min-width: 0;
   height: var(--segment-h);
   border-radius: calc(var(--segment-h) / 2);
   color: var(--text);
+}
+
+/* The label is cut with an ellipsis here, not on the button: a button that clips would also
+   clip the touch area below. */
+.label {
+  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* An invisible touch area 44px tall (DESIGN.md: every button at least 44x44; Fable review
+   A7-03). It reaches above and below the segment only, never sideways, so it never covers the
+   segment next to it. */
+.segment::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: var(--tap);
+  transform: translateY(-50%);
 }
 
 /* Thai marks above and below the line need 2px more than the 18px line; the box stays the same. */

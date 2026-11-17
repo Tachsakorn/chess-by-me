@@ -12,14 +12,16 @@ import { AT_LEAST_EQUAL_EXPECTED } from './expectedPoints';
 
 /**
  * Expected points the mover must have had before the move for a chance to
- * count as "missed": a level game (0.5) plus the mistake threshold (0.12).
- * About +140 centipawns.
+ * count as "missed": a level game (0.5) plus WintrChess's mistake threshold (0.12).
+ * About +140 centipawns. A number of its own: it stayed 0.62 when the ladder's Mistake line moved
+ * to 0.10 (owner, 2026-11-17).
  */
 export const MISS_MIN_EXPECTED_BEFORE = 0.62;
 
 /**
  * Over the opponent's mistake and the reply together, the mover must have lost
- * less than this (the inaccuracy threshold of the ladder). Otherwise the reply
+ * less than this (WintrChess's inaccuracy threshold; a number of its own, it stayed 0.08 when the
+ * ladder's Inaccuracy line moved to 0.05 on 2026-11-17). Otherwise the reply
  * gave away more than it was given and is an error in its own right.
  */
 export const MISS_MAX_NET_LOSS = 0.08;

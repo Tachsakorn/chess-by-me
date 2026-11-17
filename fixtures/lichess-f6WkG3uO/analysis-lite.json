@@ -5386,7 +5386,7 @@
   },
   {
    "ply": 9,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.062339771171466773,
    "accuracy": 75.39614540637275,
    "playedIsBest": false,
@@ -5398,7 +5398,7 @@
   },
   {
    "ply": 10,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.05535121296396894,
    "accuracy": 77.91899241501572,
    "playedIsBest": false,
@@ -5410,7 +5410,7 @@
   },
   {
    "ply": 11,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.05620415574013132,
    "accuracy": 77.60752898849303,
    "playedIsBest": false,
@@ -5422,7 +5422,7 @@
   },
   {
    "ply": 12,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.05533117935019183,
    "accuracy": 77.92711114900412,
    "playedIsBest": false,
@@ -5434,7 +5434,7 @@
   },
   {
    "ply": 13,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.050206546259510765,
    "accuracy": 79.82467752832775,
    "playedIsBest": false,
@@ -5458,7 +5458,7 @@
   },
   {
    "ply": 15,
-   "category": "inaccuracy",
+   "category": "mistake",
    "pointLoss": 0.10457285612344575,
    "accuracy": 61.926058295280875,
    "playedIsBest": false,
@@ -5638,7 +5638,7 @@
   },
   {
    "ply": 30,
-   "category": "inaccuracy",
+   "category": "mistake",
    "pointLoss": 0.10240780922798132,
    "accuracy": 62.55161683380809,
    "playedIsBest": false,
@@ -6064,7 +6064,7 @@
   },
   {
    "ply": 65,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.059419615996426756,
    "accuracy": 88.9080132266049,
    "playedIsBest": false,
@@ -6160,10 +6160,10 @@
    "great": 0,
    "best": 17,
    "excellent": 7,
-   "good": 4,
+   "good": 0,
    "book": 2,
-   "inaccuracy": 3,
-   "mistake": 1,
+   "inaccuracy": 6,
+   "mistake": 2,
    "miss": 0,
    "blunder": 0
   }
@@ -6179,13 +6179,13 @@
    "great": 0,
    "best": 11,
    "excellent": 16,
-   "good": 2,
+   "good": 0,
    "book": 1,
-   "inaccuracy": 2,
-   "mistake": 2,
+   "inaccuracy": 3,
+   "mistake": 3,
    "miss": 0,
    "blunder": 1
   }
  },
- "rulesVersion": 5
+ "rulesVersion": 6
 }

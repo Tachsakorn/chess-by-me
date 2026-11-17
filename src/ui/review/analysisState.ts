@@ -38,6 +38,11 @@ export interface AnalysisState {
   black: PlayerSummary | undefined;
   /** Why the analysis stopped; null unless the phase is `failed`. */
   error: AnalysisError | null;
+  /**
+   * The search depth of this analysis (1.1: picked in Settings), so a move tried on the board is
+   * searched as deep as the game was. Undefined until the run has started.
+   */
+  depth?: number;
 }
 
 export function initialAnalysisState(game: GameRecord): AnalysisState {
@@ -66,6 +71,7 @@ export function analysisReducer(state: AnalysisState, event: AnalysisEvent): Ana
   if (ENDED.includes(state.phase)) return state;
   switch (event.type) {
     case 'started':
+      return { ...state, depth: event.engine.depth };
     case 'engine-loading':
       return state;
     case 'opening':
@@ -94,6 +100,7 @@ export function analysisReducer(state: AnalysisState, event: AnalysisEvent): Ana
         white: analysis.white,
         black: analysis.black,
         error: null,
+        depth: analysis.engine.depth,
       };
     }
     case 'failed':

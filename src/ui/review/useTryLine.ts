@@ -21,8 +21,11 @@ import type { Comparison } from './tryPanel';
 interface TryStore {
   subscribe(listener: () => void): () => void;
   version(): number;
-  /** The positions the line needs now; `known` are the game's own, never searched again. */
-  want(fens: readonly string[], known: readonly PositionEval[]): void;
+  /**
+   * The positions the line needs now; `known` are the game's own, never searched again. `depth`
+   * is the depth the game was analysed at.
+   */
+  want(fens: readonly string[], known: readonly PositionEval[], depth: number | undefined): void;
   get(fen: string): PositionEval | undefined;
   book(): OpeningBook | null;
   failed(): boolean;
@@ -64,10 +67,10 @@ function createTryStore(): TryStore {
       return () => listeners.delete(listener);
     },
     version: () => count,
-    want(fens, known) {
+    want(fens, known, depth) {
       if (fens.length === 0 && !evaluator) return;
       if (!book) loadBook();
-      evaluator ??= createTryEvaluator(notify);
+      evaluator ??= createTryEvaluator(notify, depth);
       evaluator.remember(known);
       evaluator.want(fens);
       // What was known already is on screen at once.
@@ -117,6 +120,7 @@ export function useTryLine(
       store.want(
         (moves ?? []).map((move) => move.fenAfter),
         state.positions.filter((position) => position !== undefined),
+        state.depth,
       );
     ask();
     // The engine stops with the page (as the game analysis does) and, if the browser keeps the
@@ -131,7 +135,7 @@ export function useTryLine(
       window.removeEventListener('pagehide', onHide);
       window.removeEventListener('pageshow', onShow);
     };
-  }, [store, moves, state.positions]);
+  }, [store, moves, state.positions, state.depth]);
 
   // Leaving the screen stops the engine.
   useEffect(() => () => store.close(), [store]);

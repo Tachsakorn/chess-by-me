@@ -242,3 +242,58 @@ test('try - a pawn reaching the last row asks which piece it becomes', async ({ 
   await expect(panel(page)).not.toContainText('Game move was');
   await expect(boardBadge(page)).toHaveCount(1, { timeout: RESULT });
 });
+
+/**
+ * The cause of a flaky run of the test above (1.1 round 1): the board hands the move over a moment
+ * after the pawn is put down (chessground calls back from a timer), and the piece list took the
+ * keyboard only after the browser had painted it. Escape pressed in between went to the page,
+ * which ignores it while no line is on the board, and the list stayed open. The same happened for
+ * good once the keyboard was elsewhere, for instance after a click beside the board.
+ */
+test('try - Escape closes the piece list at once, and after a click beside the board', async ({
+  page,
+}) => {
+  await seed(page, '/search');
+  await page.getByRole('button', { name: /Paste PGN/ }).click();
+  const sheet = page.getByRole('dialog');
+  await sheet.getByRole('textbox').fill('1. h4 g5 2. hxg5 h6 3. gxh6 Nf6 4. h7 Rg8 *');
+  await sheet.getByRole('button', { name: 'Review' }).click();
+  await page.waitForURL(/\/review\//);
+  await expect(panel(page)).toContainText('Drag a piece to try your own move', {
+    timeout: 120_000,
+  });
+  await page.keyboard.press('End');
+  await expect(panel(page)).toContainText('4... Rg8');
+  const picker = page.getByRole('dialog', { name: 'Choose a piece' });
+
+  // Escape at the very moment the list appears, before the browser paints it.
+  await page.evaluate(() => {
+    const observer = new MutationObserver(() => {
+      if (!document.querySelector('[role="dialog"]')) return;
+      observer.disconnect();
+      const target = document.activeElement ?? document.body;
+      target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  });
+  await drag(page, 'h7', 'h8');
+  await expect(picker).toHaveCount(0);
+  await expect(page.getByText(/Your line/)).toHaveCount(0);
+
+  // The keyboard moved away from the list by a click beside the board: Escape still closes it.
+  await drag(page, 'h7', 'h8');
+  await expect(picker.getByRole('button')).toHaveCount(4);
+  await page
+    .locator('h1, header')
+    .first()
+    .click({ position: { x: 2, y: 2 }, force: true });
+  await expect(picker).toHaveCount(1);
+  await page.keyboard.press('Escape');
+  await expect(picker).toHaveCount(0);
+  await expect(page.getByText(/Your line/)).toHaveCount(0);
+
+  // And a piece can still be chosen afterwards.
+  await drag(page, 'h7', 'h8');
+  await picker.getByRole('button', { name: 'Queen' }).click();
+  await expect(panel(page)).toContainText('5. h8=Q');
+});

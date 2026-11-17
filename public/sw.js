@@ -123,6 +123,23 @@ function navigate(request) {
   );
 }
 
+/**
+ * A stored copy handed to a worker as a response of its own (1.1.0, 2026-11-17). A worker runs
+ * at the address its script response carries, and in Chromium a stored copy carries the address
+ * it was first fetched at, the part after `#` included. The engine's worker is started at
+ * `stockfish.js#<blob address of this page's WebAssembly>`, so from the stored copy every later
+ * page started its engine with the blob address of the page that first stored it, long revoked:
+ * the second analysis in a browser failed at once. A new response has no address of its own, so
+ * the worker runs at the address it was asked for.
+ */
+function asNewResponse(cached) {
+  return new Response(cached.body, {
+    status: cached.status,
+    statusText: cached.statusText,
+    headers: cached.headers,
+  });
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
@@ -141,7 +158,7 @@ self.addEventListener('fetch', (event) => {
     // By address alone: module scripts are asked for with an Origin header the stored copy lacks.
     caches.match(path, { ignoreVary: true, cacheName: cacheFor(path) }).then(
       (cached) =>
-        cached ??
+        (cached && request.destination === 'worker' ? asNewResponse(cached) : cached) ??
         fetch(request).then((response) => {
           void store(path, response.clone());
           return response;

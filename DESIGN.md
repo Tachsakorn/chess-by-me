@@ -41,8 +41,8 @@ at 800 in long passages. Numbers that must line up use `tabular-nums`.
 ## Screen sizes
 
 Designed at 390×844; every page fits one screen there (except Courses). Top and bottom spacing
-follow the safe areas (`--pad-top-*`, `--float-bottom`). Home and Settings scroll only on screens
-lower than 760. Pages other than the review are at most 560 wide; the tab bar is at most 440 wide
+follow the safe areas (`--pad-top-*`, `--float-bottom`). Home scrolls only when its content does
+not fit (screens lower than 760); Settings scrolls as a whole at every screen height. Pages other than the review are at most 560 wide; the tab bar is at most 440 wide
 and centred. The review screen sizes the board from the screen height; on wide screens (900 and
 up, iPad landscape) it uses two columns: the board on the left, a 390-wide column on the right.
 
@@ -52,6 +52,7 @@ up, iPad landscape) it uses two columns: the board on the left, a 390-wide colum
   `--tab-active-bg`; only the Home icon is filled.
 - **BackButton**: grey circle 44, arrow 18, stroke 2.6.
 - **Segmented**: large (36/30) and small (32/26); a white thumb slides to the selection in 200ms.
+  An invisible touch area 44 tall reaches above and below each segment, never sideways.
 - **MiniBoard**: a still board from a FEN, drawn as SVG with the cburnett pieces, last move
   highlighted, colour set chosen per game (hash of the game id).
 - **Review board**: always the blue set. Coordinates (review board only): Inter 600 at about 2.7%

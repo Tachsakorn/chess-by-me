@@ -10,6 +10,7 @@ Accessed 2026-11-13.
 | lichess-org/chess-openings, https://github.com/lichess-org/chess-openings | CC0-1.0 | commit `3ba6b20d31b2e6125cb0e6a2e792f400717d9d39` (2026-11-05) | `a.tsv` to `e.tsv`: ECO code, name and moves of 3865 opening positions. |
 | English Wikipedia (seven game pages, listed in `src/analysis/classify/__fixtures__/README.md`) | text CC BY-SA; the moves of a game are facts | revision ids in the README | The moves of seven published games, for test fixtures only. |
 | Chess.com announcement "New Classification System in Game Review", https://www.chess.com/announcements/view/new-classification-system-in-game-review | n/a | read only as quoted in a web search result; the page itself is behind a login and was **not opened** | The idea of Miss: a move that is bad because it fails to punish the opponent's bad move, not because the mover's own position went wrong. No numbers were taken. |
+| Chess.com Help Center, "How are moves classified?", https://support.chess.com/en/articles/8572705 | n/a (facts) | page dated 2026-02-09, read 2026-11-17 | The three error lines of the ladder: Inaccuracy from 0.05, Mistake from 0.10, Blunder from 0.20 expected points lost (since 2026-11-17, see "The ladder"). Numbers only; no code. |
 
 Nothing from Chesskit or lila (both AGPL-3.0) was read or copied.
 
@@ -88,16 +89,38 @@ Best (loss under 0.01): such a move can be Brilliant, never Great.
 
 `lib/reporter/classification/pointLoss.ts`. "Subjective" means from the mover's side.
 
-Both scores in centipawns (lines 96-108), on the expected points lost:
+Both scores in centipawns (lines 96-108), on the expected points lost. **Since 2026-11-17 the
+three error lines are Chess.com's, not WintrChess's** (see "Error lines from Chess.com" below):
 
-| Loss | Class | Line |
-|---|---|---|
-| < 0.01 | best | 96 |
-| < 0.045 | excellent | 98 |
-| < 0.08 | good (`okay`) | 100 |
-| < 0.12 | inaccuracy | 102 |
-| < 0.22 | mistake | 104 |
-| otherwise | blunder | 106 |
+| Loss | Class | Ours from 2026-11-17 | WintrChess (ours until 2026-11-16) | WintrChess line |
+|---|---|---|---|---|
+| below the Excellent line | best | < 0.01 | < 0.01 | 96 |
+| | excellent | < 0.045 | < 0.045 | 98 |
+| | good (`okay`) | < **0.05** | < 0.08 | 100 |
+| | inaccuracy | < **0.10** | < 0.12 | 102 |
+| | mistake | < **0.20** | < 0.22 | 104 |
+| otherwise | blunder | from 0.20 | from 0.22 | 106 |
+
+### Error lines from Chess.com (owner, 2026-11-17, 1.1 round 4)
+
+- Source: Chess.com Help Center, "How are moves classified? What is a 'blunder' or 'brilliant,'
+  etc.?", https://support.chess.com/en/articles/8572705, page dated 2026-02-09, read again
+  2026-11-17. Its table of expected points lost: Best 0.00, Excellent 0.00-0.02, Good 0.02-0.05,
+  Inaccuracy 0.05-0.10, Mistake 0.10-0.20, Blunder 0.20-1.00.
+- Taken: the three numbers 0.05, 0.10 and 0.20, published facts. **No code** was taken from
+  Chess.com (none is published). The curve that turns an evaluation into expected points stays
+  WintrChess's (above); Chess.com says its own curve also depends on the players' ratings, which
+  is not published and not used here.
+- Why: on 23 games compared with Chess.com Game Review (branch `analysis/chesscom-compare`), the
+  app called fewer moves errors than Chess.com in every rating group.
+- Excellent: Chess.com's 0.02 was tried against keeping 0.045, on the same 23 games (same engine
+  evaluations), and only those two. Chess.com's summary pages: Excellent 381, Good 156. Keeping
+  0.045: 347 and 46. With 0.02: 139 and 254. Kept 0.045 (off by 34 + 110 = 144 against
+  98 + 225 = 323). Both give the same Excellent + Good together (393), since only the line between
+  them moves. 0.045 is below 0.05, so Good still has a band (0.045 to 0.05), a narrow one.
+- Best stays 0.01 (Chess.com's Best is the engine's move itself; not part of this change).
+- `RULES_VERSION` went from 5 to 6, so analyses saved before are made again, one game at a time
+  when that game is opened (`ReviewScreen`, `isCurrentAnalysis`).
 
 Mate before and mate after (lines 26-53):
 
@@ -266,11 +289,13 @@ opponent's bad move. A move is `miss` when all five hold (`miss.ts`, `classifyMo
 2. The opponent's previous move was a `mistake` or a `blunder` by the same ladder. A book move, a
    forced move and the engine's first choice are never errors for this purpose.
 3. Before the move the mover had at least `0.62` expected points (or a forced mate): a clear
-   advantage was on offer. `0.62` is a level game (0.5) plus the mistake threshold (0.12), about
-   +140 centipawns.
+   advantage was on offer. `0.62` is a level game (0.5) plus WintrChess's mistake threshold
+   (0.12), about +140 centipawns. A number of its own: unchanged when the ladder's Mistake line
+   moved to 0.10 (2026-11-17).
 4. Over the two moves together the mover lost less than `0.08` expected points: (mover's expected
-   points before the opponent's move) minus (after the mover's reply) `< 0.08`. `0.08` is where the
-   ladder's `inaccuracy` starts. If the reply loses more than that, it gave away more than it was
+   points before the opponent's move) minus (after the mover's reply) `< 0.08`. `0.08` is where
+   WintrChess's `inaccuracy` starts; a number of its own, unchanged when the ladder's Inaccuracy
+   line moved to 0.05 (2026-11-17). If the reply loses more than that, it gave away more than it was
    given and stays a mistake or blunder.
 5. After the move the mover is still at least equal: `0.455` expected points or more
    (`MISS_MIN_EXPECTED_AFTER` = `AT_LEAST_EQUAL_EXPECTED`, the floor of a Brilliant move). Added
@@ -306,9 +331,10 @@ Listed in this order when several apply.
 
 `throws-away-advantage` in words: the mover was at least equal and is now losing. "At least
 equal" is no more than an excellent move's worth (0.045) below a level game, about -52 centipawns
-or better. "Losing" is a blunder's worth (0.22) below a level game, about -270 centipawns or
-worse, or any forced mate against the mover. Both numbers are choices made here, built from the
-ladder's own thresholds.
+or better. "Losing" is WintrChess's blunder line (0.22) below a level game, about -270 centipawns
+or worse, or any forced mate against the mover. Both numbers are choices made here, built from
+the ladder's thresholds of the time; they are numbers of their own and stayed when the error
+lines moved (2026-11-17).
 
 No tag is given to book moves, to a checkmating move, or to the engine's first choice other than
 `sacrifice` and `only-good-move`.

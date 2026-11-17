@@ -50,6 +50,15 @@ describe('initialAnalysisState', () => {
     expect(state.opening).toBeUndefined();
     expect(state.white).toBeUndefined();
     expect(state.error).toBeNull();
+    expect(state.depth).toBeUndefined();
+  });
+});
+
+describe('the depth of the analysis', () => {
+  it('is known from the start of a run, and from a finished analysis', () => {
+    expect(run([started]).depth).toBe(analysis.engine.depth);
+    const deeper = { ...analysis, engine: { ...analysis.engine, depth: 22 } };
+    expect(stateFromAnalysis(game, deeper).depth).toBe(22);
   });
 });
 

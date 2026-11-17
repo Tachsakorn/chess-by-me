@@ -1,7 +1,8 @@
 /*
  * One screen. Every screen fits the height of the device and does not scroll as a whole
- * (BRIEF-UI section 4); only a list inside it may scroll. Courses scrolls as a whole, and Home and
- * Settings do so when their content does not fit above the floating bar (measured in Page.tsx).
+ * (BRIEF-UI section 4); only a list inside it may scroll. Courses and Settings scroll as a whole
+ * (Settings at every screen height, owner 1.1), and Home does so when its content does not fit
+ * above the floating bar (measured in Page.tsx).
  * On a wide screen the content sits in the middle, at most 560px wide on every screen but the
  * review (owner, 2026-11-15).
  */

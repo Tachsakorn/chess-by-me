@@ -2,9 +2,9 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import styles from './Page.module.css';
 
 interface PageProps {
-  /** `fixed`: fits the screen; `scroll`: the whole page scrolls (Courses);
+  /** `fixed`: fits the screen; `scroll`: the whole page scrolls (Courses, Settings since 1.1);
    *  `scrollWhenShort`: fits the screen while its content fits above the floating bar, and
-   *  scrolls when it does not (Home, Settings). */
+   *  scrolls when it does not (Home). */
   mode: 'fixed' | 'scroll' | 'scrollWhenShort';
   children: ReactNode;
   className?: string;

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import type { GameRecord } from '@/contract';
 import { stableId } from './hash';
-import { gameFromPgn, parsePgn } from './pgn';
+import { gameFromPgn, isUnsupportedPgn, parsePgn } from './pgn';
 
 const fixtureDir = (name: string) =>
   fileURLToPath(new URL(`../../fixtures/lichess-LAGvRNey/${name}`, import.meta.url));
@@ -142,6 +142,47 @@ describe('skipped games', () => {
     expect(gameFromPgn(game({ Result: '*' }, '1. e4 e4 *'))).toBeNull();
     expect(gameFromPgn('')).toBeNull();
     expect(gameFromPgn('not a pgn at all')).toBeNull();
+  });
+});
+
+describe('isUnsupportedPgn (Fable review A1-06)', () => {
+  const fromPosition = game(
+    {
+      SetUp: '1',
+      FEN: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+      Result: '*',
+    },
+    '1... e5 2. Nf3 *',
+  );
+
+  it('is true for a variant or a custom start position, with nothing else to open', () => {
+    expect(isUnsupportedPgn(game({ Variant: 'Chess960', Result: '*' }, '1. e4 e5 *'))).toBe(true);
+    // Crazyhouse drops cannot even be read as moves: the header still says what it is.
+    expect(
+      isUnsupportedPgn(
+        game({ Variant: 'Crazyhouse', Result: '*' }, '1. e4 d5 2. exd5 Qxd5 3. P@e4 *'),
+      ),
+    ).toBe(true);
+    expect(isUnsupportedPgn(fromPosition)).toBe(true);
+    expect(
+      isUnsupportedPgn(game({ FEN: '8/8/8/8/8/8/k7/K7 w - - 0 1', Result: '*' }, '1. Kb1 *')),
+    ).toBe(true);
+  });
+
+  it('is false for text that is simply not a readable game', () => {
+    expect(isUnsupportedPgn('')).toBe(false);
+    expect(isUnsupportedPgn('not a pgn at all')).toBe(false);
+    expect(isUnsupportedPgn(game({ Result: '*' }, '1. e4 e4 *'))).toBe(false);
+    expect(isUnsupportedPgn(game({ Variant: 'Standard', Result: '*' }, '1. e4 e4 *'))).toBe(false);
+  });
+
+  it('is false when a standard game in the text can be opened', () => {
+    expect(isUnsupportedPgn(game({ Result: '*' }, '1. e4 e5 *'))).toBe(false);
+    expect(
+      isUnsupportedPgn(`${fromPosition}
+
+${game({ Result: '*' }, '1. e4 e5 *')}`),
+    ).toBe(false);
   });
 });
 

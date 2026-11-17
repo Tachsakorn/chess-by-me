@@ -111,7 +111,7 @@ describe('classifyGame on the real fixture game', () => {
   it.each([
     [14, 'O-O', 'inaccuracy'], // +19 -> +128: Black gives up 0.0936
     [16, 'd5', 'mistake'], // +99 -> +251: Black gives up 0.1207
-    [21, 'Re4', 'good'], // +280 -> +193: White gives up 0.0644
+    [21, 'Re4', 'inaccuracy'], // +280 -> +193: White gives up 0.0644 (Good before the 0.05 line)
     [13, 'Re1', 'best'], // first choice; the second choice is only 0.013 worse
   ] as const)('grades move %i (%s) as %s', async (ply, san, category) => {
     const result = (await classifyFixture())[ply - 1];
@@ -342,10 +342,10 @@ describe('classifyGame: brilliant', () => {
   });
 
   it('does not upgrade a sacrifice that the ladder marks down', () => {
-    // +150 -> +80 gives up 0.0588: good, and a good move is never brilliant.
+    // +150 -> +95 gives up 0.0459: good, and a good move is never brilliant.
     const [only] = classifyGame({
       game: sacrifice,
-      positions: positionsFor(sacrifice, [cp(150), cp(80)]),
+      positions: positionsFor(sacrifice, [cp(150), cp(95)]),
       opening: null,
     });
     expect(only).toMatchObject({ category: 'good', tags: [] });
@@ -366,26 +366,26 @@ describe('classifyGame: brilliant', () => {
 // Book. A book move the ladder calls only an Inaccuracy stays Book.
 describe('classifyGame: book moves that are real errors', () => {
   it('labels a book move by the ladder when it is an error', () => {
-    // 2...Nc6 (ply 4) is in the book and gives up 0.2145 (+30 -> +300).
-    const results = classifyLine([cp(30), cp(30), cp(30), cp(30), cp(300)], { lastBookPly: 4 });
+    // 2...Nc6 (ply 4) is in the book and gives up 0.1868 (+30 -> +260).
+    const results = classifyLine([cp(30), cp(30), cp(30), cp(30), cp(260)], { lastBookPly: 4 });
     expect(results.map((result) => result.category)).toEqual(['book', 'book', 'book', 'mistake']);
-    expect(results[3]?.pointLoss).toBeCloseTo(0.2145, 4);
+    expect(results[3]?.pointLoss).toBeCloseTo(0.1868, 4);
   });
 
   it('labels Mistake and Blunder, and keeps Book for an Inaccuracy', () => {
     const third = (after: number) =>
       classifyLine([cp(30), cp(30), cp(30), cp(after)], { lastBookPly: 3 })[2]?.category;
-    expect(third(-90)).toBe('book'); // 0.1043: an Inaccuracy by the ladder
-    expect(third(-140)).toBe('mistake'); // 0.1463
+    expect(third(-56)).toBe('book'); // 0.0751: an Inaccuracy by the ladder
+    expect(third(-90)).toBe('mistake'); // 0.1043
     expect(third(-300)).toBe('blunder'); // 0.2670
   });
 
   it('keeps Book for the largest Inaccuracy and labels the smallest Mistake', () => {
-    // The ladder's step from Inaccuracy to Mistake is a loss of 0.12.
+    // The ladder's step from Inaccuracy to Mistake is a loss of 0.10 (0.12 before 2026-11-17).
     const third = (after: number) =>
       classifyLine([cp(30), cp(30), cp(30), cp(after)], { lastBookPly: 3 })[2]?.category;
-    expect(third(-108)).toBe('book'); // 0.1196
-    expect(third(-110)).toBe('mistake'); // 0.1213
+    expect(third(-84)).toBe('book'); // 0.0992
+    expect(third(-85)).toBe('mistake'); // 0.1001
   });
 
   it('keeps the tags an error has', () => {
@@ -497,12 +497,12 @@ describe('classifyGame: the game ends with the move', () => {
 });
 
 describe('classifyGame: miss', () => {
-  // Black's 2...Nc6 is made a mistake (+30 -> +300), then White's 3. Bc4 lets it go.
+  // Black's 2...Nc6 is made a blunder (+30 -> +300), then White's 3. Bc4 lets it go.
   const before = [cp(30), cp(30), cp(30), cp(30)];
 
   it('calls the reply a miss when it only gives back what the opponent gave', () => {
     const results = classifyLine([...before, cp(300), cp(20), cp(20)]);
-    expect(results[3]?.category).toBe('mistake'); // 2...Nc6 gives up 0.2146
+    expect(results[3]?.category).toBe('blunder'); // 2...Nc6 gives up 0.2146 (from 0.20)
     expect(results[4]?.category).toBe('miss');
     expect(results[4]?.tags).toEqual(['missed-win']);
     expect(results[4]?.pointLoss).toBeCloseTo(0.2233, 4);
@@ -531,9 +531,9 @@ describe('classifyGame: miss', () => {
   });
 
   it('counts a book move that is a real error as the opponent’s error (Fable A1-05)', () => {
-    // 2...Nc6 in the book gives up 0.2145: a Mistake, so letting it go is a Miss.
+    // 2...Nc6 in the book gives up 0.2145: a Blunder, so letting it go is a Miss.
     const results = classifyLine([...before, cp(300), cp(20), cp(20)], { lastBookPly: 4 });
-    expect(results[3]?.category).toBe('mistake');
+    expect(results[3]?.category).toBe('blunder');
     expect(results[4]?.category).toBe('miss');
   });
 

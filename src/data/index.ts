@@ -2,9 +2,9 @@ import type { ImportGames } from '@/contract';
 import { fetchChessComGames } from './chesscom';
 import { failure } from './errors';
 import { fetchLichessGames } from './lichess';
-import { parsePgn } from './pgn';
+import { isUnsupportedPgn, parsePgn } from './pgn';
 
-export { parsePgn, fetchLichessGames, fetchChessComGames };
+export { isUnsupportedPgn, parsePgn, fetchLichessGames, fetchChessComGames };
 
 export interface ImportDeps {
   fetch?: typeof fetch;

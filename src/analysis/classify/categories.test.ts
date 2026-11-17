@@ -12,12 +12,18 @@ describe('categoryForLoss', () => {
     [0.01, 'excellent'],
     [0.0449, 'excellent'],
     [0.045, 'good'],
-    [0.0799, 'good'],
+    [0.0499, 'good'],
+    // Chess.com's published error lines (owner, 2026-11-17): 0.05 / 0.10 / 0.20.
+    [0.05, 'inaccuracy'],
+    [0.0999, 'inaccuracy'],
+    [0.1, 'mistake'],
+    [0.1999, 'mistake'],
+    [0.2, 'blunder'],
+    // WintrChess's old lines are no longer lines.
+    [0.0799, 'inaccuracy'],
     [0.08, 'inaccuracy'],
-    [0.1199, 'inaccuracy'],
     [0.12, 'mistake'],
-    [0.2199, 'mistake'],
-    [0.22, 'blunder'],
+    [0.2199, 'blunder'],
     [1, 'blunder'],
   ] as const)('a loss of %s expected points is %s', (loss, category) => {
     expect(categoryForLoss(loss)).toBe(category);
@@ -28,8 +34,10 @@ describe('categoryByRules: centipawns before and after', () => {
   it('uses the point-loss ladder for White', () => {
     // +300 -> 0 loses 0.2408 expected points.
     expect(categoryByRules(cp(300), cp(0), 'white')).toBe('blunder');
-    // +100 -> +40 loses 0.5866 - 0.5349 = 0.0517.
-    expect(categoryByRules(cp(100), cp(40), 'white')).toBe('good');
+    // +100 -> +40 loses 0.5866 - 0.5349 = 0.0517: an Inaccuracy since the 0.05 line.
+    expect(categoryByRules(cp(100), cp(40), 'white')).toBe('inaccuracy');
+    // +100 -> +50 loses 0.5866 - 0.5437 = 0.0429.
+    expect(categoryByRules(cp(100), cp(50), 'white')).toBe('excellent');
   });
 
   it('uses the point-loss ladder for Black, whose scores run the other way', () => {
@@ -92,7 +100,7 @@ describe('categoryByRules: a forced mate for the mover is lost', () => {
   it.each([
     [1400, 'excellent'], // ladder: best (0.7% lost); the table's excellent stands
     [1000, 'excellent'],
-    [800, 'good'], // 5.7% lost
+    [800, 'inaccuracy'], // 5.7% lost (Good before the 0.05 line)
     [400, 'mistake'], // 19.8% lost
     [250, 'blunder'], // 29% lost (was an inaccuracy)
     [200, 'blunder'],

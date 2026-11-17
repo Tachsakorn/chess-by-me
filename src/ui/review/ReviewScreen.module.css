@@ -5,6 +5,7 @@
  * where 20 is the evaluation bar (14) and its gap to the board (6) (owner, 2026-11-15).
  *   FIXED = 44 header + 8 + 28 row + 4 + 4 + 28 row + 10 + 36 graph + 12 + 32 tabs + 10
  *         + 128 panel + 12 + 62 bar = 418
+ * Then the graph takes up to 36px more of any height the board leaves (see --graph-h).
  * The rows, graph, tabs and panel are as wide as the bar and the board together, and the
  * column is centred.
  */
@@ -20,11 +21,15 @@
   --fixed: 418px;
   --eval-w: 14px;
   --eval-gap: 6px;
-  --board: min(
+  --board-by-width: min(
     100vw - 2 * var(--gutter) - var(--eval-w) - var(--eval-gap),
-    640px - 2 * var(--gutter) - var(--eval-w) - var(--eval-gap),
-    100dvh - var(--pad-top-52) - var(--fixed) - var(--float-bottom)
+    640px - 2 * var(--gutter) - var(--eval-w) - var(--eval-gap)
   );
+  --board-by-height: calc(100dvh - var(--pad-top-52) - var(--fixed) - var(--float-bottom));
+  --board: min(var(--board-by-width), var(--board-by-height));
+  /* The board is sized first, with a 36px graph. When the width holds it back, the height it
+   * leaves goes to the graph, up to 72px (round 3 of 1.1; graphHeight in graph.ts). */
+  --graph-h: calc(36px + clamp(0px, var(--board-by-height) - var(--board-by-width), 36px));
 }
 
 /* Short screens (iPhone SE): smaller rows, graph and panel, 8px above the bar. */
@@ -411,6 +416,7 @@
     100dvh - var(--wide-top) - var(--wide-bottom) - 2 * (var(--row-h) + 4px),
     100vw - 2 * var(--gutter) - var(--side) - 32px - var(--eval-w) - var(--eval-gap)
   );
+  --graph-h: 72px;
   max-width: none;
   flex-direction: row;
   justify-content: center;

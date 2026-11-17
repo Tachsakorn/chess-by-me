@@ -12,6 +12,7 @@ import {
   opponentOf,
   pickContinue,
   ratingsToShow,
+  sideAccuracy,
 } from './games';
 
 function fixture(folder: string): GameRecord {
@@ -136,5 +137,27 @@ describe('dates', () => {
   it('writes short dates with the Gregorian year and Arabic digits in Thai', () => {
     expect(formatShortDate('2026-11-12T10:00:00Z', 'en')).toBe('Nov 12');
     expect(formatShortDate('2026-11-12T10:00:00Z', 'th')).toBe('12 พ.ย.');
+  });
+});
+
+describe('sideAccuracy (Fable review A1-07)', () => {
+  // White resigned (or lost on time) before making a move; then Black did not move either.
+  const oneMove = { ...rosen, moves: rosen.moves.slice(0, 1) };
+  const noMoves = { ...rosen, moves: [] };
+
+  it('is a dash for a side that made no move', () => {
+    expect(sideAccuracy(100, oneMove, 'black', '—')).toBe('—');
+    expect(sideAccuracy(100, noMoves, 'white', '—')).toBe('—');
+    expect(sideAccuracy(100, noMoves, 'black', '—')).toBe('—');
+  });
+
+  it('is the number for a side that made one move or more', () => {
+    expect(sideAccuracy(100, oneMove, 'white', '—')).toBe('100.0');
+    expect(sideAccuracy(94.0065, rosen, 'white', '—')).toBe('94.0');
+    expect(sideAccuracy(88.8222, rosen, 'black', '—')).toBe('88.8');
+  });
+
+  it('is a dash while the accuracy is not known', () => {
+    expect(sideAccuracy(undefined, rosen, 'white', '—')).toBe('—');
   });
 });

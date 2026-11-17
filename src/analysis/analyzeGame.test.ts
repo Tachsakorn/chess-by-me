@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Chess } from 'chess.js';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   validateGameAnalysis,
   type AnalysisEvent,
@@ -322,6 +322,46 @@ describe('analyzeGame, failures', () => {
     expect(error.detail).toContain('20 ms');
     expect(events.filter((e) => e.type === 'position')).toHaveLength(4);
     expect(closes(engine)).toBe(1);
+  });
+
+  it('waits as long as the depth needs before calling a silent engine dead (1.1)', async () => {
+    // One position never answers; the limit is the default one for the depth.
+    const silent = () => {
+      const base = fakeEngine();
+      let calls = 0;
+      let stuck: () => void = () => {};
+      const reached = new Promise<void>((resolve) => (stuck = resolve));
+      const engine = fakeEngine({
+        evaluate: (fen, depth, signal) => {
+          if (++calls !== 2) return base.evaluate(fen, depth, signal);
+          stuck();
+          return new Promise<RawEval>(() => {});
+        },
+      });
+      return { engine, reached };
+    };
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      for (const [depth, limit] of [
+        [18, 120_000],
+        [20, 240_000],
+        [22, 480_000],
+      ] as const) {
+        const { engine, reached } = silent();
+        const started = run({ engine }, { ...options, depth });
+        // The silent search has begun (the opening book loads for real first).
+        await reached;
+        let ended = false;
+        void started.done.then(() => (ended = true));
+        await vi.advanceTimersByTimeAsync(limit - 1_000);
+        expect(ended, `depth ${depth} ended early`).toBe(false);
+        await vi.advanceTimersByTimeAsync(2_000);
+        const error = failure(await started.done);
+        expect(error.detail).toContain(`${limit} ms`);
+      }
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('passes on the code of an engine that cannot load', async () => {

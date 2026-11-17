@@ -12,7 +12,7 @@ import { TabBar } from '@/ui/components/TabBar';
 import { useLanguage } from '@/ui/i18n/LanguageContext';
 import {
   finalPosition,
-  formatAccuracy,
+  sideAccuracy,
   formatToday,
   moveLabel,
   pickContinue,
@@ -221,7 +221,10 @@ function ContinueSection({ card }: { card: ContinueCard }) {
           <p className={`${styles.heroDim} t-body`}>{gameText.ending(game)}</p>
           {summary && card.kind !== 'notAnalyzed' && (
             <p className={`${styles.heroDim} t-body tabular`}>
-              {text.game.accuracyPair(formatAccuracy(summary.white), formatAccuracy(summary.black))}
+              {text.game.accuracyPair(
+                sideAccuracy(summary.white, game, 'white', text.game.noValue),
+                sideAccuracy(summary.black, game, 'black', text.game.noValue),
+              )}
             </p>
           )}
         </div>

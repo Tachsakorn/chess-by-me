@@ -235,6 +235,8 @@ export const en = {
     review: 'Review',
     pgnLabel: 'PGN',
     pgnInvalid: "This PGN couldn't be read.",
+    /** A variant or a game from a set-up position (Fable review A1-06, owner 1.1 round 2). */
+    pgnUnsupported: "This game uses a variant or custom start position, which isn't supported yet.",
     /** A pasted PGN with more than one game: only the first opens (Fable review A6-06). */
     pgnMany: (count: number, players: string) =>
       `This PGN has ${count} games. The first one will open (${players}).`,
@@ -277,8 +279,12 @@ export const en = {
     sound: 'Sound',
     languageNote: 'Automatic follows your device language.',
     engine: 'Engine',
-    /** Engine and depth on one row, to make room for Sound (2026-11-16). */
-    engineDepth: (engine: string, depth: number) => `${engine} · depth ${depth}`,
+    /** The search depth, picked from a list (owner, 1.1 round 1). */
+    depth: 'Depth',
+    /** The default depth in that list. */
+    depthDefault: (depth: number) => `${depth} · Default`,
+    analysisNote:
+      'Higher depth is more accurate but slower. Games already analyzed keep their results.',
     buyCoffee: 'Buy me a coffee',
     contact: 'Contact us',
     version: 'Version',

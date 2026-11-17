@@ -1,5 +1,13 @@
 import { APP_ANALYSIS_OPTIONS, ENGINE_VERSION } from '@/analysis';
 import { LOCALES, type Locale } from '@/i18n';
+import {
+  DEFAULT_DEPTH,
+  DEPTH_CHOICES,
+  parseDepth,
+  readDepth,
+  saveDepth,
+  type DepthChoice,
+} from '@/ui/app/analysisDepth';
 import { useApp } from '@/ui/app/appStore';
 import { useState } from 'react';
 import { BUY_ME_A_COFFEE_URL } from '@/ui/app/config';
@@ -12,14 +20,18 @@ import type { LanguageSetting } from '@/ui/i18n/language';
 import { setSoundEnabled, soundEnabled } from '@/ui/sound/player';
 import styles from './SettingsScreen.module.css';
 
-/** Settings (BRIEF-UI 6.6). Rows that only inform have no chevron. Appearance is hidden until
+/** Settings (BRIEF-UI 6.6). The whole page scrolls at every screen height (owner, 1.1 round 2:
+ *  the Depth row made it taller than a 390x844 screen). Rows that only inform have no chevron. Appearance is hidden until
  *  there is a dark mode (BRIEF-UI 9, item 1); the Sound switch takes its place (owner,
  *  2026-11-16). */
 export function SettingsScreen() {
   const { messages: text, locale, setting, setSetting } = useLanguage();
   const accounts = useApp((s) => s.accounts);
   const [sound, setSound] = useState(soundEnabled);
+  const [depth, setDepth] = useState(readDepth);
   const t = text.settings;
+  const depthName = (choice: DepthChoice) =>
+    choice === DEFAULT_DEPTH ? t.depthDefault(choice) : String(choice);
   const languageName = (code: Locale) => t.languageNames[code];
   const languageValue =
     setting === 'auto' ? t.languageAuto(languageName(locale)) : languageName(setting);
@@ -39,7 +51,7 @@ export function SettingsScreen() {
   };
 
   return (
-    <Page mode="scrollWhenShort" floatingBar={false} className={styles.page}>
+    <Page mode="scroll" className={styles.page}>
       <header className={styles.header}>
         <BackButton />
         <h1 className={`${styles.title} t-large-title`}>{t.title}</h1>
@@ -48,7 +60,16 @@ export function SettingsScreen() {
         {account('lichess')}
         {account('chesscom')}
       </Group>
+      {/* Sound first, so the language note sits right under the Language row (owner, 1.1 round 1). */}
       <Group title={t.groups.general} note={t.languageNote} className={styles.group}>
+        <SwitchRow
+          label={t.sound}
+          checked={sound}
+          onChange={(on) => {
+            setSoundEnabled(on);
+            setSound(on);
+          }}
+        />
         <Row
           label={t.language}
           value={languageValue}
@@ -68,23 +89,31 @@ export function SettingsScreen() {
             </select>
           }
         />
-        <SwitchRow
-          label={t.sound}
-          checked={sound}
-          onChange={(on) => {
-            setSoundEnabled(on);
-            setSound(on);
-          }}
-        />
       </Group>
-      <Group title={t.groups.analysis} className={styles.group}>
-        {/* One row since the Sound switch came in, so Settings still fits a 390×844 screen. */}
+      <Group title={t.groups.analysis} note={t.analysisNote} className={styles.group}>
+        <Row label={t.engine} value={t.engineValue(ENGINE_VERSION, APP_ANALYSIS_OPTIONS.engine)} />
+        {/* Read when each game's analysis starts (src/ui/app/analysisDepth.ts). */}
         <Row
-          label={t.engine}
-          value={t.engineDepth(
-            t.engineValue(ENGINE_VERSION, APP_ANALYSIS_OPTIONS.engine),
-            APP_ANALYSIS_OPTIONS.depth,
-          )}
+          label={t.depth}
+          value={depthName(depth)}
+          overlay={
+            <select
+              aria-label={t.depth}
+              className={styles.select}
+              value={depth}
+              onChange={(event) => {
+                const picked = parseDepth(event.target.value);
+                saveDepth(picked);
+                setDepth(picked);
+              }}
+            >
+              {DEPTH_CHOICES.map((choice) => (
+                <option key={choice} value={choice}>
+                  {depthName(choice)}
+                </option>
+              ))}
+            </select>
+          }
         />
       </Group>
       <Group title={t.groups.about} className={styles.group}>

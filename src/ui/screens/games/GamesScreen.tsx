@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import type { GameRecord } from '@/contract';
+import type { Color, GameRecord } from '@/contract';
 import { useAnalysisQueue } from '@/ui/app/analysisQueue';
 import { primaryAccount, useApp } from '@/ui/app/appStore';
 import { reviewPath } from '@/ui/app/paths';
@@ -12,7 +12,7 @@ import { TabBar } from '@/ui/components/TabBar';
 import { useLanguage } from '@/ui/i18n/LanguageContext';
 import {
   finalPosition,
-  formatAccuracy,
+  sideAccuracy,
   formatMonth,
   groupByTime,
   timeClassOf,
@@ -193,6 +193,7 @@ export function GameRow({
   const enqueue = useAnalysisQueue((state) => state.enqueue);
   const { fen, lastMove } = finalPosition(game);
   const side = username ? userSide(game, username) : null;
+  const shown = (value: number, of: Color) => sideAccuracy(value, game, of, text.game.noValue);
   const href = reviewPath(game.id);
   const timeClass = timeClassOf(game);
   const title = other
@@ -229,8 +230,10 @@ export function GameRow({
         <div className={styles.accuracy}>
           <p className="t-headline tabular">
             {other
-              ? `${formatAccuracy(summary.white)} · ${formatAccuracy(summary.black)}`
-              : formatAccuracy(side === 'black' ? summary.black : summary.white)}
+              ? `${shown(summary.white, 'white')} · ${shown(summary.black, 'black')}`
+              : side === 'black'
+                ? shown(summary.black, 'black')
+                : shown(summary.white, 'white')}
           </p>
           <p className="t-caption c-3">{other ? text.games.whiteBlack : text.games.accuracy}</p>
         </div>

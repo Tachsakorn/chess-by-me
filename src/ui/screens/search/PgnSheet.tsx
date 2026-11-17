@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { parsePgn } from '@/data';
+import { isUnsupportedPgn, parsePgn } from '@/data';
 import { saveOpened } from '@/ui/app/viewedGames';
 import { reviewPath } from '@/ui/app/paths';
 import { useMessages } from '@/ui/i18n/LanguageContext';
@@ -16,7 +16,8 @@ export function PgnSheet({ open, onClose }: { open: boolean; onClose(): void }) 
   const navigate = useNavigate();
   const dialog = useRef<HTMLDialogElement>(null);
   const [pgn, setPgn] = useState('');
-  const [invalid, setInvalid] = useState(false);
+  /** Why the text cannot be reviewed, once Review was tapped: unreadable, or a variant. */
+  const [invalid, setInvalid] = useState<'unreadable' | 'unsupported' | null>(null);
   const titleId = useId();
   const errorId = useId();
   const noteId = useId();
@@ -34,7 +35,7 @@ export function PgnSheet({ open, onClose }: { open: boolean; onClose(): void }) 
 
   const review = async () => {
     if (!first) {
-      setInvalid(true);
+      setInvalid(isUnsupportedPgn(pgn) ? 'unsupported' : 'unreadable');
       return;
     }
     const game = first;
@@ -73,17 +74,17 @@ export function PgnSheet({ open, onClose }: { open: boolean; onClose(): void }) 
           spellCheck={false}
           autoCapitalize="off"
           autoCorrect="off"
-          aria-invalid={invalid}
+          aria-invalid={invalid !== null}
           aria-describedby={invalid ? errorId : many ? noteId : undefined}
           className={`${styles.pgn} t-body squircle`}
           onChange={(event) => {
             setPgn(event.target.value);
-            setInvalid(false);
+            setInvalid(null);
           }}
         />
         {invalid ? (
           <p id={errorId} role="alert" className={`${styles.error} t-caption`}>
-            {text.pgnInvalid}
+            {invalid === 'unsupported' ? text.pgnUnsupported : text.pgnInvalid}
           </p>
         ) : (
           many > 0 &&

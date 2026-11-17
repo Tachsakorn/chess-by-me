@@ -179,6 +179,7 @@ export const th: Messages = {
     review: 'รีวิว', // new
     pgnLabel: 'PGN',
     pgnInvalid: 'อ่าน PGN นี้ไม่ได้', // new
+    pgnUnsupported: 'เกมนี้เป็นหมากรุกแบบอื่นหรือเริ่มจากตำแหน่งที่ตั้งเอง ยังไม่รองรับ', // owner, 1.1 round 2
     pgnMany: (count, players) => `PGN นี้มี ${count} เกม จะเปิดเกมแรก (${players})`, // owner, 2026-11-15
     noPlayer: (name) => `ไม่พบผู้เล่นชื่อ “${name}” บน Lichess หรือ Chess.com`, // new
     close: 'ปิด', // new
@@ -217,7 +218,9 @@ export const th: Messages = {
     sound: 'เสียง', // new (owner, 2026-11-16)
     languageNote: 'อัตโนมัติจะใช้ภาษาตามเครื่อง',
     engine: 'เอนจิน',
-    engineDepth: (engine: string, depth: number) => `${engine} · ความลึก ${depth}`, // new
+    depth: 'ความลึก', // owner, 1.1 round 1
+    depthDefault: (depth) => `${depth} · ค่าเริ่มต้น`, // owner, 1.1 round 1
+    analysisNote: 'ยิ่งลึกยิ่งแม่นแต่ช้าลง เกมที่วิเคราะห์แล้วจะใช้ผลเดิม', // owner, 1.1 round 1
     buyCoffee: 'เลี้ยงกาแฟผู้พัฒนา',
     contact: 'ติดต่อเรา', // owner, 2026-11-15
     version: 'เวอร์ชัน',

@@ -76,7 +76,7 @@ export function Segmented<T extends string>({
             className={`${styles.segment} t-caption w-600`}
             onClick={() => onChange(option.value)}
           >
-            {option.label}
+            <span className={styles.label}>{option.label}</span>
           </button>
         );
       })}

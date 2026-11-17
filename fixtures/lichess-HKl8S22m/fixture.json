@@ -1,6 +1,6 @@
 {
  "note": "Development fixture: a real game analysed by the real analysis code. Not product data.",
- "game": "fetched with importGames (lichess:ni5hu:HKl8S22m)",
+ "game": "existing game.json",
  "evaluations": {
   "engine": {
    "name": "Stockfish",
@@ -16,5 +16,5 @@
   "evaluatedAt": "2026-11-13T15:25:04.130Z"
  },
  "derived": "opening, move categories, accuracy and rating ranges built by buildAnalysis (src/analysis)",
- "builtAt": "2026-11-15T16:05:15.560Z"
+ "builtAt": "2026-11-16T23:51:37.262Z"
 }

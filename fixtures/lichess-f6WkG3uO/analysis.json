@@ -5393,7 +5393,7 @@
   },
   {
    "ply": 9,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.052825902934642344,
    "accuracy": 78.84695204985552,
    "playedIsBest": false,
@@ -5405,7 +5405,7 @@
   },
   {
    "ply": 10,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.05020654625951071,
    "accuracy": 79.82467752832775,
    "playedIsBest": false,
@@ -5417,7 +5417,7 @@
   },
   {
    "ply": 11,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.053624822237575975,
    "accuracy": 78.55394670811427,
    "playedIsBest": false,
@@ -5815,7 +5815,7 @@
   },
   {
    "ply": 44,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.06530601564955807,
    "accuracy": 75.53945428600221,
    "playedIsBest": false,
@@ -5839,7 +5839,7 @@
   },
   {
    "ply": 46,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.05719085485295561,
    "accuracy": 78.97256542948409,
    "playedIsBest": false,
@@ -6069,7 +6069,7 @@
   },
   {
    "ply": 65,
-   "category": "good",
+   "category": "inaccuracy",
    "pointLoss": 0.05380219528223562,
    "accuracy": 85.4123557304152,
    "playedIsBest": false,
@@ -6165,9 +6165,9 @@
    "great": 0,
    "best": 18,
    "excellent": 6,
-   "good": 5,
+   "good": 2,
    "book": 2,
-   "inaccuracy": 1,
+   "inaccuracy": 4,
    "mistake": 3,
    "miss": 0,
    "blunder": 0
@@ -6184,13 +6184,13 @@
    "great": 0,
    "best": 12,
    "excellent": 13,
-   "good": 4,
+   "good": 1,
    "book": 1,
-   "inaccuracy": 1,
+   "inaccuracy": 4,
    "mistake": 3,
    "miss": 0,
    "blunder": 1
   }
  },
- "rulesVersion": 5
+ "rulesVersion": 6
 }

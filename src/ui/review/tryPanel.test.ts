@@ -16,6 +16,8 @@ const read = <T>(name: string): T =>
   ) as T;
 const game = read<GameRecord>('game.json');
 const state = stateFromAnalysis(game, read<GameAnalysis>('analysis-lite.json'));
+// In this analysis 8... d5 is an Inaccuracy (it gives up 6.3%; Good before the 0.05 line of
+// 2026-11-17), so the game move is written with its mark.
 
 const start: ReviewPosition = { ply: 15, flipped: false, line: null };
 const play = (...ucis: string[]) =>
@@ -44,7 +46,7 @@ describe('tryText', () => {
         compare: null,
         failed: false,
       }),
-    ).toEqual({ kind: 'checking', label: '8... Nh6', gameMove: '8... d5' });
+    ).toEqual({ kind: 'checking', label: '8... Nh6', gameMove: '8... d5?!' });
   });
 
   it('the result of the first move: category, evaluation, the game move and the best reply', () => {
@@ -72,7 +74,7 @@ describe('tryText', () => {
       category: 'best',
       // Before: the game analysis's evaluation of the position the line left from.
       evalText: '+1.2 → +1.2',
-      compare: { kind: 'better', gameMove: '8... d5' },
+      compare: { kind: 'better', gameMove: '8... d5?!' },
       reply: '9. Bxh6 gxh6',
     });
   });
@@ -93,7 +95,7 @@ describe('tryText', () => {
       kind: 'result',
       label: '8... Nxf2??',
       evalText: '+1.2 → +4.2',
-      compare: { kind: 'worse', gameMove: '8... d5' },
+      compare: { kind: 'worse', gameMove: '8... d5?!' },
     });
   });
 

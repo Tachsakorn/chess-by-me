@@ -13,6 +13,7 @@ import type { AnalysisError, AnalysisOptions, PositionEval } from '@/contract';
 import { ENGINE_HASH_MB, MULTI_PV, type AnalysisEngine, type AnalyzeGameDeps } from './analyzeGame';
 import { expectedPoints } from './classify';
 import { EngineError, evaluatePosition, type RawEval } from './engine';
+import { searchTimeoutMs as searchTimeoutFor } from './searchTimeout';
 
 export type PositionEvaluatorDeps = Pick<
   AnalyzeGameDeps,
@@ -37,8 +38,6 @@ export interface PositionEvaluator {
   close(): void;
 }
 
-const DEFAULT_SEARCH_TIMEOUT_MS = 120_000;
-
 function toAnalysisError(error: unknown): AnalysisError {
   if (error instanceof EngineError) return { code: error.code, detail: error.detail };
   return { code: 'engine-crashed', detail: error instanceof Error ? error.message : String(error) };
@@ -59,7 +58,7 @@ export function createPositionEvaluator(
   let engine: Promise<AnalysisEngine> | null = null;
   let failure: AnalysisError | null = null;
   let closed = false;
-  const searchTimeoutMs = deps.searchTimeoutMs ?? DEFAULT_SEARCH_TIMEOUT_MS;
+  const searchTimeoutMs = deps.searchTimeoutMs ?? searchTimeoutFor(options.depth);
 
   /** The one engine, started; made on the first search that needs it. */
   const ready = (): Promise<AnalysisEngine> => {

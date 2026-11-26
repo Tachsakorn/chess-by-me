@@ -97,6 +97,8 @@
 
   /* space */
   --gutter: 20px;
+  /* the analysis board's narrower side margin, so its board is bigger (owner, 2026-11-26) */
+  --gutter-board: 8px;
   /* widest content on a big screen, every screen but the review (owner, 2026-11-15) */
   --content-max: 560px;
   --section-gap: 32px;

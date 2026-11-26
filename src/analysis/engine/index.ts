@@ -6,6 +6,6 @@ export { toWhiteScore } from './score';
 export { ENGINE_FILES, ENGINE_VERSION, engineScriptUrl } from './engineFiles';
 export { EngineError } from './errors';
 export { createWorkerTransport, type EngineTransport } from './transport';
-export { UciEngine, type RawEval } from './uciEngine';
+export { UciEngine, type RawEval, type SearchOptions } from './uciEngine';
 export { CLOUD_EVAL_URL, fetchCloudEval, type CloudEvalOptions, type WhiteEval } from './cloudEval';
 export { evaluateGame, evaluatePosition, type EvaluateGameDeps } from './evaluateGame';

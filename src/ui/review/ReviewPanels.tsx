@@ -11,7 +11,7 @@ import { moveRows, moveText, qualityTone, type KeyMoment, type SecondLine } from
 import type { TryText } from './tryPanel';
 import styles from './ReviewScreen.module.css';
 
-const toneClass = (category: Parameters<typeof qualityTone>[0], prefix: 'fill' | 'text') => {
+export const toneClass = (category: Parameters<typeof qualityTone>[0], prefix: 'fill' | 'text') => {
   const tone = qualityTone(category);
   // Book has a dot colour but no text colour (owner, 2026-11-15): no `text-book` class.
   return tone
@@ -246,7 +246,7 @@ export function TryPanel({ shown, onRetry }: { shown: TryText; onRetry(): void }
 }
 
 /** The second line of the Move panel, in words. */
-function secondLine(text: ReturnType<typeof useMessages>['review'], line: SecondLine): string {
+export function secondLine(text: ReturnType<typeof useMessages>['review'], line: SecondLine): string {
   switch (line.kind) {
     case 'dropped':
       return text.winDropped(line.percent);

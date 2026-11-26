@@ -14,6 +14,11 @@ export const ICON = {
   player: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0',
   link: 'M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1',
   pgn: 'M8 4h8l3 3v13H5V4h3zM8 11h8M8 15h6',
+  /** Three sliders: the analysis board's settings (2026-11-26). */
+  sliders: 'M4 7h10M18 7h2M4 17h4M12 17h8M16 4v6M10 14v6',
+  close: 'M6 6l12 12M18 6L6 18',
+  /** A board with an arrow on it: the way into the analysis board from Search. */
+  analysis: 'M4 4h16v16H4zM8 16l8-8M11 8h5v5',
 } as const;
 
 export type IconName = keyof typeof ICON;

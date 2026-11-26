@@ -12,6 +12,17 @@ export interface RawEval {
   lines: Array<{ rank: number; score: UciScore; pv: string[] }>;
 }
 
+/**
+ * Extra limits and reports for one search (the analysis board, 2026-11-26). Left out, a search is
+ * exactly what it always was: `go depth <depth>`, one result at the end.
+ */
+export interface SearchOptions {
+  /** Also stop after this many milliseconds (`go depth <depth> movetime <ms>`). */
+  movetimeMs?: number;
+  /** Called with the result so far each time a depth is complete, before the final result. */
+  onProgress?(soFar: RawEval): void;
+}
+
 const DEFAULT_START_TIMEOUT_MS = 30_000;
 
 /** Whoever is currently waiting for engine output. At most one at a time. */
@@ -157,11 +168,19 @@ export class UciEngine {
    * `cancelled` once the engine has answered `bestmove`, which leaves the engine
    * ready for the next search.
    */
-  evaluate(fen: string, depth: number, signal?: AbortSignal): Promise<RawEval> {
+  evaluate(
+    fen: string,
+    depth: number,
+    signal?: AbortSignal,
+    options: SearchOptions = {},
+  ): Promise<RawEval> {
     if (!isPositiveInteger(depth)) {
       return Promise.reject(new RangeError(`depth must be a positive whole number`));
     }
-    return this.enqueue(() => this.search(fen, depth, signal));
+    if (options.movetimeMs !== undefined && !isPositiveInteger(options.movetimeMs)) {
+      return Promise.reject(new RangeError(`movetimeMs must be a positive whole number`));
+    }
+    return this.enqueue(() => this.search(fen, depth, signal, options));
   }
 
   /**
@@ -240,13 +259,20 @@ export class UciEngine {
     listener?.end(error);
   }
 
-  private search(fen: string, depth: number, signal?: AbortSignal): Promise<RawEval> {
+  private search(
+    fen: string,
+    depth: number,
+    signal: AbortSignal | undefined,
+    options: SearchOptions,
+  ): Promise<RawEval> {
     const unusable = this.unusable();
     if (unusable) return Promise.reject(unusable);
     if (signal?.aborted) return Promise.reject(new EngineError('cancelled'));
 
     return new Promise<RawEval>((resolve, reject) => {
       const reports = new Map<number, Map<number, { score: UciScore; pv: string[] }>>();
+      // The deepest depth reported so far: once a deeper one starts, it is complete.
+      let reached = 0;
       let stopping = false;
       const onAbort = () => {
         stopping = true;
@@ -257,6 +283,14 @@ export class UciEngine {
         line: (line) => {
           const info = parseInfo(line);
           if (info) {
+            if (info.depth > reached) {
+              const complete = reports.get(reached);
+              if (options.onProgress && complete) {
+                const soFar = deepest(new Map([[reached, complete]]));
+                if (soFar) options.onProgress(soFar);
+              }
+              reached = info.depth;
+            }
             let ranks = reports.get(info.depth);
             if (!ranks) {
               ranks = new Map();
@@ -292,7 +326,11 @@ export class UciEngine {
       };
       signal?.addEventListener('abort', onAbort, { once: true });
       this.transport.send(`position fen ${fen}`);
-      this.transport.send(`go depth ${depth}`);
+      this.transport.send(
+        options.movetimeMs === undefined
+          ? `go depth ${depth}`
+          : `go depth ${depth} movetime ${options.movetimeMs}`,
+      );
     });
   }
 

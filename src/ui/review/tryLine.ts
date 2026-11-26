@@ -42,7 +42,7 @@ function fenOf(game: GameRecord, state: ReviewPosition): string {
 }
 
 /** `uci` played in `fen` as a move of the line, or null when it is not legal there. */
-function moveIn(fen: string, uci: string, ply: number): GameMove | null {
+export function moveIn(fen: string, uci: string, ply: number): GameMove | null {
   let chess: Chess;
   try {
     chess = new Chess(fen);

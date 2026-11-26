@@ -27,7 +27,7 @@ falling downwards. Glass is used on the two floating bars only: the tab bar and 
 | Course covers | red #E5322D, blue #2563EB, pink #D6336C, amber #E8930C (2.22:1, kept by the owner), green #16A24A (1.2, was #16A34A at 2.998:1) |
 | Avatar | `--avatar-bg` gradient #A9ABBE → #7E8197 (white letter 2.27:1 at the top, kept by the owner) |
 | Review board coordinates | `--board-coord-on-light` = the dark square colour, `--board-coord-on-dark` = the light square colour (2.06:1, kept by the owner) |
-| Spacing | page edge 20, between sections 32 (Home) / 40 (Courses, Search), heading to content 12 |
+| Spacing | page edge 20 (`--gutter`; the analysis board 8, `--gutter-board`, owner 2026-11-26), between sections 32 (Home) / 40 (Courses, Search), heading to content 12 |
 | Radius | 20 (black card, course covers) · 16 (grey groups, panels) · 12 (boards, fields, graph) · 8 (56px mini boards), with `corner-shape: squircle` · buttons, chips, badges, tabs and segmented controls are fully rounded (`--r-pill`) · icons in Search rows 10 (`--r-icon`) |
 | Shadows | cover, cover-sm, tile, hero, segment-on, badge, callout, glass (see the tokens file) |
 
@@ -195,6 +195,45 @@ up, iPad landscape) it uses two columns: the board on the left, a 390-wide colum
   About in Settings, on iPhone and iPad only, when the app is not opened from the home screen
   (`src/ui/app/homeScreen.ts`). A screen like Privacy: a grey box with the reason, four numbered
   steps for Safari, then other browsers.
+- **Analysis board** (design approved by the owner on 2026-11-26, `src/ui/analysis/`,
+  `/analysis?moves=e2e4,e7e5`): the frame of the review screen and its parts (BackButton,
+  EvalBar, ReviewBoard, BoardBadge, Segmented, Stepper, GroupedList, the MoveTable), with no player
+  rows and no graph.
+  · Way in: Search › Review any game, a fourth row "Analysis board" (icon `analysis`).
+  · Top row: BackButton · "Analysis" centred · a round `--fill` 44 settings button with the
+    `sliders` icon (labelled for screen readers).
+  · Board: EvalBar 14 and the blue board (330 at 390 wide) · quality badges · the best move as an
+    arrow in `--q-great` · the threat in `--danger` when turned on · arrow colours read from the
+    tokens at run time, drawn like chessground's own arrows · with the bar off the board keeps its
+    size and place.
+  · One 20-high row under the board: the opening name (`t-body` 600, cut with …) on the left,
+    the evaluation (`c-2`) on the right; "Starting position" at the start.
+  · Tabs Move | Lines | Moves (wide screens: Move | Lines and the MoveTable). The grey panel is as
+    tall as its content, never stretched (owner, 2026-11-26), and only shrinks and scrolls when a
+    short screen lacks the room (the Lines tab on an iPhone SE). A narrower side margin than
+    the review's, on this screen only (`--gutter-board`, 8; the owner's change of mind on
+    2026-11-26): the board is the smaller of the width less two 8px margins, the bar (14) and its
+    gap (6), and the height left with 116 set aside for the Move panel (FIXED 324). The header, the
+    tabs, the panel and the step bar take the margin the board leaves, so their edges always line
+    up with the board's (8 when the width decides, more when the height does). The page never
+    scrolls and the step bar covers nothing: 390 → 354, 402 → 366, 375×667 → 306, 1180×820 → 716.
+    The review keeps its board (402 → 342). The settings sheet sits outside the page and keeps
+    the 20px margin.
+    Move: the review's own move text (`moveText`) at 17/23; a book move says "A well-known
+    opening move." and "Next in the book: 3. Bb5, 3. Bc4" (the engine's choices first, then the
+    shorter opening names, as the book holds no counts).
+    Lines: three lines with a `--surface` pill for the figure and the moves (the first at 600),
+    then "Depth 18 · 5 s per move." and a link "Change it in the settings." to the sheet.
+    Moves: the review's AllMovesPanel; a tap jumps.
+  · The floating bar: the Stepper; keys ← → Home End F; sounds as on the review.
+  · Settings: a bottom sheet like Paste PGN, top corners `--r-box`, a `t-section` heading and a
+    round `--fill` 44 close button; groups On the board / Engine / General; kept in
+    `cbm.analysis` and used at once, no Save button; Time per move is a list of 1 to 30 seconds.
+  · How it works: the move labels come from a search exactly like the game analysis's (2 lines,
+    the depth in Settings), apart from the 3-line search of the Lines tab (stopped at the depth in
+    Settings or the time per move, whichever comes first). The bar and the figure follow the label
+    search once known, so they agree with the Move panel. A move other than the next one replaces
+    the rest of the line (no tree in v1). Nothing but the settings is kept on the device.
 
 ## Rules
 

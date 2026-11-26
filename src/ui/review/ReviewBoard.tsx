@@ -8,6 +8,7 @@ import type { Color, MoveCategory } from '@/contract';
 import type { Palette } from '@/ui/board/board';
 import { PIECE_IMAGES, type PieceCode } from '@/ui/board/pieces';
 import { useMessages } from '@/ui/i18n/LanguageContext';
+import { arrowBrushes, arrowShapes, type BoardArrow } from './arrows';
 import { badgeSpot } from './badge';
 import { BoardBadge } from './BoardBadge';
 import { boardCoordinates } from './coords';
@@ -35,6 +36,8 @@ interface ReviewBoardProps {
   onMove(uci: string, fen: string): void;
   /** The engine is checking the move on the board: a grey badge with a spinner in its place. */
   checking: boolean;
+  /** Arrows to draw (the analysis board); none on the review screen. */
+  arrows?: readonly BoardArrow[];
 }
 
 const FILES = 'abcdefgh';
@@ -82,6 +85,7 @@ export function ReviewBoard({
   movable,
   onMove,
   checking,
+  arrows,
 }: ReviewBoardProps) {
   const element = useRef<HTMLDivElement>(null);
   const api = useRef<Api | null>(null);
@@ -104,7 +108,9 @@ export function ReviewBoard({
       coordinates: false,
       animation: { enabled: !reducedMotion(), duration: 150 },
       highlight: { lastMove: false, check: false },
-      drawable: { enabled: false, visible: false },
+      // Nobody draws on the board; the arrows of the analysis board are drawn by the app (its
+      // layer must exist from the start, so it is visible, and empty on the review screen).
+      drawable: { enabled: false, visible: true },
       premovable: { enabled: false },
       draggable: { enabled: true, showGhost: true },
       selectable: { enabled: true },
@@ -119,6 +125,17 @@ export function ReviewBoard({
             if (promotes(now.fen, from, to)) setPromotion({ from, to, fen: now.fen });
             else now.onMove(`${from}${to}`, now.fen);
           },
+        },
+      },
+    });
+    // The arrows' brushes in the colours of the tokens (the analysis board, 2026-11-26).
+    const css = getComputedStyle(element.current);
+    const brushes = board.state.drawable.brushes;
+    board.set({
+      drawable: {
+        brushes: {
+          ...brushes,
+          ...arrowBrushes(brushes.green, (name) => css.getPropertyValue(name).trim()),
         },
       },
     });
@@ -166,6 +183,11 @@ export function ReviewBoard({
   useEffect(() => {
     api.current?.set({ highlight: { custom: highlights(lastMove, selected) } });
   }, [lastMove, selected]);
+
+  useEffect(() => {
+    const shapes = arrowShapes(arrows ?? []);
+    api.current?.setAutoShapes(shapes);
+  }, [arrows]);
 
   const spot = lastMove ? badgeSpot(lastMove.slice(2, 4), orientation) : null;
 

@@ -15,6 +15,7 @@ import { loadOpeningBook } from './classify';
 import { createWorkerTransport, engineScriptUrl, UciEngine } from './engine';
 import { engineCount } from './engineCount';
 import { createPositionEvaluator, type PositionEvaluator } from './positionEvaluator';
+import { createLiveEvaluator, type LiveEvaluator } from './liveEvaluator';
 import { APP_ANALYSIS_OPTIONS } from './settings';
 
 const base = `${import.meta.env.BASE_URL}engines/`;
@@ -122,6 +123,25 @@ export function createTryEvaluator(
       onResume,
     },
     { ...APP_ANALYSIS_OPTIONS, depth },
+    onChange,
+  );
+}
+
+/**
+ * The engine lines of the analysis board (2026-11-26): one engine of the app's own kind showing
+ * three lines, each position searched to `depth` or for `movetimeMs`, whichever comes first.
+ */
+export function createLiveBoardEvaluator(
+  onChange: () => void,
+  depth: number,
+  movetimeMs: number,
+): LiveEvaluator {
+  return createLiveEvaluator(
+    {
+      prepareEngine,
+      createEngine: (variant) => new UciEngine(createWorkerTransport(scripts[variant])),
+    },
+    { engine: APP_ANALYSIS_OPTIONS.engine, depth, movetimeMs },
     onChange,
   );
 }

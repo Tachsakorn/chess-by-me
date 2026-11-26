@@ -1,14 +1,15 @@
 // Public surface of the analysis layer. The screens use `analyzeGame`; the
 // rest is exported for tests, fixtures and tools that bring their own engine.
 
-export { analyzeGame, createTryEvaluator } from './browser';
+export { analyzeGame, createLiveBoardEvaluator, createTryEvaluator } from './browser';
+export { LIVE_LINES, type LiveEval, type LiveEvaluator } from './liveEvaluator';
 export {
   createPositionEvaluator,
   type PositionEvaluator,
   type PositionEvaluatorDeps,
 } from './positionEvaluator';
 export { compareWithGameMove, reviewTriedMove, type TriedLine } from './tryMove';
-export { loadOpeningBook, type OpeningBook } from './classify';
+export { findOpening, loadOpeningBook, type OpeningBook } from './classify';
 export { createAnalyzeGame, type AnalysisEngine, type AnalyzeGameDeps } from './analyzeGame';
 export { buildAnalysis, reviewMove, type BuildAnalysisInput } from './buildAnalysis';
 export { rebuildAnalysis } from './rebuild';

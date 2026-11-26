@@ -1,0 +1,137 @@
+/*
+ * The analysis board (owner, 2026-11-26): the frame of the review screen (ReviewScreen.module.css:
+ * the header, the board row, the tabs, the panel, the step bar, two columns on wide screens),
+ * with no player rows and no graph. Only what differs is here.
+ *
+ * The board is the smaller of the width and the height left, as on the review screen:
+ *   FIXED = 44 header + 8 + 8 + 20 opening row + 12 + 32 tabs + 10 + 116 panel + 12 + 62 bar = 324
+ * where 116 is the Move panel with a move in it (14 + 30 + 10 + 23 + 2 + 23 + 14), so it never
+ * scrolls, on short screens (iPhone SE) too. The doubled class wins over the review's --fixed.
+ */
+.analysis.analysis {
+  --fixed: 324px;
+  /* A narrower side margin than the review's, on this screen only (owner, 2026-11-26): the board
+     is sized with --gutter-board. Then the side margin of everything (the header, the tabs, the
+     panel and the step bar) is whatever the board leaves, so all edges line up with the board's:
+     --gutter-board when the width sets the board, more when the height does (iPhone SE). */
+  --board-by-width: min(
+    100vw - 2 * var(--gutter-board) - var(--eval-w) - var(--eval-gap),
+    640px - 2 * var(--gutter-board) - var(--eval-w) - var(--eval-gap)
+  );
+  --gutter: calc((min(100vw, 640px) - var(--board) - var(--eval-w) - var(--eval-gap)) / 2);
+}
+/* Two columns: no player rows on the board side; the narrow margin as it is. */
+.analysis.analysis.wide {
+  --gutter: var(--gutter-board);
+  --board: min(
+    100dvh - var(--wide-top) - var(--wide-bottom) - 28px,
+    100vw - 2 * var(--gutter) - var(--side) - 32px - var(--eval-w) - var(--eval-gap)
+  );
+}
+
+/* The settings button, top right: a grey circle as big as a finger. */
+.settingsButton {
+  justify-self: end;
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: var(--r-pill);
+  background: var(--fill);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (hover: hover) {
+  .settingsButton:hover {
+    background: var(--eval-fill);
+  }
+}
+
+/* With the bar turned off the board keeps its size and its place. */
+.noBar {
+  width: var(--eval-w);
+  flex: none;
+}
+
+/* Under the board: the opening on the left, the evaluation on the right. */
+.infoRow {
+  margin-top: 8px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--title-gap);
+  min-width: 0;
+}
+.opening {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.evaluation {
+  flex: none;
+}
+
+/* On a phone the column ends above the step bar (the bar, its gap to the edge and 8: no overlap).
+   The panel is as tall as what it holds, never stretched (owner, 2026-11-26: no empty grey card),
+   and only shrinks, then scrolls, when a short screen has less room than that (the Lines). */
+.column {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-bottom: var(--float-clearance);
+}
+.panelScroll {
+  flex: 0 1 auto;
+  height: auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ---- the Lines tab ---- */
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+/* The figure of a line: the white pill of the Move panel's badge. */
+.score {
+  min-width: 52px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.moves {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.first {
+  font-weight: 600;
+  color: var(--text);
+}
+.foot {
+  margin-top: 4px;
+}
+.link {
+  min-height: var(--tap);
+  text-align: left;
+  color: var(--text);
+  text-decoration: underline;
+}
+.linkInline {
+  color: var(--text);
+  text-decoration: underline;
+}

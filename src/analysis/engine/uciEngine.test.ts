@@ -608,3 +608,61 @@ describe('UciEngine.ping', () => {
     expect((await search).depth).toBe(1);
   });
 });
+
+describe('UciEngine.evaluate, time limit and progress (analysis board)', () => {
+  it('sends the plain go command when no options are given', async () => {
+    const { transport, engine } = await startedEngine();
+    const search = engine.evaluate(START, 18);
+    await tick();
+    expect(transport.sent).toEqual([`position fen ${START}`, 'go depth 18']);
+    transport.emit('info depth 1 multipv 1 score cp 10 pv e2e4', 'bestmove e2e4');
+    await search;
+  });
+
+  it('adds movetime to the go command', async () => {
+    const { transport, engine } = await startedEngine();
+    const search = engine.evaluate(START, 18, undefined, { movetimeMs: 5000 });
+    await tick();
+    expect(transport.sent).toEqual([`position fen ${START}`, 'go depth 18 movetime 5000']);
+    transport.emit('info depth 1 multipv 1 score cp 10 pv e2e4', 'bestmove e2e4');
+    await search;
+  });
+
+  it('rejects a movetime that is not a positive whole number', async () => {
+    const { engine } = await startedEngine();
+    await expect(engine.evaluate(START, 18, undefined, { movetimeMs: 0 })).rejects.toThrow(
+      RangeError,
+    );
+  });
+
+  it('reports each depth once it is complete, every line of it, and resolves the deepest', async () => {
+    const { transport, engine } = await startedEngine(2);
+    const seen: unknown[] = [];
+    const search = engine.evaluate(START, 18, undefined, {
+      movetimeMs: 1000,
+      onProgress: (soFar) => seen.push(soFar),
+    });
+    await tick();
+    transport.emit(
+      'info depth 1 multipv 1 score cp 17 pv e2e4',
+      'info depth 1 multipv 2 score cp 12 pv d2d4',
+      'info depth 2 multipv 1 score cp 30 pv e2e4 e7e5',
+    );
+    expect(seen).toEqual([
+      {
+        depth: 1,
+        lines: [
+          { rank: 1, score: { kind: 'cp', value: 17 }, pv: ['e2e4'] },
+          { rank: 2, score: { kind: 'cp', value: 12 }, pv: ['d2d4'] },
+        ],
+      },
+    ]);
+    // The time runs out in the middle of depth 2: the final result is what depth 2 has.
+    transport.emit('bestmove e2e4');
+    expect(await search).toEqual({
+      depth: 2,
+      lines: [{ rank: 1, score: { kind: 'cp', value: 30 }, pv: ['e2e4', 'e7e5'] }],
+    });
+    expect(seen).toHaveLength(1);
+  });
+});

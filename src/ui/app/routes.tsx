@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router';
 import { GamesScreen } from '@/ui/screens/games/GamesScreen';
 import { HomeScreen } from '@/ui/screens/home/HomeScreen';
+import { AnalysisScreen } from '@/ui/analysis/AnalysisScreen';
 import { ReviewScreen } from '@/ui/review/ReviewScreen';
 import { ConnectScreen } from '@/ui/screens/connect/ConnectScreen';
 import { CoursesScreen } from '@/ui/screens/courses/CoursesScreen';
@@ -30,6 +31,8 @@ const screens: RouteObject[] = [
   // Without an account, My Games shows the games opened from elsewhere (Fable review 1.1 B4-03).
   { path: '/games', element: <GamesScreen /> },
   { path: '/review/:gameId', element: <ReviewScreen /> },
+  // The analysis board (owner, 2026-11-26): its moves in the address, ?moves=e2e4,e7e5.
+  { path: '/analysis', element: <AnalysisScreen /> },
   { path: '/courses', element: <CoursesScreen /> },
   { path: '/search', element: <SearchScreen /> },
   { path: '/settings', element: <SettingsScreen /> },

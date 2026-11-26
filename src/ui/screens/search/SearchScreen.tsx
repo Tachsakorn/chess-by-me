@@ -225,10 +225,13 @@ export function SearchScreen() {
     { icon: 'player', title: text.search.findPlayer, sub: text.search.findPlayerSub },
     { icon: 'link', title: text.search.pasteLink, sub: text.search.pasteLinkSub },
     { icon: 'pgn', title: text.search.pastePgn, sub: text.search.pastePgnSub },
+    // The analysis board (owner, 2026-11-26).
+    { icon: 'analysis', title: text.search.analysisBoard, sub: text.search.analysisBoardSub },
   ];
   function act(icon: IconName) {
     if (icon === 'player') field.current?.focus();
     else if (icon === 'link') void pasteLink();
+    else if (icon === 'analysis') void navigate('/analysis');
     else setSheet(true);
   }
 

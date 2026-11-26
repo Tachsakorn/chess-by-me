@@ -189,6 +189,8 @@ export const th: Messages = {
     pasteLinkSub: 'จาก Chess.com หรือ Lichess',
     pastePgn: 'วาง PGN',
     pastePgnSub: 'เกมไหนก็ได้ จากที่ไหนก็ได้',
+    analysisBoard: 'กระดานวิเคราะห์', // new (2026-11-26)
+    analysisBoardSub: 'เดินหมากได้อิสระ พร้อมเอนจิน', // new (2026-11-26)
     publicNote: 'เกมบน Chess.com และ Lichess เป็นข้อมูลสาธารณะ จึงรีวิวเกมของใครก็ได้',
     review: 'รีวิว', // new
     pgnLabel: 'PGN',
@@ -331,6 +333,41 @@ export const th: Messages = {
     note: 'Chess by me เป็นซอฟต์แวร์เสรีภายใต้ GPL-3.0 และสร้างด้วยสิ่งเหล่านี้', // new
     notices: 'ข้อความไลเซนส์และประกาศลิขสิทธิ์ฉบับเต็ม',
     source: 'ซอร์สโค้ด',
+  },
+  // The analysis board (owner, 2026-11-26): all new, for the owner to check on screenshots.
+  analysis: {
+    title: 'วิเคราะห์',
+    settingsButton: 'ตั้งค่าการวิเคราะห์',
+    tabsLabel: 'รายละเอียดการวิเคราะห์',
+    tabs: { move: 'ตาเดิน', lines: 'เส้น', moves: 'ทุกตา' },
+    startPosition: 'ตำแหน่งเริ่มต้น',
+    start: 'ตำแหน่งเริ่มต้น เดินหมากบนกระดานได้เลย',
+    thinking: 'กำลังคิด…',
+    bookMove: 'ตาเปิดเกมที่รู้จักกันดี',
+    nextInBook: (moves) => `ตาต่อไปในตำรา: ${moves}`,
+    noMoves: 'ยังไม่มีตาเดิน เดินหมากบนกระดานได้เลย',
+    gameOver: 'เกมจบแล้วในตำแหน่งนี้',
+    linesFoot: (depth, seconds) => `ความลึก ${depth} · ${seconds} วินาทีต่อตา`,
+    changeInSettings: 'เปลี่ยนได้ในการตั้งค่า',
+    linesOff: 'ปิดการแสดงเส้นของเอนจินอยู่',
+    turnOnInSettings: 'เปิดได้ในการตั้งค่า',
+    stopped: 'เอนจินหยุดทำงาน แตะเพื่อลองอีกครั้ง',
+    settings: {
+      title: 'ตั้งค่า',
+      close: 'ปิด',
+      onBoard: 'บนกระดาน',
+      evalBar: 'แถบค่าประเมิน',
+      suggestion: 'ลูกศรตาที่แนะนำ',
+      threat: 'ลูกศรภัยคุกคาม',
+      labels: 'ป้ายคุณภาพตาเดิน',
+      engine: 'เอนจิน',
+      lines: 'แสดงเส้นของเอนจิน',
+      time: 'เวลาต่อตา',
+      seconds: (seconds) => `${seconds} วินาที`,
+      timeNote: 'นานขึ้นแม่นขึ้น แต่ช้าลง',
+      general: 'ทั่วไป',
+      sound: 'เสียง',
+    },
   },
   connect: {
     title: 'เชื่อมบัญชีหมากรุกของคุณ',

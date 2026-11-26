@@ -14,6 +14,7 @@ Each folder holds:
 | `fixture.json` | How `analysis.json` was made: where the game came from, engine, depth, machine, time. |
 | `analysis-lite.json` | The same game with Stockfish **lite**, depth 18: exactly what the app computes. Re-evaluated on 2026-11-15 with every position searched from a cleared engine, as the app now does (speed round); the browser with four engines gives the same evaluations (see docs/BENCHMARKS.md). The screens, `dev/seed/` and the UI tests read this one. |
 | `fixture-lite.json` | How `analysis-lite.json` was made. |
+| `engine-raw-lite.json` | `lichess-LAGvRNey` only: the raw Stockfish lite output (every depth's lines as the engine sent them, depth 18, 2 lines, a cleared engine per position) of the position before each of its 85 moves. Recorded on 2026-11-26 **before** the engine gained time-limited searches for the analysis board (`npm run script -- record-engine-snapshot`); `src/analysis/engine/engineSnapshot.integration.test.ts` proves the plain search still gives exactly this. Never record it again after changing the engine code. |
 
 Two analyses per game since 2026-11-15 (owner's choice): the lite engine grades some moves differently
 from the full one (in `lichess-LAGvRNey`, 8... d5 is a mistake with full and good with lite, 8. h3 great

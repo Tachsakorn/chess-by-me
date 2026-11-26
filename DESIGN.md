@@ -23,10 +23,28 @@ falling downwards. Glass is used on the two floating bars only: the tab bar and 
 | Board badges | `--badge-mark` #fff (mark and ring), `--badge-border-width` 1.5px, `--shadow-badge` 0 1px 3px rgba(17,24,39,.30), `--shadow-callout` 0 0 0 .5px rgba(0,0,0,.06) + 0 3px 10px rgba(17,24,39,.28) (the Brilliant name tag, on `--surface`) |
 | Boards (light/dark squares) | blue #E3EAF3/#8EA6C6, green #E7EFDF/#93B07E, orange #F6E6DD/#D79A7E, purple #ECE7F5/#A497C6, last move #F2E7A6/#D3BD62 |
 | Switch (Settings: Sound) | `--switch-on` = `--primary`, `--switch-off` #86868b (3.3:1 on the grey `--fill`, WCAG 1.4.11); the knob is `--surface` with `--shadow-segment-on` |
-| Course covers | red #E5322D, blue #2563EB, pink #D6336C, amber #E8930C, green #16A34A |
+| Trying a move | `--q-checking` #8d8d92 (badge and dot while the engine checks a tried move; 1.2, was #8e8e93 at 2.97:1 on grey) |
+| Course covers | red #E5322D, blue #2563EB, pink #D6336C, amber #E8930C (2.22:1, kept by the owner), green #16A24A (1.2, was #16A34A at 2.998:1) |
+| Avatar | `--avatar-bg` gradient #A9ABBE → #7E8197 (white letter 2.27:1 at the top, kept by the owner) |
+| Review board coordinates | `--board-coord-on-light` = the dark square colour, `--board-coord-on-dark` = the light square colour (2.06:1, kept by the owner) |
 | Spacing | page edge 20, between sections 32 (Home) / 40 (Courses, Search), heading to content 12 |
 | Radius | 20 (black card, course covers) · 16 (grey groups, panels) · 12 (boards, fields, graph) · 8 (56px mini boards), with `corner-shape: squircle` · buttons, chips, badges, tabs and segmented controls are fully rounded (`--r-pill`) · icons in Search rows 10 (`--r-icon`) |
 | Shadows | cover, cover-sm, tile, hero, segment-on, badge, callout, glass (see the tokens file) |
+
+## Contrast (WCAG AA, checked in 1.2)
+
+Every piece of text on every screen (phone, iPad landscape, English and Thai) and every token pair
+was checked; `src/styles/contrast.test.ts` reads the values from `tokens.css` and fails if a pair
+falls below its threshold.
+
+- **Passing:** all grey text, Inaccuracy/Mistake move text, the red danger colour, the black card,
+  the switch when off, the words on the course covers (except amber), the checking dot.
+- **Exempt under WCAG:** ".me" in the chessby.me logo on the cover (a brand name), disabled
+  buttons, the › chevron at the end of a row (decoration; the row label already says it, as on iOS).
+- **Kept by the owner although below AA:** board coordinates 2.06:1 · words on the amber cover
+  2.22:1 · the avatar letter 2.27:1 · move-quality badges: the white mark on Inaccuracy "?!"
+  2.30:1, Mistake "?" / Miss "×" 3.58:1 (text needs 4.5), the white tick on Excellent 2.59:1
+  (graphics need 3) · the Excellent dot 2.36:1 and the Inaccuracy dot 2.09:1 on grey (on the graph).
 
 ## Type
 
@@ -110,7 +128,7 @@ up, iPad landscape) it uses two columns: the board on the left, a 390-wide colum
     `--text-2`) on the left and a "Back to game" button on the right (26 high, radius 13,
     `--primary` with `--on-primary` text, 13px 600, the back arrow before it, 44 high to a finger).
     The evaluation graph fades to 0.5.
-  - While the engine thinks: in the badge's place and size a grey circle (`--q-checking` #8e8e93)
+  - While the engine thinks: in the badge's place and size a grey circle (`--q-checking` #8d8d92)
     with a white ring turning once every 800ms (still under `prefers-reduced-motion`), the
     evaluation bar at 0.45, and in the Move panel the move with a "Checking" badge, "Checking this
     move" (the same words for the reader's move and the engine's reply) and, in grey, "Game move
@@ -146,6 +164,37 @@ up, iPad landscape) it uses two columns: the board on the left, a 390-wide colum
   keeps playing. Sound starts after the first tap, as browsers require.
 - **Every button**: hover; pressed fades to 0.6 and back in 150ms; focus ring 2px `--text`, 2px
   away; disabled 0.4; touch target at least 44×44.
+  Things drawn shorter than 44 (the turning-point chips 30, the Recent Games link 26, moves in the
+  iPad move table 32) carry the `.tap-area` class (`base.css`): a transparent box `--tap` tall
+  around their middle that moves nothing (1.2). The iPad move table rows are 44 tall (were 40).
+  Still shorter than 44: the moves in All Moves (26px lines in a row, kept by the owner) and the
+  e-mail link inside a sentence on the Privacy screen (WCAG 2.5.8 exempts links in text).
+- **Depth on the review** (1.2, `src/ui/review/depthChoice.ts`): a "Depth 18" pill at the right of
+  the header (30 tall, `--fill`, `--text-2` 13px 600, 44 touch area); the header is a
+  `1fr auto 1fr` grid so the title stays centred. No pill before the depth is known; a plain pill
+  while analysing. After the analysis a tap opens a ConfirmSheet with a black primary button (red
+  is for deleting only): a different depth in Settings gives "Analyze again at depth 22?" and the
+  button Analyze again; the same depth gives "Analyzed at depth 18" and Open Settings. Analysing
+  again clears the old result at once and shows progress as for a new game. At depth 20 and 22 a
+  warning about the time (from `docs/BENCHMARKS.md`) shows in this sheet and under the Depth row
+  in Settings.
+- **Chess.com game links in Search** (1.2): the player comes from the link (`?username=`) or the
+  linked Chess.com account; with neither, a name field (as the search field: `--fill`, radius 12,
+  44 tall) and a full-width "Find game" button (`--tap` tall, `--primary`, pill) appear under it.
+- **Short game addresses** (1.2, `src/ui/app/gamePath.ts`, `OpenGameScreen`): `/lichess/<id>`,
+  `/chesscom/<id>` (live), `/chesscom/daily/<id>`, `?username=`. While loading, a MessageScreen
+  (mini board and "Opening the game…"); then the review replaces it (Back does not return here).
+  A Lichess game already on the device opens offline; a Chess.com game with no known player goes
+  to Search at the name question; a failure shows a MessageScreen with "Go to Search".
+- **Share to the app (Android)** (1.2, `share_target` in `public/manifest.webmanifest`,
+  `ShareScreen`): `GET /share?title&text&url`. A game link found in the shared text opens its
+  short address; a PGN is read on the device; anything else shows "That isn't a game". The service
+  worker answers `/share` from the stored app only, so shared text never reaches the server, and
+  the address is replaced at once.
+- **Add to Home Screen** (1.2, `HomeScreenGuide`, `/settings/home-screen`): the first row of
+  About in Settings, on iPhone and iPad only, when the app is not opened from the home screen
+  (`src/ui/app/homeScreen.ts`). A screen like Privacy: a grey box with the reason, four numbered
+  steps for Safari, then other browsers.
 
 ## Rules
 

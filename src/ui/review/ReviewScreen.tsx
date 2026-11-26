@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Navigate, useLocation, useParams } from 'react-router';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 import type { GameRecord } from '@/contract';
 import { local } from '@/data/local';
+import { readDepth } from '@/ui/app/analysisDepth';
 import { useAnalysisQueue } from '@/ui/app/analysisQueue';
 import { useApp } from '@/ui/app/appStore';
 import { ErrorScreen } from '@/ui/app/ErrorScreen';
@@ -9,12 +10,14 @@ import { loadCurrentAnalysis } from '@/ui/app/savedAnalysis';
 import { saveOpened, viewedGame } from '@/ui/app/viewedGames';
 import { usernameFor } from '@/ui/model/accounts';
 import { BackButton } from '@/ui/components/BackButton';
+import { ConfirmSheet } from '@/ui/components/ConfirmSheet';
 import { Icon } from '@/ui/components/Icon';
 import { Page } from '@/ui/components/Page';
 import { Segmented } from '@/ui/components/Segmented';
 import { useMessages } from '@/ui/i18n/LanguageContext';
 import { boardSide, moveLabel } from '@/ui/model/games';
 import { initialAnalysisState, stateFromAnalysis, type AnalysisState } from './analysisState';
+import { reanalysis, type Reanalysis } from './depthChoice';
 import { EvalGraph } from './EvalGraph';
 import { clockAt, formatClock } from './model';
 import { keyMoments } from './panel';
@@ -84,6 +87,7 @@ type Panel = 'move' | 'summary' | 'moves';
 function ReviewView({ game, saved }: { game: GameRecord; saved: AnalysisState | null }) {
   const text = useMessages();
   const location = useLocation();
+  const navigate = useNavigate();
   // The user's name in this game: the account of the site it came from (owner, 2026-11-15).
   const username = usernameFor(
     game,
@@ -101,6 +105,13 @@ function ReviewView({ game, saved }: { game: GameRecord; saved: AnalysisState | 
   const failed = useAnalysisQueue((s) => s.failed.includes(game.id));
   const failure = useAnalysisQueue((s) => (s.failed.includes(game.id) ? s.errors[game.id] : null));
   const enqueue = useAnalysisQueue((s) => s.enqueue);
+  // Analysing again from the depth pill (1.2): from then on the saved result is not shown, only
+  // the new run (then its finished result).
+  const [fresh, setFresh] = useState(false);
+  const [again, setAgain] = useState<{ open: boolean; plan: Reanalysis | null }>({
+    open: false,
+    plan: null,
+  });
   const lastPly = game.moves.length;
   const wide = useWide();
 
@@ -123,7 +134,7 @@ function ReviewView({ game, saved }: { game: GameRecord; saved: AnalysisState | 
     saveProgress(game.id, { ply: nav.ply, flipped: nav.flipped, at: Date.now() });
   }, [game.id, nav.ply, nav.flipped, saveProgress]);
 
-  const state = saved ?? finished ?? live ?? initialAnalysisState(game);
+  const state = (fresh ? null : saved) ?? finished ?? live ?? initialAnalysisState(game);
   const moments = useMemo(() => keyMoments(game, state, 3), [game, state]);
 
   // A line of the reader's own (owner, 2026-11-16): only once the whole game is analysed.
@@ -194,8 +205,59 @@ function ReviewView({ game, saved }: { game: GameRecord; saved: AnalysisState | 
     <header className={styles.header}>
       <BackButton />
       <h1 className="t-nav-title">{text.review.title}</h1>
-      <span />
+      {/* The depth of this analysis (1.2): once it is done, a tap offers to analyse again. */}
+      {state.depth === undefined ? (
+        <span />
+      ) : state.phase === 'done' ? (
+        <button
+          type="button"
+          aria-label={text.review.depth.pillButton(state.depth)}
+          className={`${styles.depthPill} t-caption w-600 tabular pressable tap-area`}
+          onClick={() => setAgain({ open: true, plan: reanalysis(state.depth!, readDepth()) })}
+        >
+          {text.review.depth.pill(state.depth)}
+        </button>
+      ) : (
+        <span className={`${styles.depthPill} t-caption w-600 tabular`}>
+          {text.review.depth.pill(state.depth)}
+        </span>
+      )}
     </header>
+  );
+  const plan = again.plan;
+  const sheet = plan && (
+    <ConfirmSheet
+      open={again.open}
+      title={
+        plan.kind === 'same'
+          ? text.review.depth.sameTitle(plan.depth)
+          : text.review.depth.againTitle(plan.to)
+      }
+      body={
+        plan.kind === 'same'
+          ? text.review.depth.sameBody
+          : [
+              text.review.depth.againBody(plan.from),
+              plan.slow ? text.settings.depthSlow(plan.to) : '',
+            ]
+              .filter(Boolean)
+              .join(' ')
+      }
+      confirmLabel={plan.kind === 'same' ? text.review.depth.openSettings : text.review.depth.again}
+      cancelLabel={text.review.depth.cancel}
+      tone="primary"
+      onCancel={() => setAgain({ open: false, plan })}
+      onConfirm={() => {
+        setAgain({ open: false, plan });
+        if (plan.kind === 'same') {
+          navigate('/settings');
+          return;
+        }
+        setFresh(true);
+        setFinished(null);
+        enqueue(game, { first: true });
+      }}
+    />
   );
   const boardBlock = (
     <>
@@ -349,6 +411,7 @@ function ReviewView({ game, saved }: { game: GameRecord; saved: AnalysisState | 
         <div className={styles.wideBoard}>{boardBlock}</div>
         <div className={styles.wideSide}>
           {header}
+          {sheet}
           {details}
           <MoveTable
             game={game}
@@ -365,6 +428,7 @@ function ReviewView({ game, saved }: { game: GameRecord; saved: AnalysisState | 
   return (
     <Page mode="fixed" className={styles.screen}>
       {header}
+      {sheet}
       <div className={styles.column}>
         {boardBlock}
         {details}

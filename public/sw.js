@@ -14,6 +14,7 @@
  * - A file is stored only when what came back is that kind of file: the server answers a missing
  *   file with the app's page, and that page must never be kept under a script's address (A3-03).
  * - Other sites (Lichess, Chess.com) are never cached: their answers go to the app as they are.
+ * - /share (something shared to the app, 1.2) never reaches the network with what was shared.
  * Plain JavaScript, no Capacitor-incompatible API. Registered only in production builds.
  *
  * The two names below are filled in by the build (vite.config.ts, plugin "service-worker-names").
@@ -147,6 +148,13 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === 'navigate') {
+    // Something shared to the app on Android (1.2, Web Share Target, GET /share?text=...): the
+    // shared text stays on the device. The page comes from the stored app only; with none stored
+    // yet, the app's page is fetched without the query.
+    if (url.pathname === '/share') {
+      event.respondWith(cachedShell().then((cached) => cached ?? fetch('/')));
+      return;
+    }
     event.respondWith(navigate(request));
     return;
   }

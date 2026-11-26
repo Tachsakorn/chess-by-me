@@ -235,6 +235,22 @@ button {
   color: var(--on-primary);
 }
 
+/* A control drawn shorter than a finger (a 30px chip, a 26px heading link) keeps a target at
+   least --tap high (1.2): an invisible box, centred, that does not move anything. Whatever holds
+   it must leave the room (no overflow: hidden closer than 7px above and below). */
+.tap-area {
+  position: relative;
+}
+.tap-area::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: max(100%, var(--tap));
+  transform: translateY(-50%);
+}
+
 /* A short action inside a line of text, such as "Try again in a moment" (Fable review 1.1 B5-04):
    the line's own type, underlined, with a full-height tap area that does not move the line. */
 .inline-action {

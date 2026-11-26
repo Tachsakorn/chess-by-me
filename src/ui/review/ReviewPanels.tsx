@@ -311,7 +311,7 @@ export function SummaryPanel({ game, state, moments, onPick }: SummaryPanelProps
           <button
             key={moment.ply}
             type="button"
-            className={`${styles.chip} t-caption w-700 pressable`}
+            className={`${styles.chip} t-caption w-700 pressable tap-area`}
             onClick={() => onPick(moment.ply)}
           >
             <span
@@ -421,7 +421,7 @@ export function MoveTable({ game, state, ply, onGoTo }: MoveTableProps) {
       <button
         type="button"
         aria-current={on ? 'true' : undefined}
-        className={`${styles.tableMove} ${on ? styles.tableOn : ''}`}
+        className={`${styles.tableMove} ${on ? styles.tableOn : ''} tap-area`}
         onClick={() => onGoTo(at)}
       >
         <span className={styles.tableBadgeSlot} aria-hidden="true">

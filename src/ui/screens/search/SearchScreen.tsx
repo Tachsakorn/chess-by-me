@@ -7,6 +7,7 @@ import {
   openPasted,
   parseGameLink,
   searchPlayers,
+  type GameLink,
   type PlayerHit,
 } from '@/data/lookup';
 import { reviewPath } from '@/ui/app/paths';
@@ -21,6 +22,7 @@ import { useApp } from '@/ui/app/appStore';
 import { TabBar } from '@/ui/components/TabBar';
 import { useMessages } from '@/ui/i18n/LanguageContext';
 import { GameRow } from '@/ui/screens/games/GamesScreen';
+import type { SearchHandover } from '@/ui/screens/open/OpenGameScreen';
 import { PgnSheet } from './PgnSheet';
 import styles from './SearchScreen.module.css';
 
@@ -29,7 +31,11 @@ type View =
   | { kind: 'busy' }
   | { kind: 'message'; text: string }
   | { kind: 'players'; query: string; lichess: PlayerHit[]; chesscom: PlayerHit[] }
-  | { kind: 'player'; player: PlayerHit; games: GameRecord[] | null; failed: boolean };
+  | { kind: 'player'; player: PlayerHit; games: GameRecord[] | null; failed: boolean }
+  /** A Chess.com link that needs a player's name to be found (1.2). */
+  | { kind: 'chesscom-name'; link: ChessComLink; text: string };
+
+type ChessComLink = Extract<GameLink, { source: 'chesscom' }>;
 
 /** Searches once typing has paused this long (Fable review A4-01: was 400 ms). */
 const DELAY = 800;
@@ -37,11 +43,21 @@ const DELAY = 800;
 export function SearchScreen() {
   const text = useMessages();
   const noAccount = useApp((s) => s.loaded && s.accounts === null);
+  const myChessCom = useApp((s) => s.accounts?.chesscom ?? null);
+  const [name, setName] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const field = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState('');
-  const [view, setView] = useState<View>({ kind: 'start' });
+  // A Chess.com link handed over by a short address or a share (1.2): shown in the field, and
+  // either looked up as if typed, or (`ask`) straight at the name question.
+  const handover = location.state as Partial<SearchHandover> | null;
+  const handed = typeof handover?.link === 'string' ? parseGameLink(handover.link) : null;
+  const [query, setQuery] = useState(handed ? handover!.link! : '');
+  const [view, setView] = useState<View>(() =>
+    handed?.source === 'chesscom' && typeof handover?.ask === 'string'
+      ? { kind: 'chesscom-name', link: handed, text: handover.ask }
+      : { kind: 'start' },
+  );
   const [sheet, setSheet] = useState(
     () => (location.state as { pgn?: boolean } | null)?.pgn === true,
   );
@@ -60,11 +76,52 @@ export function SearchScreen() {
         ? text.search.offline
         : text.search.gameNotLoaded;
 
+  /**
+   * A Chess.com link (1.2): read through the player the link names, the user's own Chess.com
+   * account, and a name typed here, in that order. With none of them, the name is asked for.
+   */
+  const openChessCom = async (link: ChessComLink, typed = '') => {
+    const names = [link.username, typed.trim(), myChessCom].filter(
+      (n): n is string => !!n && n.trim() !== '',
+    );
+    if (names.length === 0) {
+      setView({ kind: 'chesscom-name', link, text: text.search.chesscomWho });
+      return;
+    }
+    const mine = ++run.current;
+    setView({ kind: 'busy' });
+    const result = await fetchGameByLink({ ...link, username: null }, { signal: fresh() }, names);
+    if (mine !== run.current) return;
+    if (result.ok && result.games[0]) {
+      await saveOpened(result.games[0]);
+      void navigate(reviewPath(result.games[0].id));
+      return;
+    }
+    const code = result.ok ? 'invalid-pgn' : result.error.code;
+    if (code === 'no-games' || code === 'user-not-found') {
+      setName('');
+      setView({
+        kind: 'chesscom-name',
+        link,
+        text:
+          code === 'no-games'
+            ? text.search.chesscomNotFound(
+                [...new Set(names.map((n) => n.trim()))].join(` ${text.search.and} `),
+              )
+            : typed.trim()
+              ? text.search.chesscomNoPlayer(typed.trim())
+              : text.search.chesscomWho,
+      });
+      return;
+    }
+    setView({ kind: 'message', text: failureText(code) });
+  };
+
   const openLink = async (value: string) => {
     const link = parseGameLink(value);
     if (!link) return false;
     if (link.source === 'chesscom') {
-      setView({ kind: 'message', text: text.search.chesscomLink });
+      await openChessCom(link);
       return true;
     }
     const mine = ++run.current;
@@ -103,8 +160,10 @@ export function SearchScreen() {
     setView({ kind: 'players', query: term, ...result });
   };
 
-  // Searches once typing pauses.
+  // Searches once typing pauses. Not for the question already on screen when Search opens.
+  const askedOnOpen = useRef(view.kind === 'chesscom-name' ? query : null);
   useEffect(() => {
+    if (view.kind === 'chesscom-name' && query === askedOnOpen.current) return;
     if (view.kind === 'player') return;
     const timer = window.setTimeout(() => void search(query), DELAY);
     return () => window.clearTimeout(timer);
@@ -137,19 +196,22 @@ export function SearchScreen() {
       field.current?.focus();
       return;
     }
-    // Judged on the device first: only a Lichess game link is fetched, from Lichess only, and
+    // Judged on the device first: only a game link is fetched, from its own site only, and
     // nothing else on the clipboard ever leaves the device (Fable review A2-01).
     const mine = ++run.current;
     setView({ kind: 'busy' });
     const pasted = await openPasted(clip);
     if (mine !== run.current) return;
+    if (pasted.kind === 'chesscom-link') {
+      await openChessCom(pasted.link);
+      return;
+    }
     if (pasted.kind === 'game') {
       await saveOpened(pasted.game);
       void navigate(reviewPath(pasted.game.id));
       return;
     }
     const message = {
-      'chesscom-link': text.search.chesscomLink,
       'not-a-game': text.search.notAGameLink,
       failed:
         pasted.kind === 'failed' && pasted.error.code === 'network'
@@ -244,6 +306,43 @@ export function SearchScreen() {
           <p className={`${styles.message} t-body c-2`}>{text.search.searching}</p>
         )}
         {view.kind === 'message' && <p className={`${styles.message} t-body c-2`}>{view.text}</p>}
+        {view.kind === 'chesscom-name' && (
+          <form
+            className={styles.nameForm}
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (name.trim()) void openChessCom(view.link, name);
+            }}
+          >
+            <p id="chesscom-who" className="t-body c-2">
+              {view.text}
+            </p>
+            <div className={`${styles.field} ${styles.nameField} squircle`}>
+              <label htmlFor="chesscom-name" className="visually-hidden">
+                {text.search.chesscomName}
+              </label>
+              <input
+                id="chesscom-name"
+                value={name}
+                placeholder={text.search.chesscomName}
+                aria-describedby="chesscom-who"
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                enterKeyHint="search"
+                className={styles.input}
+                onChange={(event) => setName(event.target.value)}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={name.trim() === ''}
+              className={`${styles.findButton} t-headline pressable`}
+            >
+              {text.search.chesscomFind}
+            </button>
+          </form>
+        )}
         {view.kind === 'players' && (
           <div className={styles.results}>
             {(['lichess', 'chesscom'] as const).map((site) =>

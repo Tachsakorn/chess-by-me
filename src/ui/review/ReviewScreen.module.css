@@ -61,15 +61,36 @@
   }
 }
 
-
 .header {
   flex: none;
   padding: var(--pad-top-52) var(--gutter) 0;
   height: calc(var(--pad-top-52) + 44px);
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  /* equal sides keep the title centred whatever the depth pill's width (1.2) */
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   text-align: center;
+}
+.header > :first-child {
+  justify-self: start;
+}
+
+/* The depth of the analysis, top right (1.2): a grey pill like the Summary chips' ground. */
+.depthPill {
+  justify-self: end;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--r-pill);
+  background: var(--fill);
+  color: var(--text-2);
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+@media (hover: hover) {
+  button.depthPill:hover {
+    background: var(--eval-fill);
+  }
 }
 
 /* iPads, either way round: the wider evaluation bar with its figure (owner, 2026-11-15). */
@@ -327,7 +348,10 @@
 }
 
 .chips {
-  margin-top: 14px;
+  /* 7px of room above and below inside the clip, for the chips' 44px targets (.tap-area);
+     the margins take it back, so nothing moves */
+  margin: 7px 0 -7px;
+  padding: 7px 0;
   display: flex;
   gap: 8px;
   overflow: hidden;
@@ -389,8 +413,8 @@
 }
 
 /* ---- the stepper bar ---- */
+/* The glass is the class of FloatingBar.module.css that Stepper.tsx adds. */
 .stepper {
-  composes: glass from '../components/FloatingBar.module.css';
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
@@ -515,7 +539,8 @@
 }
 
 .tableRow {
-  height: 40px;
+  /* a finger's height, so each move's target is 44px without reaching into the next row (1.2) */
+  height: var(--tap);
   display: grid;
   grid-template-columns: 40px minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;

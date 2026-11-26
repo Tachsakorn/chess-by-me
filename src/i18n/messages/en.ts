@@ -174,6 +174,21 @@ export const en = {
     stopped: "Analysis didn't finish. Tap to try again.",
     /** Under "stopped": the reason's code (1.1.1, Fable review 1.1 B8-01). */
     details: (code: string) => `Details: ${code}`,
+    /** The depth of this game's analysis, top right of the review, and analysing again (1.2). */
+    depth: {
+      pill: (depth: number) => `Depth ${depth}`,
+      /** Spoken: the pill as a button. */
+      pillButton: (depth: number) => `Analyzed at depth ${depth}. Analyze again`,
+      againTitle: (depth: number) => `Analyze again at depth ${depth}?`,
+      againBody: (from: number) =>
+        `This game was analyzed at depth ${from}. The new result replaces it.`,
+      sameTitle: (depth: number) => `Analyzed at depth ${depth}`,
+      sameBody:
+        'That is the depth set in Settings, so analyzing again would give the same result. Pick another depth in Settings first.',
+      again: 'Analyze again',
+      openSettings: 'Open Settings',
+      cancel: 'Cancel',
+    },
     stepper: {
       label: 'Step through the game',
       start: 'Go to start',
@@ -246,7 +261,16 @@ export const en = {
       `This PGN has ${count} games. The first one will open (${players}).`,
     noPlayer: (name: string) => `No player named “${name}” on Lichess or Chess.com`,
     close: 'Close',
-    chesscomLink: "Chess.com game links can't be opened yet. Paste the PGN instead.",
+    /** A Chess.com link opens through a player's games (1.2): no player known yet. */
+    chesscomWho:
+      "Chess.com links open through a player's games. Type the username of either player.",
+    /** Searched: the names whose games were read, joined with "and". */
+    chesscomNotFound: (names: string) =>
+      `This game isn't in ${names}'s games. Try the other player, or paste the PGN.`,
+    chesscomNoPlayer: (name: string) => `No Chess.com player named “${name}”.`,
+    chesscomName: 'Chess.com username',
+    chesscomFind: 'Find game',
+    and: 'and',
     gameNotLoaded: "This game couldn't be loaded.",
     notAGameLink: "That isn't a game link.",
     offline: "Can't reach Lichess or Chess.com right now.",
@@ -289,11 +313,17 @@ export const en = {
     depthDefault: (depth: number) => `${depth} · Default`,
     analysisNote:
       'Higher depth is more accurate but slower. Games already analyzed keep their results.',
+    /** Under the Depth row at 20 and 22, and in the review before analysing again (1.2). The
+     *  figures were measured: one game, 14 s at 18, 31 s at 20, 65 s at 22 (docs/BENCHMARKS.md). */
+    depthSlow: (depth: number) =>
+      `Depth ${depth} takes ${depth >= 22 ? 'about 4 to 5 times' : 'about twice'} as long as depth 18.`,
     buyCoffee: 'Buy me a coffee',
     contact: 'Contact us',
     version: 'Version',
     licenses: 'Open-source licenses',
     privacy: 'Privacy',
+    /** Only on an iPhone or iPad, until the app is opened from the Home Screen (1.2). */
+    homeScreen: 'Add to Home Screen',
     connected: 'Connected',
     engineValue: (version: string, variant: string) => `Stockfish ${version} ${variant}`,
   },
@@ -323,6 +353,33 @@ export const en = {
       "Couldn't save on this device. It may be full: free some space, or clear saved data in Settings.",
     dismiss: 'Close',
   },
+  /** A game opened from the app's short address, chessby.me/lichess/<id> (1.2). */
+  open: {
+    opening: 'Opening the game…',
+    from: (site: Site) => `From ${siteNames[site]}`,
+    failed: "This game couldn't be loaded",
+    toSearch: 'Go to Search',
+  },
+  /** Settings › Add to Home Screen, on an iPhone or iPad (1.2). Safari's own words in quotes. */
+  homeScreen: {
+    title: 'Add to Home Screen',
+    why: 'Chess by me then opens from its own icon, full screen, and the games already on your phone open without the internet.',
+    stepsTitle: 'In Safari on iPhone',
+    steps: [
+      'Open chessby.me in Safari.',
+      'Tap Share: the square with an arrow pointing up. If you can’t see it, tap ⋯ first.',
+      'Tap “Add to Home Screen”. You may need to tap “View More” to see it.',
+      'Leave “Open as Web App” on, then tap “Add”.',
+    ],
+    otherTitle: 'Other browsers',
+    other:
+      'Chrome and other browsers on iPhone have the same Share › Add to Home Screen. On Android, the browser offers to install the app itself.',
+  },
+  /** Something shared to the app on Android with no game in it (1.2). */
+  share: {
+    nothing: "That isn't a game",
+    hint: 'Share a game from Lichess or Chess.com, or a PGN, to review it here.',
+  },
   error: {
     title: 'Something went wrong',
     body: "This page couldn't be shown. What is saved on this device is safe.",
@@ -337,7 +394,7 @@ export const en = {
       },
       {
         title: 'Sent to Lichess and Chess.com',
-        body: 'To load games, your browser asks Lichess and Chess.com for the usernames you connect or look up, and for the game of a Lichess link you paste. Like any website, they see your IP address. Nothing else is sent.',
+        body: 'To load games, your browser asks Lichess and Chess.com for the usernames you connect or look up, and for the game of a link you paste or share (a Chess.com game is looked up in a player’s games by their username). Like any website, they see your IP address. Nothing else is sent.',
       },
       {
         title: 'Not in this app',

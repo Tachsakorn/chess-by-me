@@ -125,6 +125,18 @@ export const th: Messages = {
     accuracyOf: (name) => `ความแม่นยำของ ${name}`,
     stopped: 'วิเคราะห์ไม่สำเร็จ แตะเพื่อลองใหม่',
     details: (code) => `รายละเอียด: ${code}`, // new
+    // new (1.2)
+    depth: {
+      pill: (depth) => `ความลึก ${depth}`,
+      pillButton: (depth) => `วิเคราะห์ที่ความลึก ${depth} แตะเพื่อวิเคราะห์ใหม่`,
+      againTitle: (depth) => `วิเคราะห์ใหม่ที่ความลึก ${depth}?`,
+      againBody: (from) => `เกมนี้วิเคราะห์ไว้ที่ความลึก ${from} ผลใหม่จะแทนผลเดิม`,
+      sameTitle: (depth) => `วิเคราะห์ที่ความลึก ${depth} แล้ว`,
+      sameBody: 'เป็นความลึกเดียวกับที่ตั้งไว้ วิเคราะห์ใหม่ก็ได้ผลเท่าเดิม เลือกความลึกอื่นในหน้าตั้งค่าก่อน',
+      again: 'วิเคราะห์ใหม่',
+      openSettings: 'ไปที่ตั้งค่า',
+      cancel: 'ยกเลิก',
+    },
     stepper: {
       label: 'เดินดูทีละตา', // new
       start: 'ไปตาแรก', // new
@@ -185,7 +197,13 @@ export const th: Messages = {
     pgnMany: (count, players) => `PGN นี้มี ${count} เกม จะเปิดเกมแรก (${players})`, // owner, 2026-11-15
     noPlayer: (name) => `ไม่พบผู้เล่นชื่อ “${name}” บน Lichess หรือ Chess.com`, // new
     close: 'ปิด', // new
-    chesscomLink: 'ยังเปิดลิงก์เกมของ Chess.com ไม่ได้ ใช้วาง PGN แทน', // new
+    // new (1.2)
+    chesscomWho: 'ลิงก์ Chess.com เปิดผ่านเกมของผู้เล่น พิมพ์ชื่อผู้ใช้ของผู้เล่นคนใดคนหนึ่ง',
+    chesscomNotFound: (names) => `ไม่พบเกมนี้ในเกมของ ${names} ลองชื่อของผู้เล่นอีกคน หรือวาง PGN แทน`,
+    chesscomNoPlayer: (name) => `ไม่มีผู้เล่นชื่อ “${name}” บน Chess.com`,
+    chesscomName: 'ชื่อผู้ใช้ Chess.com',
+    chesscomFind: 'หาเกม',
+    and: 'และ',
     gameNotLoaded: 'โหลดเกมนี้ไม่ได้', // new
     notAGameLink: 'นี่ไม่ใช่ลิงก์เกม',
     offline: 'ติดต่อ Lichess หรือ Chess.com ไม่ได้ตอนนี้', // new
@@ -223,11 +241,14 @@ export const th: Messages = {
     depth: 'ความลึก', // owner, 1.1 round 1
     depthDefault: (depth) => `${depth} · ค่าเริ่มต้น`, // owner, 1.1 round 1
     analysisNote: 'ยิ่งลึกยิ่งแม่นแต่ช้าลง เกมที่วิเคราะห์แล้วจะใช้ผลเดิม', // owner, 1.1 round 1
+    depthSlow: (depth) =>
+      `ความลึก ${depth} ใช้เวลาราว ${depth >= 22 ? '4–5 เท่า' : '2 เท่า'}ของความลึก 18`, // new (1.2)
     buyCoffee: 'เลี้ยงกาแฟผู้พัฒนา',
     contact: 'ติดต่อเรา', // owner, 2026-11-15
     version: 'เวอร์ชัน',
     licenses: 'ไลเซนส์โอเพนซอร์ส',
     privacy: 'ความเป็นส่วนตัว',
+    homeScreen: 'เพิ่มลงหน้าจอโฮม', // new (1.2)
     connected: 'เชื่อมแล้ว', // new
     engineValue: en.settings.engineValue,
   },
@@ -254,6 +275,33 @@ export const th: Messages = {
     saveFailed: 'บันทึกลงเครื่องไม่ได้ พื้นที่อาจเต็ม ลองเคลียร์พื้นที่ในเครื่อง หรือล้างข้อมูลที่เก็บไว้ในตั้งค่า',
     dismiss: 'ปิด',
   },
+  // new (1.2)
+  open: {
+    opening: 'กำลังเปิดเกม…',
+    from: (site) => `จาก ${siteNames[site]}`,
+    failed: 'โหลดเกมนี้ไม่ได้',
+    toSearch: 'ไปที่ค้นหา',
+  },
+  // new (1.2) · Safari's labels in quotes to be checked on an iPhone set to Thai
+  homeScreen: {
+    title: 'เพิ่มลงหน้าจอโฮม',
+    why: 'แล้ว Chess by me จะเปิดจากไอคอนของตัวเอง เต็มจอ และเกมที่อยู่ในเครื่องแล้วเปิดได้แม้ไม่มีเน็ต',
+    stepsTitle: 'ใน Safari บน iPhone',
+    steps: [
+      'เปิด chessby.me ใน Safari',
+      'แตะปุ่ม แชร์ (สี่เหลี่ยมที่มีลูกศรชี้ขึ้น) ถ้าไม่เห็น ให้แตะ ⋯ ก่อน',
+      'แตะ “เพิ่มไปยังหน้าจอโฮม” ถ้าไม่เห็น ให้แตะ “ดูเพิ่มเติม” ก่อน',
+      'เปิด “เปิดเป็นเว็บแอป” ไว้ แล้วแตะ “เพิ่ม”',
+    ],
+    otherTitle: 'เบราว์เซอร์อื่น',
+    other:
+      'Chrome และเบราว์เซอร์อื่นบน iPhone ใช้ แชร์ › เพิ่มไปยังหน้าจอโฮม เหมือนกัน ส่วน Android เบราว์เซอร์จะเสนอให้ติดตั้งแอปเอง',
+  },
+  // new (1.2)
+  share: {
+    nothing: 'ไม่ใช่เกมหมากรุก',
+    hint: 'แชร์เกมจาก Lichess หรือ Chess.com หรือ PGN มาที่นี่เพื่อรีวิว',
+  },
   error: {
     title: 'มีบางอย่างผิดพลาด',
     body: 'แสดงหน้านี้ไม่ได้ ข้อมูลที่เก็บในเครื่องนี้ยังอยู่ครบ',
@@ -268,7 +316,7 @@ export const th: Messages = {
       },
       {
         title: 'ส่งไปที่ Lichess และ Chess.com',
-        body: 'เพื่อโหลดเกม เบราว์เซอร์จะขอข้อมูลจาก Lichess และ Chess.com โดยตรง ด้วยชื่อผู้ใช้ที่คุณเชื่อมหรือค้นหา และเกมจากลิงก์ Lichess ที่คุณวาง เว็บเหล่านั้นเห็นหมายเลข IP ของคุณเหมือนเว็บทั่วไป นอกจากนี้ไม่มีอะไรถูกส่งออกไป',
+        body: 'เพื่อโหลดเกม เบราว์เซอร์จะขอข้อมูลจาก Lichess และ Chess.com โดยตรง ด้วยชื่อผู้ใช้ที่คุณเชื่อมหรือค้นหา และเกมจากลิงก์ที่คุณวางหรือแชร์ (เกม Chess.com หาจากเกมของผู้เล่นด้วยชื่อผู้ใช้) เว็บเหล่านั้นเห็นหมายเลข IP ของคุณเหมือนเว็บทั่วไป นอกจากนี้ไม่มีอะไรถูกส่งออกไป',
       },
       {
         title: 'สิ่งที่แอปนี้ไม่มี',

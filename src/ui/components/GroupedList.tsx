@@ -40,6 +40,10 @@ interface RowProps {
   /** Something laid over the whole row, such as a real <select>. */
   overlay?: ReactNode;
   dotLabel?: string;
+  /** A line under the label that belongs to this row alone (the row grows to fit it). Give it
+   *  `noteId` so the row's control can point at it with aria-describedby. */
+  note?: string;
+  noteId?: string;
 }
 
 /**
@@ -70,7 +74,19 @@ export function SwitchRow({
 }
 
 /** One 48px row: label, value, chevron when it leads somewhere. */
-export function Row({ label, value, dot, to, state, onClick, href, overlay, dotLabel }: RowProps) {
+export function Row({
+  label,
+  value,
+  dot,
+  to,
+  state,
+  onClick,
+  href,
+  overlay,
+  dotLabel,
+  note,
+  noteId,
+}: RowProps) {
   const leads = Boolean(to || onClick || href || overlay);
   const body = (
     <>
@@ -80,10 +96,15 @@ export function Row({ label, value, dot, to, state, onClick, href, overlay, dotL
       )}
       {value !== undefined && <span className={`${styles.value} t-row c-3 tabular`}>{value}</span>}
       {leads && <Icon name="chevron" size={14} stroke={3} className={styles.chevron} />}
+      {note && (
+        <span id={noteId} className={`${styles.rowNote} t-caption c-3`}>
+          {note}
+        </span>
+      )}
       {overlay}
     </>
   );
-  const className = `${styles.row}${leads ? ` ${styles.leads} pressable` : ''}`;
+  const className = `${styles.row}${note ? ` ${styles.withNote}` : ''}${leads ? ` ${styles.leads} pressable` : ''}`;
   if (to) {
     return (
       <Link to={to} state={state} className={className}>

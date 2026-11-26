@@ -72,6 +72,25 @@ describe('worker.js', () => {
     expect(page.headers.get('Content-Type')).toContain('text/html');
   });
 
+  // 1.2: the short game addresses are app addresses, answered with the page (the app reads them).
+  it.each([
+    'https://chessby.me/lichess/LAGvRNey',
+    'https://chessby.me/chesscom/188816899405',
+    'https://chessby.me/chesscom/daily/747757185?username=erik',
+  ])('serves the app for %s', async (url) => {
+    const { env, asked } = assets(files);
+    const response = await handle(new Request(url), env);
+    expect(response.status).toBe(200);
+    expect(response.headers.get('Content-Type')).toContain('text/html');
+    expect(asked).toEqual([new URL(url).pathname]);
+  });
+
+  it('sends www to the same short address', async () => {
+    const { env } = assets(files);
+    const response = await handle(new Request('https://www.chessby.me/chesscom/1?username=a'), env);
+    expect(response.headers.get('Location')).toBe('https://chessby.me/chesscom/1?username=a');
+  });
+
   // Fable review 1.1 B1-01: a missing script was answered with the page, 200, kept for a year.
   it.each([
     'https://chessby.me/assets/does-not-exist.js',

@@ -155,3 +155,23 @@ request `cancelled`; a successful answer with nothing importable `no-games` (fet
 `[%clk h:mm:ss(.f)]` comment after a move gives the mover's remaining time. Time spent =
 the same side's previous clock (initial time for its first move) + increment - this clock, floored
 at 0.
+
+## One Chess.com game from its link (1.2)
+
+`src/data/chesscomGame.ts`. The Published-Data API (https://www.chess.com/news/view/published-data-api)
+has no "game by id"; games are listed per player and per month they ended:
+`GET https://api.chess.com/pub/player/{username}/games/archives` and
+`GET https://api.chess.com/pub/player/{username}/games/{YYYY}/{MM}`. A game's `url` is
+`https://www.chess.com/game/{live|daily}/{id}`. Both send `Access-Control-Allow-Origin: *`
+(checked 2026-11-26).
+
+- The player: `?username=` of a shared link, then the user's own Chess.com account, then a name
+  typed in Search. Nothing is sent before one of them is known.
+- Live ids grow with time (checked on two real months: every live id of hikaru's 2026/11 is above
+  every one of 2026/10), so live games are found with the newest month first, then a binary search
+  over the months (at most 16 months read). A game filed under the month it ended in can sit in
+  the month next to the one its id points to; both neighbours are read.
+- Daily ids are when a game started, and a daily game lasts weeks: read back month by month, at
+  most 24 months.
+- Live check, real API (2026-11-26): erik's live game of 2025/01 found in 9 requests, 4.5 s; a
+  daily game of 2025/01 in 3.6 s; a live game not in hikaru's archives answered in 8 requests, 7.2 s.

@@ -31,6 +31,23 @@ test('release - the headers of the site, and a missing script is a 404 never kep
   expect(app.headers()['content-type']).toContain('text/html');
 });
 
+// 1.2: the short game addresses reach the app through the single-page fallback of the Worker.
+test('release - the short game addresses are the app', async ({ request, page }) => {
+  for (const path of [
+    '/lichess/LAGvRNey',
+    '/chesscom/188816899405',
+    '/chesscom/daily/747757185?username=erik',
+  ]) {
+    const answer = await request.get(path);
+    expect(answer.status(), path).toBe(200);
+    expect(answer.headers()['content-type'], path).toContain('text/html');
+  }
+  // In a browser, with no player known, a Chess.com address goes on in Search (no request out).
+  await page.goto('/chesscom/daily/747757185');
+  await page.waitForURL(/\/search$/);
+  await expect(page.getByText('Type the username of either player.')).toBeVisible();
+});
+
 test('release - a full flow with no console error and no CSP report', async ({
   page,
   context,

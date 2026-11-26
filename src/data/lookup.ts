@@ -8,15 +8,25 @@
  * - Lichess names: GET https://lichess.org/api/player/autocomplete?term=..&object=true
  * - Chess.com names: GET https://api.chess.com/pub/player/{username} (exact names only: the
  *   Published-Data API has no search).
- * - Chess.com has no public API for one game by its id, so its links cannot be opened yet.
+ * - Chess.com one game (1.2): its public API has no game by id, so a link is opened through a
+ *   player's monthly archives (chesscomGame.ts).
  */
 import type { GameRecord, ImportError, ImportResult, Termination } from '@/contract';
+import { fetchChessComGame, gameIdOf, type ChessComKind } from './chesscomGame';
 import { failure, httpFailure, type Failed, type FetchOptions } from './errors';
 import { siteGetJson } from './http';
 import { gameFromPgn, parsePgn } from './pgn';
 import type { AccountSource } from './ratings';
 
-export type GameLink = { source: 'lichess'; id: string } | { source: 'chesscom'; id: string };
+export type GameLink =
+  | { source: 'lichess'; id: string }
+  | {
+      source: 'chesscom';
+      id: string;
+      kind: ChessComKind;
+      /** The player a shared link names (`?username=`): the first whose games are read. */
+      username: string | null;
+    };
 
 /** Lichess paths that are pages, not games. */
 const LICHESS_PAGES = new Set([
@@ -47,11 +57,25 @@ export function parseGameLink(text: string): GameLink | null {
     return null;
   }
   if (host === 'chess.com') {
-    const at = parts.indexOf('game');
-    const id = at >= 0 ? parts[at + 2] : undefined;
-    if (id && /^\d+$/.test(id) && ['live', 'daily'].includes(parts[at + 1] ?? '')) {
-      return { source: 'chesscom', id };
-    }
+    const game = gameIdOf(url.pathname);
+    const username = url.searchParams.get('username')?.trim() || null;
+    if (game) return { source: 'chesscom', ...game, username };
+  }
+  return null;
+}
+
+/**
+ * The first game link inside a longer text, as apps share it: "Check out this game:
+ * https://www.chess.com/game/live/123?username=a" (1.2, Web Share Target). Null when there is none.
+ */
+export function findGameLink(text: string): GameLink | null {
+  const whole = parseGameLink(text);
+  if (whole) return whole;
+  for (const word of text.split(/\s+/)) {
+    const link = /(lichess\.org|chess\.com)\//i.test(word)
+      ? parseGameLink(word.replace(/[)\].,!?'"]+$/, ''))
+      : null;
+    if (link) return link;
   }
   return null;
 }
@@ -75,12 +99,22 @@ const STATUS_TERMINATION: Record<string, Termination> = {
   timeout: 'abandonment',
 };
 
+/**
+ * Fetches the game of a link. A Chess.com game is looked for in the archives of the player the
+ * link names, then of `players` (the user's own account, a name they typed), in that order.
+ */
 export async function fetchGameByLink(
   link: GameLink,
   options: FetchOptions = {},
+  players: readonly string[] = [],
 ): Promise<ImportResult> {
-  if (link.source === 'chesscom')
-    return failure('source-unavailable', 'no public API for one game');
+  if (link.source === 'chesscom') {
+    return fetchChessComGame(
+      { kind: link.kind, id: link.id },
+      [link.username ?? '', ...players],
+      options,
+    );
+  }
   const got = await siteGetJson<LichessGameJson>(
     `https://lichess.org/game/export/${link.id}?pgnInJson=true&clocks=true&opening=true`,
     options,
@@ -115,7 +149,8 @@ export async function fetchGameByLink(
 
 export type PasteOutcome =
   | { kind: 'game'; game: GameRecord }
-  | { kind: 'chesscom-link' }
+  /** Not fetched here: the screen knows whose archives to read (fetchGameByLink). */
+  | { kind: 'chesscom-link'; link: Extract<GameLink, { source: 'chesscom' }> }
   | { kind: 'not-a-game' }
   | { kind: 'failed'; error: ImportError };
 
@@ -126,7 +161,7 @@ export type PasteOutcome =
  */
 export async function openPasted(text: string, options: FetchOptions = {}): Promise<PasteOutcome> {
   const link = parseGameLink(text);
-  if (link?.source === 'chesscom') return { kind: 'chesscom-link' };
+  if (link?.source === 'chesscom') return { kind: 'chesscom-link', link };
   if (link) {
     const result = await fetchGameByLink(link, options);
     if (!result.ok) return { kind: 'failed', error: result.error };

@@ -2,6 +2,7 @@ import { NavLink } from 'react-router';
 import { useMessages } from '@/ui/i18n/LanguageContext';
 import { Icon } from './Icon';
 import type { IconName } from './icons';
+import floating from './FloatingBar.module.css';
 import styles from './TabBar.module.css';
 
 const TABS: { to: string; icon: IconName; key: 'home' | 'games' | 'courses' | 'search' }[] = [
@@ -15,7 +16,7 @@ const TABS: { to: string; icon: IconName; key: 'home' | 'games' | 'courses' | 's
 export function TabBar() {
   const text = useMessages().nav;
   return (
-    <nav aria-label={text.mainMenu} className={styles.bar}>
+    <nav aria-label={text.mainMenu} className={`${floating.glass} ${styles.bar}`}>
       {TABS.map((tab) => (
         <NavLink
           key={tab.to}

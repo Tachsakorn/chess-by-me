@@ -40,6 +40,10 @@
   background: var(--danger);
   color: var(--on-primary);
 }
+/* Not a deletion (analysing again, 1.2): the main button's black. */
+.primary {
+  background: var(--primary);
+}
 
 .cancel {
   margin-top: 4px;

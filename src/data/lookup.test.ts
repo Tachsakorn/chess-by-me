@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { fetchGameByLink, openPasted, parseGameLink, searchPlayers } from './lookup';
+import { fetchGameByLink, findGameLink, openPasted, parseGameLink, searchPlayers } from './lookup';
 
 const recorded = readFileSync(
   fileURLToPath(new URL('./__fixtures__/lichess-user.ndjson', import.meta.url)),
@@ -35,21 +35,58 @@ describe('parseGameLink', () => {
     });
   });
 
-  it('reads Chess.com game links', () => {
+  it('reads Chess.com game links, live and daily, with the player named in them', () => {
     expect(parseGameLink('https://www.chess.com/game/live/123456789')).toEqual({
       source: 'chesscom',
       id: '123456789',
+      kind: 'live',
+      username: null,
     });
     expect(parseGameLink('https://chess.com/game/daily/987')).toEqual({
       source: 'chesscom',
       id: '987',
+      kind: 'daily',
+      username: null,
     });
+    expect(parseGameLink('https://www.chess.com/game/live/55?username=Hikaru&move=3')).toEqual({
+      source: 'chesscom',
+      id: '55',
+      kind: 'live',
+      username: 'Hikaru',
+    });
+    expect(parseGameLink('www.chess.com/analysis/game/live/77?tab=review')).toMatchObject({
+      id: '77',
+      kind: 'live',
+    });
+    expect(parseGameLink('https://www.chess.com/member/hikaru')).toBeNull();
   });
 
   it('is null for a name or another page', () => {
     expect(parseGameLink('ni5hu')).toBeNull();
     expect(parseGameLink('https://lichess.org/@/ni5hu')).toBeNull();
     expect(parseGameLink('https://lichess.org/training')).toBeNull();
+  });
+});
+
+describe('findGameLink', () => {
+  it('finds the game link in the text an app shares', () => {
+    expect(
+      findGameLink('Check out this #chess game: https://www.chess.com/game/live/123?username=ab'),
+    ).toEqual({ source: 'chesscom', id: '123', kind: 'live', username: 'ab' });
+    expect(findGameLink('(see https://lichess.org/LAGvRNey).')).toEqual({
+      source: 'lichess',
+      id: 'LAGvRNey',
+    });
+    expect(findGameLink('https://lichess.org/LAGvRNey')).toEqual({
+      source: 'lichess',
+      id: 'LAGvRNey',
+    });
+  });
+
+  it('is null without one', () => {
+    expect(findGameLink('Look at my profile https://lichess.org/@/ni5hu')).toBeNull();
+    expect(findGameLink('1. e4 e5 2. Nf3')).toBeNull();
+    expect(findGameLink('')).toBeNull();
   });
 });
 
@@ -80,9 +117,37 @@ describe('fetchGameByLink', () => {
     expect(result).toMatchObject({ ok: false, error: { code: 'user-not-found' } });
   });
 
-  it('cannot open a Chess.com link yet: there is no public API for one game', async () => {
-    const result = await fetchGameByLink({ source: 'chesscom', id: '1' }, { fetch: fakeFetch({}) });
-    expect(result).toMatchObject({ ok: false, error: { code: 'source-unavailable' } });
+  /** Every request recorded and answered 404. */
+  function notFound() {
+    const calls: string[] = [];
+    const doFetch = (async (input: string) => {
+      calls.push(String(input));
+      return new Response('x', { status: 404 });
+    }) as unknown as typeof fetch;
+    return { calls, doFetch };
+  }
+
+  it('opens a Chess.com link only through a player: none known, nothing asked', async () => {
+    const { calls, doFetch } = notFound();
+    const result = await fetchGameByLink(
+      { source: 'chesscom', id: '1', kind: 'live', username: null },
+      { fetch: doFetch },
+    );
+    expect(result).toMatchObject({ ok: false, error: { code: 'user-not-found' } });
+    expect(calls).toEqual([]);
+  });
+
+  it('asks Chess.com for the archives of the player in the link, then of the names given', async () => {
+    const { calls, doFetch } = notFound();
+    await fetchGameByLink(
+      { source: 'chesscom', id: '1', kind: 'live', username: 'Eric' },
+      { fetch: doFetch },
+      ['me'],
+    );
+    expect(calls).toEqual([
+      'https://api.chess.com/pub/player/eric/games/archives',
+      'https://api.chess.com/pub/player/me/games/archives',
+    ]);
   });
 });
 
@@ -153,10 +218,11 @@ describe('openPasted', () => {
     }
   });
 
-  it('does not send a Chess.com link anywhere, as it cannot be opened', async () => {
+  it('hands a Chess.com link back without sending it: the screen knows whose games to read', async () => {
     const { calls, doFetch } = spyFetch();
     expect(await openPasted('https://www.chess.com/game/live/123', { fetch: doFetch })).toEqual({
       kind: 'chesscom-link',
+      link: { source: 'chesscom', id: '123', kind: 'live', username: null },
     });
     expect(calls).toEqual([]);
   });

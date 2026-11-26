@@ -2,6 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { Icon } from '@/ui/components/Icon';
 import { useMessages } from '@/ui/i18n/LanguageContext';
 import type { NavigationAction } from './model';
+import floating from '@/ui/components/FloatingBar.module.css';
 import styles from './ReviewScreen.module.css';
 
 interface StepperProps {
@@ -81,7 +82,7 @@ export function Stepper({ can, onAction, docked = false }: StepperProps) {
   return (
     <nav
       aria-label={text.label}
-      className={`${styles.stepper}${docked ? ` ${styles.docked}` : ''}`}
+      className={`${floating.glass} ${styles.stepper}${docked ? ` ${styles.docked}` : ''}`}
     >
       <button
         type="button"

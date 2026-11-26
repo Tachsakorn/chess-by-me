@@ -106,12 +106,12 @@
   top: calc(var(--row) * var(--sq) + var(--pad));
 }
 
-/* The shade of the other kind of square. */
+/* A darker blue on either kind of square, for 4.5:1 (1.2; was the other square's shade). */
 .onLight {
-  color: var(--sq-d);
+  color: var(--board-coord-on-light);
 }
 .onDark {
-  color: var(--sq-l);
+  color: var(--board-coord-on-dark);
 }
 
 /* ---- the quality badge (owner, 2026-11-15) ----

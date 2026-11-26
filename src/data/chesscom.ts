@@ -10,7 +10,7 @@ interface ChessComPlayer {
   result?: string;
 }
 
-interface ChessComGame {
+export interface ChessComGame {
   url?: string;
   pgn?: string;
   uuid?: string;
@@ -45,7 +45,7 @@ function terminationOf(game: ChessComGame): Termination | undefined {
   return code === undefined ? undefined : RESULT_TERMINATION[code];
 }
 
-function toRecord(game: ChessComGame): GameRecord | null {
+export function toRecord(game: ChessComGame): GameRecord | null {
   if (game.rules !== 'chess' || typeof game.pgn !== 'string' || !game.uuid) return null;
   const parsed = parseTimeControl(game.time_control);
   const timeClass =

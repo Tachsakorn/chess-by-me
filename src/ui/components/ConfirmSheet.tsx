@@ -13,6 +13,7 @@ export function ConfirmSheet({
   confirmLabel,
   cancelLabel,
   busy = false,
+  tone = 'danger',
   onConfirm,
   onCancel,
 }: {
@@ -22,6 +23,8 @@ export function ConfirmSheet({
   confirmLabel: string;
   cancelLabel: string;
   busy?: boolean;
+  /** `danger` (red) for deleting; `primary` for an action that only redoes something. */
+  tone?: 'danger' | 'primary';
   onConfirm(): void;
   onCancel(): void;
 }) {
@@ -63,7 +66,7 @@ export function ConfirmSheet({
           type="button"
           disabled={busy}
           aria-busy={busy}
-          className={`${styles.confirm} t-nav-title pressable`}
+          className={`${styles.confirm}${tone === 'primary' ? ` ${styles.primary}` : ''} t-nav-title pressable`}
           onClick={onConfirm}
         >
           {confirmLabel}

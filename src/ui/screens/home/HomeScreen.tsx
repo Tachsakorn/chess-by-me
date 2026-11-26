@@ -147,7 +147,9 @@ export function HomeScreen() {
         <section className={styles.section}>
           <div className={styles.recentHead}>
             <h2 className="t-section">
-              <Link to="/games">{text.home.recentGames}</Link>
+              <Link to="/games" className="tap-area">
+                {text.home.recentGames}
+              </Link>
             </h2>
             <Icon name="chevron" size={16} stroke={3} className="c-3" />
           </div>

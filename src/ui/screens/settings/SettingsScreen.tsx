@@ -9,7 +9,9 @@ import {
   type DepthChoice,
 } from '@/ui/app/analysisDepth';
 import { useApp } from '@/ui/app/appStore';
-import { useState } from 'react';
+import { offerHomeScreen, thisDevice } from '@/ui/app/homeScreen';
+import { isSlowDepth } from '@/ui/review/depthChoice';
+import { useId, useState } from 'react';
 import { BUY_ME_A_COFFEE_URL } from '@/ui/app/config';
 import { contactMailto } from '@/ui/app/contact';
 import { lastAnalysisFailure } from '@/ui/app/analysisQueue';
@@ -30,6 +32,9 @@ export function SettingsScreen() {
   const accounts = useApp((s) => s.accounts);
   const [sound, setSound] = useState(soundEnabled);
   const [depth, setDepth] = useState(readDepth);
+  const languageNoteId = useId();
+  const [homeScreen] = useState(() => offerHomeScreen(thisDevice()));
+  const depthNoteId = useId();
   const t = text.settings;
   const depthName = (choice: DepthChoice) =>
     choice === DEFAULT_DEPTH ? t.depthDefault(choice) : String(choice);
@@ -61,8 +66,8 @@ export function SettingsScreen() {
         {account('lichess')}
         {account('chesscom')}
       </Group>
-      {/* Sound first, so the language note sits right under the Language row (owner, 1.1 round 1). */}
-      <Group title={t.groups.general} note={t.languageNote} className={styles.group}>
+      {/* The language note belongs to the Language row alone, so it sits inside that row (1.2). */}
+      <Group title={t.groups.general} className={styles.group}>
         <SwitchRow
           label={t.sound}
           checked={sound}
@@ -74,9 +79,12 @@ export function SettingsScreen() {
         <Row
           label={t.language}
           value={languageValue}
+          note={t.languageNote}
+          noteId={languageNoteId}
           overlay={
             <select
               aria-label={t.language}
+              aria-describedby={languageNoteId}
               className={styles.select}
               value={setting}
               onChange={(event) => setSetting(event.target.value as LanguageSetting)}
@@ -97,9 +105,13 @@ export function SettingsScreen() {
         <Row
           label={t.depth}
           value={depthName(depth)}
+          // 20 and 22 take much longer: said under the row (1.2).
+          note={isSlowDepth(depth) ? t.depthSlow(depth) : undefined}
+          noteId={depthNoteId}
           overlay={
             <select
               aria-label={t.depth}
+              aria-describedby={isSlowDepth(depth) ? depthNoteId : undefined}
               className={styles.select}
               value={depth}
               onChange={(event) => {
@@ -118,6 +130,7 @@ export function SettingsScreen() {
         />
       </Group>
       <Group title={t.groups.about} className={styles.group}>
+        {homeScreen && <Row label={t.homeScreen} to="/settings/home-screen" />}
         {BUY_ME_A_COFFEE_URL && <Row label={t.buyCoffee} href={BUY_ME_A_COFFEE_URL} />}
         <Row label={t.version} value={__APP_VERSION__} />
         <Row

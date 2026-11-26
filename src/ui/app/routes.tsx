@@ -4,7 +4,10 @@ import { HomeScreen } from '@/ui/screens/home/HomeScreen';
 import { ReviewScreen } from '@/ui/review/ReviewScreen';
 import { ConnectScreen } from '@/ui/screens/connect/ConnectScreen';
 import { CoursesScreen } from '@/ui/screens/courses/CoursesScreen';
+import { OpenGameScreen } from '@/ui/screens/open/OpenGameScreen';
+import { ShareScreen } from '@/ui/screens/open/ShareScreen';
 import { SearchScreen } from '@/ui/screens/search/SearchScreen';
+import { HomeScreenGuide } from '@/ui/screens/settings/HomeScreenGuide';
 import { LicensesScreen } from '@/ui/screens/settings/LicensesScreen';
 import { PrivacyScreen } from '@/ui/screens/settings/PrivacyScreen';
 import { SettingsScreen } from '@/ui/screens/settings/SettingsScreen';
@@ -32,7 +35,14 @@ const screens: RouteObject[] = [
   { path: '/settings', element: <SettingsScreen /> },
   { path: '/settings/licenses', element: <LicensesScreen /> },
   { path: '/settings/privacy', element: <PrivacyScreen /> },
+  { path: '/settings/home-screen', element: <HomeScreenGuide /> },
   { path: '/connect', element: <ConnectScreen /> },
+  // Short game addresses (1.2): chessby.me/lichess/<id>, /chesscom/<id>, /chesscom/daily/<id>.
+  { path: '/lichess/:id', element: <OpenGameScreen /> },
+  { path: '/chesscom/:id', element: <OpenGameScreen /> },
+  { path: '/chesscom/:kind/:id', element: <OpenGameScreen /> },
+  // Shared to the installed app on Android (1.2, Web Share Target in manifest.webmanifest).
+  { path: '/share', element: <ShareScreen /> },
   { path: '*', element: <Navigate to="/" replace /> },
 ];
 

@@ -14,7 +14,8 @@ export function MessageScreen({
 }: {
   title: string;
   body: string;
-  action: { label: string; href?: string; onClick?: () => void };
+  /** None while something is under way (opening a game from its address, 1.2). */
+  action?: { label: string; href?: string; onClick?: () => void };
 }) {
   return (
     <main className={styles.page}>
@@ -22,7 +23,7 @@ export function MessageScreen({
       <h1 className={`${styles.title} t-large-title`}>{title}</h1>
       <p className={`${styles.body} t-body-lg c-2`}>{body}</p>
       <div className={styles.spacer} />
-      {action.href ? (
+      {!action ? null : action.href ? (
         <a href={action.href} className={`${styles.primary} t-nav-title pressable`}>
           {action.label}
         </a>

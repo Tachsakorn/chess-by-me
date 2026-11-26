@@ -23,6 +23,20 @@
   color: var(--text);
   text-align: left;
 }
+/* A row with its own note (Settings: Language): the note takes a line of its own under the
+   label and the value, the full width of the row. At least the 48 of a row. */
+.withNote {
+  height: auto;
+  min-height: 48px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  flex-wrap: wrap;
+  row-gap: 0;
+}
+.rowNote {
+  flex-basis: 100%;
+}
+
 .row + .row {
   border-top: var(--hairline);
 }

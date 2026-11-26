@@ -51,6 +51,11 @@
 .rowText {
   flex: 1;
   min-width: 0;
+  /* the whole height of the 76px row is the target, not only the two lines of text (1.2) */
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* The title, then (both sites connected) the game's site, 13px grey, 6px after it. */

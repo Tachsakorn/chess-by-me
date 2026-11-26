@@ -74,6 +74,27 @@ export default defineConfig({
   // Only the app and the dev pages are scanned for dependencies: the old spikes import font
   // packages that are no longer installed (Fable review A10-02).
   optimizeDeps: { entries: ['index.html', 'dev/**/*.html'] },
+  build: {
+    // The libraries in chunks of their own, so no chunk passes Vite's 500 kB warning (1.2). They
+    // still load at start: index.html names them (modulepreload), and the service worker
+    // precaches every file index.html names (public/sw.js), so the app works offline as before.
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: 'react',
+              test: /node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
+            },
+            {
+              name: 'chess',
+              test: /node_modules[\\/](@lichess-org[\\/]chessground|chess\.js)[\\/]/,
+            },
+          ],
+        },
+      },
+    },
+  },
   test: {
     environment: 'node',
     // deploy/: the site's Worker script (1.1.1, Fable review 1.1 B1-01).

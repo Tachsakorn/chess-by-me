@@ -53,7 +53,8 @@
   --badge-mark: #ffffff;
   --badge-border-width: 1.5px;
   /* trying a move (owner, 2026-11-16): the badge and the dot while the engine checks it */
-  --q-checking: #8e8e93;
+  /* 1.2: was #8e8e93, 2.97:1 as a dot on --fill (3:1 for a graphic) */
+  --q-checking: #8d8d92;
 
   /* the evaluation bar of the review (owner, 2026-11-15) */
   --eval-white: #ffffff;
@@ -71,6 +72,10 @@
   --board-orange-d: #d79a7e;
   --board-purple-l: #ece7f5;
   --board-purple-d: #a497c6;
+  /* the coordinates written on the review board: the other square's shade, 2.06:1. Below WCAG AA
+     on purpose: the owner kept the original look (2026-11-26) */
+  --board-coord-on-light: var(--board-blue-d);
+  --board-coord-on-dark: var(--board-blue-l);
   --board-hl-l: #f2e7a6;
   --board-hl-d: #d3bd62;
   /* where the picked-up piece can go: a dot, or a ring on a piece it can take (owner, 2026-11-16) */
@@ -80,10 +85,14 @@
   --course-red: #e5322d;
   --course-blue: #2563eb;
   --course-pink: #d6336c;
+  /* amber: 2.22:1 on --fill, below AA on purpose (owner kept the original, 2026-11-26).
+     green 1.2: was #16a34a (2.998), now 3:1 */
   --course-amber: #e8930c;
-  --course-green: #16a34a;
+  --course-green: #16a24a;
 
   /* avatar: the one gradient the drawings allow */
+  /* the white initial: 2.27:1 at the top, below AA on purpose (owner kept the drawing's
+     colours, 2026-11-26) */
   --avatar-bg: linear-gradient(180deg, #a9abbe 0%, #7e8197 100%);
 
   /* space */

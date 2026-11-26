@@ -1,6 +1,6 @@
-/* The glass bar is shared with the move stepper of the review screen (FloatingBar.module.css). */
+/* The glass bar is shared with the move stepper of the review screen: TabBar.tsx adds the glass
+   class of FloatingBar.module.css (not `composes ... from`, which makes Vite warn at build). */
 .bar {
-  composes: glass from './FloatingBar.module.css';
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;

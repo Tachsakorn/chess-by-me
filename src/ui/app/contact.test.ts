@@ -63,3 +63,31 @@ describe('contactMailto', () => {
     expect(mailto).toContain('%0D%0A');
   });
 });
+
+describe('contactMailto: the last failure (Fable review 1.1 B8-01)', () => {
+  const info = { version: '1.1.1', screen: { width: 390, height: 844 } };
+  it('adds the code and the detail of the last failed analysis', () => {
+    const mail = decode(
+      contactMailto(getMessages('en'), 'en', {
+        ...info,
+        lastError: { code: 'engine-crashed', detail: 'no answer from the engine within 120000 ms' },
+      }),
+    );
+    expect(mail.body?.split('\r\n').at(-1)).toBe(
+      'Last error: engine-crashed (no answer from the engine within 120000 ms)',
+    );
+  });
+  it('in Thai, and the code alone when there is no detail', () => {
+    const mail = decode(
+      contactMailto(getMessages('th'), 'th', {
+        ...info,
+        lastError: { code: 'engine-load-failed', detail: null },
+      }),
+    );
+    expect(mail.body?.split('\r\n').at(-1)).toBe('ข้อผิดพลาดล่าสุด: engine-load-failed');
+  });
+  it('says nothing when nothing failed', () => {
+    const mail = decode(contactMailto(getMessages('en'), 'en', { ...info, lastError: null }));
+    expect(mail.body).not.toContain('Last error');
+  });
+});

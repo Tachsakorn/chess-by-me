@@ -72,11 +72,21 @@ export class UciEngine {
   private listener: Listener | null = null;
   /** Tail of the chain of queued work; never rejects. */
   private queue: Promise<void> = Promise.resolve();
+  /** Those waiting for the next `readyok` of `ping`. */
+  private pings: Array<() => void> = [];
 
   constructor(transport: EngineTransport, options: { startTimeoutMs?: number } = {}) {
     this.transport = transport;
     this.startTimeoutMs = options.startTimeoutMs ?? DEFAULT_START_TIMEOUT_MS;
-    transport.onLine((line) => this.listener?.line(line.trim()));
+    transport.onLine((raw) => {
+      const line = raw.trim();
+      if (line === 'readyok' && this.pings.length > 0) {
+        const waiting = this.pings;
+        this.pings = [];
+        for (const answered of waiting) answered();
+      }
+      this.listener?.line(line);
+    });
     transport.onError((detail) => {
       if (this.state === 'closed' || this.state === 'failed') return;
       // Before the handshake is done the engine has not loaded; after it, it crashed.
@@ -161,6 +171,29 @@ export class UciEngine {
    */
   newGame(): void {
     void this.enqueue(() => this.reset());
+  }
+
+  /**
+   * Whether the engine still answers (1.1.1, Fable review 1.1 B2-03): `isready` is sent at once,
+   * not queued, and Stockfish answers `readyok` even in the middle of a search. False when no
+   * answer comes within `waitMs`, or the engine failed or was closed. The search under way is not
+   * disturbed: a stray `readyok` is no line of a search.
+   */
+  ping(waitMs: number): Promise<boolean> {
+    if (this.state !== 'ready') return Promise.resolve(false);
+    return new Promise<boolean>((resolve) => {
+      let timer: ReturnType<typeof setTimeout> | undefined = undefined;
+      const answered = () => {
+        clearTimeout(timer);
+        resolve(this.state === 'ready');
+      };
+      timer = setTimeout(() => {
+        this.pings = this.pings.filter((waiting) => waiting !== answered);
+        resolve(false);
+      }, waitMs);
+      this.pings.push(answered);
+      this.transport.send('isready');
+    });
   }
 
   /** Ends the engine. A pending `start` or search rejects with `cancelled`. */

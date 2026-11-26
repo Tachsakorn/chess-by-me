@@ -17,6 +17,13 @@
   left: var(--gutter);
 }
 
+/* The way to Settings on the first screen, where Home has its avatar (Fable review 1.1 B4-03). */
+.settings {
+  position: absolute;
+  top: var(--pad-top-92);
+  right: var(--gutter);
+}
+
 .board {
   width: 88px;
   height: 88px;

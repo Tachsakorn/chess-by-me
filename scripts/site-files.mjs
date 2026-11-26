@@ -44,6 +44,9 @@ export function headersFile({ noindex }) {
     '  Referrer-Policy: strict-origin-when-cross-origin',
     '  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()',
     '  X-Frame-Options: DENY',
+    // Browsers go straight to https for six months after a visit (owner, 1.1.1, Fable review 1.1
+    // B7-01). Deliberately without includeSubDomains and preload: neither can be undone quickly.
+    '  Strict-Transport-Security: max-age=15552000',
     ...(noindex ? ['  X-Robots-Tag: noindex'] : []),
     // Every address is asked again, so a new version reaches everyone at their next visit (the
     // page, /review/... and the other app addresses, sw.js, the manifest). "no-transform" keeps

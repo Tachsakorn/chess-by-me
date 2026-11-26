@@ -1,0 +1,14 @@
+/* The round button at the top right of Home (the avatar), shared with Connect and Search for a
+   user with no account (Fable review 1.1 B4-03). Values from HomeScreen.module.css .avatar. */
+.button {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--avatar-bg);
+  color: var(--on-primary);
+  font: 700 16px var(--font-inter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

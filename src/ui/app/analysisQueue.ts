@@ -25,6 +25,7 @@ import {
 } from '@/ui/review/analysisState';
 import { analysisOptions } from './analysisDepth';
 import { useApp } from './appStore';
+import { checkAfterLoadFailure, setBusy } from './appUpdate';
 import { setQueuedGames } from './queuedGames';
 
 interface QueueState {
@@ -32,16 +33,42 @@ interface QueueState {
   running: string | null;
   /** 0..100: positions done of the running game. */
   percent: number;
-  /** 0..100 while the engine is being downloaded for the running game; null otherwise. */
-  download: number | null;
+  /**
+   * Getting the engine ready for the running game: 0..100 while it is downloaded, `device` while
+   * it is read from this device's storage (1.1.1: no "Downloading" for a file already here); null
+   * otherwise.
+   */
+  download: EngineLoad;
   waiting: string[];
   /** Games whose last run failed. */
   failed: string[];
+  /** Why each of those failed (Fable review 1.1 B8-01): shown as "Details" under the retry line. */
+  errors: Record<string, Failure>;
   /** The state of the running game, and of the last one finished here. */
   live: Record<string, AnalysisState>;
   /** Adds a game to the end of the line, or with `first` puts it ahead of everything. */
   enqueue(game: GameRecord, options?: { first?: boolean }): void;
+  /**
+   * Stops the running game and empties the line; nothing of them is saved afterwards, even an
+   * answer already on its way (Fable review 1.1 B4-01: Disconnect, Clear saved data).
+   */
+  stopAll(): void;
 }
+
+/** Why a run failed: an engine error of the contract, or `save-failed` when it could not be kept. */
+export interface Failure {
+  code: string;
+  detail: string | null;
+}
+
+/** The last failure of this session, for the Contact e-mail (B8-01). Nothing is sent anywhere. */
+let lastFailure: Failure | null = null;
+export function lastAnalysisFailure(): Failure | null {
+  return lastFailure;
+}
+
+/** See `QueueState.download`. */
+export type EngineLoad = number | 'device' | null;
 
 const games = new Map<string, GameRecord>();
 /** Games the user asked for with Analyze in a list: put back in line if another game cuts in. */
@@ -75,7 +102,7 @@ export const useAnalysisQueue = create<QueueState>()((set, get) => {
       if (state) set({ live: { ...get().live, [id]: analysisReducer(state, event) } });
       if (event.type === 'engine-loading') {
         const share = event.totalBytes ? event.loadedBytes / event.totalBytes : 0;
-        set({ download: Math.min(99, Math.floor(share * 100)) });
+        set({ download: event.cached ? 'device' : Math.min(99, Math.floor(share * 100)) });
       } else if (event.type === 'position') {
         set({ percent: Math.floor((event.done / event.total) * 100), download: null });
       } else if (event.type === 'completed') {
@@ -90,15 +117,27 @@ export const useAnalysisQueue = create<QueueState>()((set, get) => {
               black: event.analysis.black.accuracy,
             }),
           )
-          .catch(() => set({ failed: [...get().failed, id] }))
+          .catch((error: unknown) =>
+            fail(id, {
+              code: 'save-failed',
+              detail: error instanceof Error ? error.message : String(error),
+            }),
+          )
           .finally(() => finish(id));
       } else if (event.type === 'failed') {
         handle = null;
         token = null;
-        set({ failed: [...get().failed, id] });
+        fail(id, { code: event.error.code, detail: event.error.detail });
+        // An opening book of an older build that is no longer on the server (B1-02).
+        void checkAfterLoadFailure(event.error);
         finish(id);
       }
     });
+  }
+
+  function fail(id: string, failure: Failure) {
+    lastFailure = failure;
+    set({ failed: [...get().failed, id], errors: { ...get().errors, [id]: failure } });
   }
 
   function finish(id: string) {
@@ -138,7 +177,25 @@ export const useAnalysisQueue = create<QueueState>()((set, get) => {
     download: null,
     waiting: [],
     failed: [],
+    errors: {},
     live: {},
+    stopAll() {
+      const stopped = handle;
+      handle = null;
+      token = null;
+      stopped?.cancel();
+      games.clear();
+      asked.clear();
+      set({
+        running: null,
+        percent: 0,
+        download: null,
+        waiting: [],
+        failed: [],
+        errors: {},
+        live: {},
+      });
+    },
     enqueue(game, options = {}) {
       const { running, waiting, failed } = get();
       if (running === game.id) return;
@@ -171,9 +228,11 @@ export const useAnalysisQueue = create<QueueState>()((set, get) => {
   };
 });
 
-// Games in the queue are never deleted when an account's old games are trimmed (appStore).
+// Games in the queue are never deleted when an account's old games are trimmed (appStore), and
+// a new version does not reload the page while one is analysed (appUpdate, B1-02).
 useAnalysisQueue.subscribe((state, previous) => {
   if (state.running !== previous.running || state.waiting !== previous.waiting) {
     setQueuedGames(state.running, state.waiting);
+    setBusy('analysis', state.running !== null || state.waiting.length > 0);
   }
 });

@@ -73,7 +73,9 @@ export function moveText(game: GameRecord, state: AnalysisState, ply: number): M
   const after = state.positions[ply];
   const evalText =
     before && after ? `${formatScore(before.score)} → ${formatScore(after.score)}` : null;
-  const percent = Math.round(review.pointLoss * 100);
+  // Rounded down, so the text never crosses a line the label did not cross: a Good move (4.5–5%)
+  // never reads "5%" (Fable review 1.1 B3-01). The tiny addition keeps 0.29 from reading 28.
+  const percent = Math.floor(review.pointLoss * 100 + 1e-9);
   // Under 1% nothing is said about a drop (rule c): the position speaks instead.
   const mover = game.moves[ply - 1]?.color ?? 'white';
   const moverBefore = before

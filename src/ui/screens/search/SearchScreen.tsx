@@ -16,6 +16,8 @@ import { Group } from '@/ui/components/GroupedList';
 import { Icon } from '@/ui/components/Icon';
 import type { IconName } from '@/ui/components/icons';
 import { Page } from '@/ui/components/Page';
+import { SettingsButton } from '@/ui/components/SettingsButton';
+import { useApp } from '@/ui/app/appStore';
 import { TabBar } from '@/ui/components/TabBar';
 import { useMessages } from '@/ui/i18n/LanguageContext';
 import { GameRow } from '@/ui/screens/games/GamesScreen';
@@ -34,6 +36,7 @@ const DELAY = 800;
 
 export function SearchScreen() {
   const text = useMessages();
+  const noAccount = useApp((s) => s.loaded && s.accounts === null);
   const navigate = useNavigate();
   const location = useLocation();
   const field = useRef<HTMLInputElement>(null);
@@ -175,7 +178,15 @@ export function SearchScreen() {
             <BackButton onBack={() => void search(query)} />
           </div>
         )}
-        <h1 className="t-large-title">{text.search.title}</h1>
+        {noAccount ? (
+          // Without an account Home is not there: Settings is reached from here (B4-03).
+          <div className={styles.titleRow}>
+            <h1 className="t-large-title">{text.search.title}</h1>
+            <SettingsButton label={text.settings.title} />
+          </div>
+        ) : (
+          <h1 className="t-large-title">{text.search.title}</h1>
+        )}
       </header>
       <form
         role="search"

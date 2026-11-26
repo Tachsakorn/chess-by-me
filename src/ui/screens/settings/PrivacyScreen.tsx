@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { local } from '@/data/local';
-import { useApp } from '@/ui/app/appStore';
+import { clearEverything } from '@/ui/app/accountData';
+import { ErrorScreen } from '@/ui/app/ErrorScreen';
 import { CONTACT_EMAIL } from '@/ui/app/config';
 import { BackButton } from '@/ui/components/BackButton';
 import { ConfirmSheet } from '@/ui/components/ConfirmSheet';
@@ -21,9 +21,9 @@ export function PrivacyScreen() {
   const text = messages.privacy;
   const t = messages.settings;
   const navigate = useNavigate();
-  const setAccounts = useApp((s) => s.setAccounts);
   const [clearing, setClearing] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [clearFailed, setClearFailed] = useState(false);
   // What the site keeps on this device, app files included. undefined while asking, null when
   // the browser does not say.
   const [usedMb, setUsedMb] = useState<number | null | undefined>(undefined);
@@ -41,15 +41,17 @@ export function PrivacyScreen() {
 
   const clearAll = async () => {
     setBusy(true);
-    await local.clearAll().catch(() => {});
+    // What is still on its way is stopped first (Fable review 1.1 B4-01).
     try {
-      localStorage.removeItem('cbm.ratingsSite');
+      await clearEverything();
     } catch {
-      // storage blocked: nothing kept there either
+      setClearFailed(true);
+      return;
     }
-    await setAccounts(null).catch(() => {});
     void navigate('/connect', { replace: true });
   };
+
+  if (clearFailed) return <ErrorScreen />;
 
   return (
     <Page mode="scroll" className={styles.page}>

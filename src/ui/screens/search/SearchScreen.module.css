@@ -3,6 +3,15 @@
   padding: var(--pad-top-76) var(--gutter) 0;
 }
 
+/* No account: the title and the way to Settings, as on Home (Fable review 1.1 B4-03). */
+.titleRow {
+  height: 44px;
+  margin-top: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 /* The back button of a player's games sits above the title, the title keeps its place. */
 .back {
   position: absolute;

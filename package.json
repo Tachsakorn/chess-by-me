@@ -1,7 +1,7 @@
 {
   "name": "chess-by-me",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Chess by me: in-browser chess game review.",
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -23,7 +23,8 @@
     "fixture:make": "vitest run --config vitest.scripts.config.ts make-fixture",
     "check": "npm run typecheck && npm run lint && npm run test && npm run build",
     "script": "vitest run --config vitest.scripts.config.ts",
-    "e2e": "playwright test -c e2e/playwright.config.ts && playwright test -c e2e/playwright.prod.config.ts"
+    "e2e": "playwright test -c e2e/playwright.config.ts && playwright test -c e2e/playwright.prod.config.ts && playwright test -c e2e/playwright.release.config.ts",
+    "e2e:release": "playwright test -c e2e/playwright.release.config.ts"
   },
   "dependencies": {
     "@fontsource/anuphan": "5.3.0",

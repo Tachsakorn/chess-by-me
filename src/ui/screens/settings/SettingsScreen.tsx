@@ -12,6 +12,7 @@ import { useApp } from '@/ui/app/appStore';
 import { useState } from 'react';
 import { BUY_ME_A_COFFEE_URL } from '@/ui/app/config';
 import { contactMailto } from '@/ui/app/contact';
+import { lastAnalysisFailure } from '@/ui/app/analysisQueue';
 import { BackButton } from '@/ui/components/BackButton';
 import { Group, Row, SwitchRow } from '@/ui/components/GroupedList';
 import { Page } from '@/ui/components/Page';
@@ -126,6 +127,7 @@ export function SettingsScreen() {
             window.location.href = contactMailto(text, locale, {
               version: __APP_VERSION__,
               screen: { width: window.innerWidth, height: window.innerHeight },
+              lastError: lastAnalysisFailure(),
             });
           }}
         />

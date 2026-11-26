@@ -234,3 +234,24 @@ button {
   min-height: var(--tap);
   color: var(--on-primary);
 }
+
+/* A short action inside a line of text, such as "Try again in a moment" (Fable review 1.1 B5-04):
+   the line's own type, underlined, with a full-height tap area that does not move the line. */
+.inline-action {
+  position: relative;
+  display: inline;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.inline-action::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: var(--tap);
+  transform: translateY(-50%);
+}

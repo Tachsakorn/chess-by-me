@@ -121,8 +121,10 @@ export const th: Messages = {
     startHint: 'แตะ › เพื่อดูทีละตา',
     analyzing: (n) => `กำลังวิเคราะห์… ${n}%`,
     downloading: (n) => `กำลังโหลดเอนจิน… ${n}%`,
+    loadingEngine: 'กำลังเตรียมเครื่องวิเคราะห์…', // new (owner, 1.1.1)
     accuracyOf: (name) => `ความแม่นยำของ ${name}`,
     stopped: 'วิเคราะห์ไม่สำเร็จ แตะเพื่อลองใหม่',
+    details: (code) => `รายละเอียด: ${code}`, // new
     stepper: {
       label: 'เดินดูทีละตา', // new
       start: 'ไปตาแรก', // new
@@ -238,6 +240,12 @@ export const th: Messages = {
     screen: 'ขนาดจอ',
     game: 'เกม',
     move: 'ตา',
+    lastError: 'ข้อผิดพลาดล่าสุด', // new
+  },
+  update: {
+    ready: 'มีเวอร์ชันใหม่แล้ว แตะเพื่อโหลดใหม่', // new
+    note: 'มีเวอร์ชันใหม่แล้ว', // new
+    reload: 'โหลดใหม่', // new
   },
   storage: {
     title: 'เบราว์เซอร์นี้ไม่ให้ Chess by me เก็บข้อมูล',

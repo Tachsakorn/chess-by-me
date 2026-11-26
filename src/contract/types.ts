@@ -344,7 +344,13 @@ export interface AnalysisError {
  */
 export type AnalysisEvent =
   | { type: 'started'; gameId: string; engine: EngineInfo; total: number }
-  | { type: 'engine-loading'; loadedBytes: number; totalBytes: number | null }
+  | {
+      type: 'engine-loading';
+      loadedBytes: number;
+      totalBytes: number | null;
+      /** True when the engine's files come from this device's storage, not the network (1.1.1). */
+      cached?: boolean;
+    }
   | { type: 'position'; position: PositionEval; done: number; total: number }
   | { type: 'move'; review: MoveReview }
   | { type: 'opening'; opening: OpeningInfo | null }

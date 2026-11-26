@@ -19,6 +19,7 @@ import {
   type RatingsShown,
   type ReviewProgress,
 } from '@/data/local';
+import { KEEP_PER_ACCOUNT } from '@/data/keep';
 import { checkAccount, fetchRatings, type AccountSource } from '@/data/ratings';
 import { connectedAccounts, mergeGames, type ConnectedAccount } from '@/ui/model/accounts';
 import { ratingsToShow } from '@/ui/model/games';
@@ -57,11 +58,23 @@ interface AppState {
 
   load(): Promise<void>;
   refreshFromSite(): Promise<void>;
+  /**
+   * Updates from the sites when the app comes back to the screen, at most once every
+   * RETURN_REFRESH_MS (Fable review 1.1 B5-04: an installed app brought back showed no new games
+   * until it was closed and opened again).
+   */
+  refreshOnReturn(): void;
   /** Reads the other games again, after one was opened. */
   reloadOtherGames(): Promise<void>;
   addSummary(summary: AnalysisSummary): void;
   /** Saves the connected accounts (null: none left) and reads everything again. */
   setAccounts(accounts: Accounts | null): Promise<void>;
+  /**
+   * Stops what is on its way from the sites (Fable review 1.1 B4-01): an update still running
+   * writes nothing once the accounts change. `setAccounts` does it too; call it first when
+   * deleting an account's data, so nothing lands between the delete and the change.
+   */
+  stopUpdates(): void;
   setRatingsSite(site: AccountSource): void;
   saveProgress(gameId: string, progress: ReviewProgress): void;
 }
@@ -114,6 +127,16 @@ async function trim(owner: string): Promise<void> {
   await local.trimOwner(owner, queuedGames()).catch(() => {});
 }
 
+/**
+ * Counts changes of the connected accounts. An update from the sites keeps the number it started
+ * with and writes nothing once it differs (Fable review 1.1 B4-01).
+ */
+let generation = 0;
+
+/** When the last update from the sites started (ms since 1970). */
+let lastRefreshAt = 0;
+export const RETURN_REFRESH_MS = 5 * 60 * 1000;
+
 /** A Chess.com name saved in lower case is checked against the profile once a session. */
 let chessComCaseChecked = false;
 
@@ -124,12 +147,13 @@ export const useApp = create<AppState>()((set, get) => {
 
   // A Chess.com name saved before the app read its case from the profile ("someplayer"):
   // ask the profile for the case the site shows, and keep it.
-  async function fixChessComCase() {
+  async function fixChessComCase(started: number) {
     const accounts = get().accounts;
     const name = accounts?.chesscom;
     if (!accounts || !name || chessComCaseChecked || name !== name.toLowerCase()) return;
     chessComCaseChecked = true;
     const result = await checkAccount('chesscom', name);
+    if (started !== generation) return;
     if (result.ok && result.username !== name) {
       const next = { ...accounts, chesscom: result.username };
       await local.setAccounts(next);
@@ -190,6 +214,9 @@ export const useApp = create<AppState>()((set, get) => {
         ),
         ratingsSite: pickRatingsSite(list),
       });
+      // Dates saved before 1.1.1 that are not real dates are stored as none (B4-04); the lists
+      // already read them as none, so nothing waits for this.
+      void local.repairDates().catch(() => {});
       if (list.length > 0) void get().refreshFromSite();
     },
 
@@ -197,9 +224,15 @@ export const useApp = create<AppState>()((set, get) => {
       const list = connectedAccounts(get().accounts);
       if (list.length === 0 || get().refresh === 'loading') return;
       set({ refresh: 'loading' });
+      lastRefreshAt = Date.now();
+      const started = generation;
+      /** False once the accounts changed: nothing of this update may be kept then. */
+      const current = () => started === generation;
 
       const failed: AccountSource[] = [];
       const busy: AccountSource[] = [];
+      /** Whether any game was stored: if none, the lists on screen are already right (B5-01). */
+      let stored = false;
       // The two sites in parallel; each site's own requests go one at a time (src/data/http.ts).
       await Promise.all(
         list.map(async ({ source, username }) => {
@@ -207,29 +240,40 @@ export const useApp = create<AppState>()((set, get) => {
           // Lichess sends only the games since the newest one kept (Fable review A4-01).
           const newest = source === 'lichess' ? (await local.listGames(owner))[0] : undefined;
           const since = newest?.playedAt ? Date.parse(newest.playedAt) : undefined;
-          // Chess.com has no "since": the months already stored are skipped instead.
+          // Chess.com has no "since": the months already stored are skipped instead, and in the
+          // month read again, the games already stored (Fable review 1.1 B5-01).
           const done = source === 'chesscom' ? await local.getChessComMonths(owner) : [];
+          const known =
+            source === 'chesscom' ? new Set(await local.knownGameIds(owner)) : undefined;
           const [games, ratingsResult] = await Promise.all([
             source === 'lichess'
-              ? fetchLichessGames(username, since !== undefined ? { since } : {}).then(
-                  (result) => ({ result, closed: [] as string[] }),
-                )
-              : fetchChessComRecent(username, { done }),
+              ? // Every game since the last visit, not only the newest 50 (B5-03).
+                fetchLichessGames(
+                  username,
+                  since !== undefined ? { since, catchUp: KEEP_PER_ACCOUNT } : {},
+                ).then((result) => ({ result, closed: [] as string[] }))
+              : fetchChessComRecent(username, { done, ...(known ? { known } : {}) }),
             fetchRatings(source, username),
           ]);
           const gamesResult = games.result;
           let ok = true;
+          if (!current()) return;
           if (gamesResult.ok) {
-            await local.putGames(gamesResult.games, owner);
+            if (gamesResult.games.length > 0) {
+              await local.putGames(gamesResult.games, owner);
+              await trim(owner);
+              stored = true;
+            }
             await local.addChessComMonths(owner, games.closed);
-            await trim(owner);
           } else if (gamesResult.error.code !== 'no-games') {
             ok = false;
             if (gamesResult.error.code === 'rate-limited') busy.push(source);
           }
+          if (!current()) return;
           if (ratingsResult.ok) {
             const before = await local.getRatings(owner);
             const shown = ratingsToShow(source, ratingsResult.ratings, before);
+            if (!current()) return;
             await local.setRatings(owner, shown);
             set({ ratings: { ...get().ratings, [source]: shown } });
           } else {
@@ -242,18 +286,37 @@ export const useApp = create<AppState>()((set, get) => {
         }),
       );
 
-      await fixChessComCase();
+      if (!current()) return;
+      await fixChessComCase(started);
+      if (!current()) return;
       set({
-        games: await gamesOf(connectedAccounts(get().accounts)),
-        // A game opened earlier may now belong to an account, and so leave Others.
-        otherGames: await local.listOtherGames(),
+        // Read again only when something was stored (Fable review 1.1 B5-01: reading 200 games
+        // back and drawing the lists again cost seconds on a slow phone, for nothing).
+        ...(stored
+          ? {
+              games: await gamesOf(connectedAccounts(get().accounts)),
+              // A game opened earlier may now belong to an account, and so leave Others.
+              otherGames: await local.listOtherGames(),
+            }
+          : {}),
         failed,
         busy,
         refresh: failed.length > 0 ? 'failed' : 'done',
       });
     },
 
+    refreshOnReturn() {
+      if (Date.now() - lastRefreshAt < RETURN_REFRESH_MS) return;
+      void get().refreshFromSite();
+    },
+
+    stopUpdates() {
+      generation += 1;
+      set({ refresh: 'idle' });
+    },
+
     async setAccounts(accounts) {
+      get().stopUpdates();
       await local.setAccounts(accounts);
       // Ask the browser to keep the data instead of clearing it when space runs low or the site
       // is not visited for a while (Safari: 7 days). Fable review A6-02.

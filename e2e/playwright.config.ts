@@ -10,8 +10,9 @@ const executablePath = process.env.CHROMIUM_PATH;
 
 export default defineConfig({
   testDir: '.',
-  // The production-build tests have their own config (playwright.prod.config.ts).
-  testIgnore: ['prod/**'],
+  // The production-build and release tests have their own configs (playwright.prod.config.ts,
+  // playwright.release.config.ts).
+  testIgnore: ['prod/**', 'release/**'],
   timeout: 180_000,
   fullyParallel: false,
   workers: 1,

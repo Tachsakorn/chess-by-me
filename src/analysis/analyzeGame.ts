@@ -39,6 +39,11 @@ export interface AnalysisEngine {
   newGame(): void;
   evaluate(fen: string, depth: number, signal?: AbortSignal): Promise<RawEval>;
   close(): void;
+  /**
+   * Whether the engine still answers within `waitMs`, even in the middle of a search (1.1.1,
+   * Fable review 1.1 B2-03). An engine without it is judged by the clock alone, as before.
+   */
+  ping?(waitMs: number): Promise<boolean>;
 }
 
 export interface AnalyzeGameDeps {
@@ -69,7 +74,8 @@ export interface AnalyzeGameDeps {
    */
   prepareEngine?(
     variant: EngineVariant,
-    progress: (loadedBytes: number, totalBytes: number | null) => void,
+    /** `cached`: the files come from this device's storage, not the network (1.1.1). */
+    progress: (loadedBytes: number, totalBytes: number | null, cached?: boolean) => void,
   ): Promise<void>;
   /**
    * Calls `listener` when the page comes back from the background; returns how to stop. A phone
@@ -105,7 +111,17 @@ interface Run {
 }
 
 export function createAnalyzeGame(deps: AnalyzeGameDeps): AnalyzeGame {
+  /**
+   * The searches of the last game that did not finish (Fable review 1.1 B2-02): a retry of the
+   * same game, engine and depth starts from them instead of from zero. One game at a time, so
+   * memory stays small; dropped once the game completes. Every search starts from a cleared
+   * engine, so a kept result is exactly what a new search would give.
+   */
+  let kept: { key: string; evals: Map<string, RawEval> } | null = null;
   return (game, options, onEvent) => {
+    const key = `${game.id}|${options.engine}|${options.depth}`;
+    if (kept?.key !== key) kept = { key, evals: new Map() };
+    const evals = kept.evals;
     const controller = new AbortController();
     let finished = false;
     let engines: AnalysisEngine[] = [];
@@ -115,6 +131,9 @@ export function createAnalyzeGame(deps: AnalyzeGameDeps): AnalyzeGame {
       emit(event) {
         if (finished) return;
         if (event.type === 'completed' || event.type === 'failed') finished = true;
+        // Completed: nothing to keep for a retry. Dropped before anyone hears of it, so a run
+        // started on this event begins from nothing.
+        if (event.type === 'completed' && kept?.key === key) kept = null;
         onEvent(event);
       },
       useEngine(created) {
@@ -129,7 +148,7 @@ export function createAnalyzeGame(deps: AnalyzeGameDeps): AnalyzeGame {
 
     // The engines are closed before the last event, so a listener that starts the
     // next game on `completed` or `failed` never has two games' engines alive.
-    analyze(deps, game, options, run)
+    analyze(deps, game, options, run, evals)
       .catch((error: unknown) => {
         run.closeEngine();
         run.emit({ type: 'failed', error: toAnalysisError(error) });
@@ -147,11 +166,22 @@ export function createAnalyzeGame(deps: AnalyzeGameDeps): AnalyzeGame {
   };
 }
 
+/** The beat of the heartbeat, and the gap between beats that means the page was asleep. */
+const HEARTBEAT_MS = 1_000;
+const HEARTBEAT_GAP_MS = 5_000;
+/** How often a searching engine is asked whether it is alive, and how long it has to answer. */
+const LIVENESS_EVERY_MS = 10_000;
+const PING_WAIT_MS = 5_000;
+/** How many times a time limit is started again for an engine that still answers. */
+const MAX_EXTENSIONS = 3;
+
 async function analyze(
   deps: AnalyzeGameDeps,
   game: GameRecord,
   options: AnalysisOptions,
   run: Run,
+  /** Searches already done for this game, kept for a retry after a failure (B2-02). */
+  kept: Map<string, RawEval>,
 ): Promise<void> {
   // Let the caller receive its handle before the first event arrives.
   await Promise.resolve();
@@ -190,8 +220,15 @@ async function analyze(
 
   if (deps.prepareEngine) {
     await deps
-      .prepareEngine(options.engine, (loadedBytes, totalBytes) => {
-        if (!run.signal.aborted) run.emit({ type: 'engine-loading', loadedBytes, totalBytes });
+      .prepareEngine(options.engine, (loadedBytes, totalBytes, cached) => {
+        if (!run.signal.aborted) {
+          run.emit({
+            type: 'engine-loading',
+            loadedBytes,
+            totalBytes,
+            ...(cached ? { cached } : {}),
+          });
+        }
       })
       .catch((error: unknown) => {
         throw new EngineError(
@@ -203,65 +240,158 @@ async function analyze(
   }
 
   const count = Math.max(1, Math.floor(deps.engines ?? 1));
-  const pool: AnalysisEngine[] = [];
-  for (let i = 0; i < count; i += 1) {
+  const startEngine = async (): Promise<AnalysisEngine> => {
     const engine = deps.createEngine(options.engine);
     run.useEngine(engine);
-    pool.push(engine);
-  }
-  await Promise.all(
-    pool.map((engine) => engine.start({ multiPv: MULTI_PV, hashMb: ENGINE_HASH_MB })),
-  );
+    await engine.start({ multiPv: MULTI_PV, hashMb: ENGINE_HASH_MB });
+    return engine;
+  };
+  const pool = await Promise.all(Array.from({ length: count }, startEngine));
   if (run.signal.aborted) return;
   const idle = [...pool];
+  /** How many more engines may be started to stand in for one that stopped answering (B2-02). */
+  let spare = count;
 
   const searchTimeoutMs = deps.searchTimeoutMs ?? searchTimeoutFor(options.depth);
   /** Restart the time limits of the searches in progress. */
   const restarts = new Set<() => void>();
-  const stopListening =
-    deps.onResume?.(() => {
-      for (const restart of restarts) restart();
-    }) ?? (() => {});
+  const restartAll = () => {
+    for (const restart of restarts) restart();
+  };
+  const stopListening = deps.onResume?.(restartAll) ?? (() => {});
+  // A heartbeat (1.1.1, Fable review 1.1 B2-03): a computer that sleeps with the page in front
+  // sends no "visible again", but its timers stop with it. A long gap between beats means the page
+  // was asleep, engines included: the searches get their full time again.
+  let lastBeat = Date.now();
+  const heartbeat = setInterval(() => {
+    const now = Date.now();
+    if (now - lastBeat > HEARTBEAT_GAP_MS) restartAll();
+    lastBeat = now;
+  }, HEARTBEAT_MS);
+  const stopWatching = () => {
+    stopListening();
+    clearInterval(heartbeat);
+  };
+  /** True when more time passed than `expected` could explain: the page slept in between. */
+  const slept = (since: number, expected: number) =>
+    Date.now() - since > expected + HEARTBEAT_GAP_MS;
+
   /**
-   * One search on an idle engine of the pool, from a cleared engine (`ucinewgame` first), so the
-   * result depends on the position alone and not on what that engine searched before. An engine
-   * that stops answering is given up on.
+   * One search on `engine`, from a cleared engine (`ucinewgame` first, by the caller), so the
+   * result depends on the position alone. `dead` when the engine stopped answering (B2-02: the
+   * caller hands the position to another engine). An engine without `ping` is judged by the clock
+   * alone, as before 1.1.1.
    */
-  const evaluate = (fen: string, depth: number, signal?: AbortSignal): Promise<RawEval> => {
-    const engine = idle.pop();
-    if (!engine) return Promise.reject(new EngineError('engine-crashed', 'no free engine'));
-    return new Promise<RawEval>((resolve, reject) => {
+  const searchOn = (
+    engine: AnalysisEngine,
+    fen: string,
+    depth: number,
+    signal?: AbortSignal,
+  ): Promise<RawEval | 'dead'> =>
+    new Promise<RawEval | 'dead'>((resolve, reject) => {
+      let settled = false;
       let timer: ReturnType<typeof setTimeout> | undefined;
-      const startTimer = () => {
+      let check: ReturnType<typeof setInterval> | undefined;
+      let timerStarted = 0;
+      let extensions = 0;
+      const stop = () => {
+        settled = true;
         clearTimeout(timer);
-        timer = setTimeout(() => {
-          restarts.delete(startTimer);
+        clearInterval(check);
+        restarts.delete(startTimers);
+      };
+      /** Asks the engine whether it is alive; null when the page slept meanwhile (no verdict). */
+      const alive = async (ping: (waitMs: number) => Promise<boolean>): Promise<boolean | null> => {
+        const asked = Date.now();
+        const answered = await ping.call(engine, PING_WAIT_MS);
+        return answered || !slept(asked, PING_WAIT_MS) ? answered : null;
+      };
+      const onTimeout = async () => {
+        if (settled) return;
+        // Overdue because the page slept: not the engine's fault.
+        if (slept(timerStarted, searchTimeoutMs)) {
+          startTimers();
+          return;
+        }
+        if (!engine.ping) {
+          stop();
           reject(
             new EngineError(
               'engine-crashed',
               `no answer from the engine within ${searchTimeoutMs} ms`,
             ),
           );
-          run.closeEngine();
-        }, searchTimeoutMs);
+          return;
+        }
+        // Not on the clock alone: an engine that still answers is slow, not dead.
+        const verdict = await alive(engine.ping);
+        if (settled) return;
+        if (verdict === null || (verdict && extensions < MAX_EXTENSIONS)) {
+          if (verdict) extensions += 1;
+          startTimers();
+          return;
+        }
+        stop();
+        resolve('dead');
       };
-      startTimer();
-      restarts.add(startTimer);
-      engine.newGame();
+      const startTimers = () => {
+        clearTimeout(timer);
+        clearInterval(check);
+        timerStarted = Date.now();
+        timer = setTimeout(() => void onTimeout(), searchTimeoutMs);
+        // An engine that stops answering is found within LIVENESS_EVERY_MS + PING_WAIT_MS, long
+        // before the time limit (B2-02), instead of after it.
+        const ping = engine.ping;
+        if (ping) {
+          check = setInterval(() => {
+            void alive(ping).then((verdict) => {
+              if (verdict !== false || settled) return;
+              stop();
+              resolve('dead');
+            });
+          }, LIVENESS_EVERY_MS);
+        }
+      };
+      startTimers();
+      restarts.add(startTimers);
       engine.evaluate(fen, depth, signal).then(
         (result) => {
-          clearTimeout(timer);
-          restarts.delete(startTimer);
-          idle.push(engine);
+          if (settled) return;
+          stop();
           resolve(result);
         },
         (error: unknown) => {
-          clearTimeout(timer);
-          restarts.delete(startTimer);
+          if (settled) return;
+          stop();
           reject(error);
         },
       );
     });
+
+  /**
+   * One search on an idle engine of the pool. A position already evaluated in an earlier, failed
+   * run of this game is not searched again (B2-02); an engine that stops answering is closed and
+   * the position goes to a newly started one, while there are spares.
+   */
+  const evaluate = async (fen: string, depth: number, signal?: AbortSignal): Promise<RawEval> => {
+    const saved = kept.get(fen);
+    if (saved) return saved;
+    let engine = idle.pop();
+    if (!engine) throw new EngineError('engine-crashed', 'no free engine');
+    for (;;) {
+      engine.newGame();
+      const result = await searchOn(engine, fen, depth, signal);
+      if (result !== 'dead') {
+        idle.push(engine);
+        kept.set(fen, result);
+        return result;
+      }
+      engine.close();
+      if (spare <= 0) throw new EngineError('engine-crashed', 'the engine stopped answering');
+      spare -= 1;
+      engine = await startEngine();
+      if (run.signal.aborted) throw new EngineError('cancelled');
+    }
   };
 
   const cloud = options.useCloudEval
@@ -289,7 +419,7 @@ async function analyze(
       if (input) run.emit({ type: 'move', review: reviewMove(input) });
     },
     run.signal,
-  ).finally(stopListening);
+  ).finally(stopWatching);
 
   let analysis: GameAnalysis;
   try {

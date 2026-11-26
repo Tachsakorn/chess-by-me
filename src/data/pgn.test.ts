@@ -310,3 +310,89 @@ describe('parsePgn', () => {
     expect(r.games[0]!.moves).toHaveLength(3);
   });
 });
+
+describe('gameFromPgn: impossible dates are stored as no date (Fable review 1.1 B4-04)', () => {
+  const moves = '1. e4 e5 2. Nf3 Nc6 *';
+  it.each([['2024.00.00'], ['2024.13.40'], ['????.??.??'], ['2023.02.29'], ['2024.06.31']])(
+    'Date "%s" gives no date',
+    (date) => {
+      expect(gameFromPgn(game({ Date: date }, moves))?.playedAt).toBeNull();
+    },
+  );
+  it('an impossible UTCTime gives no date', () => {
+    expect(
+      gameFromPgn(game({ UTCDate: '2024.05.01', UTCTime: '25:00:00' }, moves))?.playedAt,
+    ).toBeNull();
+  });
+  it('a real date is kept', () => {
+    expect(gameFromPgn(game({ Date: '2024.02.29' }, moves))?.playedAt).toBe('2024-02-29T00:00:00Z');
+  });
+});
+
+describe('annotated PGN is read (Fable review 1.1 B5-02)', () => {
+  const head = (result = '*') =>
+    `[Event "x"]\n[White "White One"]\n[Black "Black One"]\n[Result "${result}"]\n\n`;
+  const sans = (text: string) => gameFromPgn(text)?.moves.map((m) => m.san);
+
+  it('two neighbouring comments after a move, the clock in the second', () => {
+    const rec = gameFromPgn(
+      `${head()}1. e4 { a blunder } { [%clk 0:01:00] } 1... e5 { [%clk 0:00:58] } *`,
+    );
+    expect(rec?.moves.map((m) => [m.san, m.clockSeconds])).toEqual([
+      ['e4', 60],
+      ['e5', 58],
+    ]);
+  });
+
+  it("the form of Lichess's annotated export: judgement, eval and clock, variations", () => {
+    const text =
+      `${head('1-0')}1. e4 { [%eval 0.18] [%clk 0:01:00] } 1... e5 { [%eval 0.2] [%clk 0:01:00] } ` +
+      `2. Nf3 { [%eval 0.17] [%clk 0:00:59] } 2... f6?? { (0.17 → 2.19) Blunder. Nc6 was best. } ` +
+      `{ [%eval 2.19] [%clk 0:00:59] } (2... Nc6 3. Bb5 a6) 3. Nxe5 { [%eval 2.3] [%clk 0:00:58] } ` +
+      `3... fxe5?? { (2.30 → #3) Checkmate is now unavoidable. Qe7 was best. } { [%eval #3] [%clk 0:00:57] } ` +
+      `(3... Qe7 4. Nf3) 4. Qh5+ { [%eval #3] [%clk 0:00:56] } 4... Ke7 { [%eval #2] [%clk 0:00:55] } ` +
+      `5. Qxe5+ { [%eval #1] [%clk 0:00:54] } 5... Kf7 { [%eval #1] [%clk 0:00:16] } ` +
+      `6. Bc4+ { [%clk 0:00:53] } 6... d5 7. Bxd5+ Kg6 8. h4 h5 9. Bxb7 Bxb7 10. Qf5+ Kh6 11. d4+ g5 ` +
+      `12. Qf7 { [%eval #1] [%clk 0:00:16] } { White wins on time. } 1-0`;
+    const rec = gameFromPgn(text);
+    expect(rec?.moves).toHaveLength(23);
+    expect(rec?.moves[3]).toMatchObject({ san: 'f6', clockSeconds: 59 });
+    expect(rec?.moves[5]).toMatchObject({ san: 'fxe5', clockSeconds: 57 });
+    expect(rec?.moves.at(-1)).toMatchObject({ san: 'Qf7', clockSeconds: 16 });
+    expect(rec?.result).toBe('1-0');
+  });
+
+  it('a whole real game with a text comment before every clock comment', () => {
+    const annotated = fixturePgn.replace(/\{ \[%clk/g, '{ [%eval 0.3] Good move. } { [%clk');
+    expect(annotated).not.toBe(fixturePgn);
+    const rec = gameFromPgn(annotated, { id: 'lichess:LAGvRNey' });
+    expect(rec?.moves).toEqual(fixtureGame.moves);
+  });
+
+  it.each([
+    ['a comment after a variation', '1. e4 e5 (1... c5 2. Nf3) { after it } 2. Nf3 Nc6 *'],
+    ['a NAG after a comment', '1. e4 { [%clk 0:01:00] } $1 e5 2. Nf3 Nc6 *'],
+    ['a ; comment after a {} comment', '1. e4 { c } ; rest of the line\n e5 2. Nf3 Nc6 *'],
+    ['comments before the result', '1. e4 e5 2. Nf3 Nc6 { [%eval 0.2] } { Game over. } *'],
+    ['two comments inside a variation', '1. e4 e5 (1... c5 { a } { b } 2. Nf3) 2. Nf3 Nc6 *'],
+    ['study drawings and text', '1. e4 { [%cal Ge2e4] } { The centre. } e5 2. Nf3 Nc6 *'],
+    ['an escaped line', '1. e4 e5\n% a line for programs only\n2. Nf3 Nc6 *'],
+  ])('%s', (_, moves) => {
+    expect(sans(`${head()}${moves}`)).toEqual(['e4', 'e5', 'Nf3', 'Nc6']);
+  });
+
+  it('a PGN chess.js reads as it is keeps its id and clocks (no tidying)', () => {
+    const rec = gameFromPgn(fixturePgn);
+    expect(rec?.id).toBe(`pgn:${stableId(fixturePgn.trim())}`);
+    expect(rec?.moves).toEqual(fixtureGame.moves);
+  });
+
+  it('pasted text with an annotated game opens through parsePgn', () => {
+    const result = parsePgn(`${head()}1. e4 { a } { [%clk 0:01:00] } e5 *`);
+    expect(result.ok).toBe(true);
+  });
+
+  it('text that is not a game is still refused', () => {
+    expect(gameFromPgn(`${head()}1. e4 { a } { b } Qxz9 *`)).toBeNull();
+  });
+});

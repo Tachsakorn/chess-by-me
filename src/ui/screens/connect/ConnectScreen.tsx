@@ -1,12 +1,15 @@
 import { useId, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
-import { local, ownerKey } from '@/data/local';
+import { ownerKey, type Accounts } from '@/data/local';
 import { checkAccount, type AccountSource } from '@/data/ratings';
+import { deleteAccountData } from '@/ui/app/accountData';
 import { useApp } from '@/ui/app/appStore';
+import { ErrorScreen } from '@/ui/app/ErrorScreen';
 import { MiniBoard } from '@/ui/board/MiniBoard';
 import { BackButton } from '@/ui/components/BackButton';
 import { ConfirmSheet } from '@/ui/components/ConfirmSheet';
 import { Segmented } from '@/ui/components/Segmented';
+import { SettingsButton } from '@/ui/components/SettingsButton';
 import { useMessages } from '@/ui/i18n/LanguageContext';
 import styles from './ConnectScreen.module.css';
 
@@ -34,6 +37,10 @@ export function ConnectScreen() {
   const [problem, setProblem] = useState<Problem>(null);
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  /** Another username typed over a connected one: it replaces it once the user agrees (B4-02). */
+  const [replacing, setReplacing] = useState<string | null>(null);
+  /** The delete failed even on a newly opened database (Fable review 1.1 B4-05). */
+  const [deleteFailed, setDeleteFailed] = useState(false);
   const inputId = useId();
   const errorId = useId();
   const connected = accounts?.[site] ?? null;
@@ -55,35 +62,68 @@ export function ConnectScreen() {
       );
       return;
     }
-    await setAccounts({
-      lichess: accounts?.lichess ?? null,
-      chesscom: accounts?.chesscom ?? null,
-      primary: accounts?.primary ?? site,
-      [site]: result.username,
-    });
+    // Another account on the same site: its data is deleted, after the same question as
+    // Disconnect (Fable review 1.1 B4-02). The same name in other letters is the same account.
+    if (connected && ownerKey(site, connected) !== ownerKey(site, result.username)) {
+      setReplacing(result.username);
+      return;
+    }
+    await setAccounts(withAccount(result.username));
+    void navigate(fromSettings ? '/settings' : '/', { replace: true });
+  };
+
+  const withAccount = (username: string): Accounts => ({
+    lichess: accounts?.lichess ?? null,
+    chesscom: accounts?.chesscom ?? null,
+    primary: accounts?.primary ?? site,
+    [site]: username,
+  });
+
+  const replace = async () => {
+    if (!connected || !replacing) return;
+    setDeleting(true);
+    try {
+      await deleteAccountData(site, connected, withAccount(replacing));
+    } catch {
+      setDeleteFailed(true);
+      return;
+    }
     void navigate(fromSettings ? '/settings' : '/', { replace: true });
   };
 
   const disconnect = async () => {
     if (!connected) return;
     setDeleting(true);
-    // Disconnecting deletes what was kept for that account (Fable review A2-02).
-    await local.deleteOwner(ownerKey(site, connected));
+    // Disconnecting deletes what was kept for that account (Fable review A2-02), and what is
+    // still on its way is not written back afterwards (1.1 B4-01).
     const other: AccountSource = site === 'lichess' ? 'chesscom' : 'lichess';
     const left = accounts?.[other] ?? null;
     // At least one account stays; disconnecting the last one starts the app over.
-    await setAccounts(
-      left ? { lichess: null, chesscom: null, [other]: left, primary: other } : null,
-    );
+    try {
+      await deleteAccountData(
+        site,
+        connected,
+        left ? { lichess: null, chesscom: null, [other]: left, primary: other } : null,
+      );
+    } catch {
+      // Never a sheet whose buttons stay grey (Fable review 1.1 B4-05).
+      setDeleteFailed(true);
+      return;
+    }
     void navigate(left ? '/settings' : '/connect', { replace: true });
   };
 
+  if (deleteFailed) return <ErrorScreen />;
+
   return (
     <main className={styles.page}>
-      {fromSettings && (
+      {fromSettings ? (
         <div className={styles.back}>
           <BackButton />
         </div>
+      ) : (
+        // Settings without an account (Fable review 1.1 B4-03): language, depth, privacy.
+        <SettingsButton label={text.settings.title} className={styles.settings} />
       )}
       <MiniBoard fen={START} lastMove={null} palette="blue" className={styles.board} />
       <h1 className={`${styles.title} t-large-title`}>{text.connect.title}</h1>
@@ -169,14 +209,17 @@ export function ConnectScreen() {
       </form>
       {connected && (
         <ConfirmSheet
-          open={confirming}
+          open={confirming || replacing !== null}
           title={text.connect.disconnectTitle(site)}
           body={text.connect.disconnectBody(connected)}
           confirmLabel={text.connect.disconnectConfirm}
           cancelLabel={text.connect.disconnectCancel}
           busy={deleting}
-          onConfirm={() => void disconnect()}
-          onCancel={() => setConfirming(false)}
+          onConfirm={() => void (replacing ? replace() : disconnect())}
+          onCancel={() => {
+            setConfirming(false);
+            setReplacing(null);
+          }}
         />
       )}
     </main>

@@ -8,6 +8,7 @@ import type {
   Termination,
   TimeControl,
 } from '@/contract';
+import { validPlayedAt } from './dates';
 import { stableId } from './hash';
 import { parseTimeControl } from './timeControl';
 
@@ -35,7 +36,8 @@ function playedAtFrom(headers: Record<string, string | null | undefined>): strin
   if (!date || !/^\d{4}\.\d{2}\.\d{2}$/.test(date)) return null;
   const time = headers.UTCTime ?? '00:00:00';
   if (!/^\d{2}:\d{2}:\d{2}$/.test(time)) return null;
-  return `${date.replaceAll('.', '-')}T${time}Z`;
+  // "2024.00.00" (day unknown in old collections) or "2024.13.40": no date (Fable review 1.1 B4-04).
+  return validPlayedAt(`${date.replaceAll('.', '-')}T${time}Z`);
 }
 
 function terminationFor(final: Chess, result: GameResult, header: string | undefined): Termination {
@@ -61,6 +63,82 @@ function terminationFor(final: Chess, result: GameResult, header: string | undef
   return 'unknown';
 }
 
+/** The first `[%clk h:mm:ss]` tag of a comment, if any. */
+function clockTag(comment: string): string | null {
+  return /\[%clk\s+\d+:\d+:\d+(?:\.\d+)?\]/.exec(comment)?.[0] ?? null;
+}
+
+/**
+ * The move text rewritten in the one form chess.js reads (1.1.1, Fable review 1.1 B5-02): after a
+ * move, its NAGs and then at most one comment. Annotated PGN (Lichess's annotated export, studies,
+ * engine output) writes several neighbouring comments after a move (`{ Blunder. } { [%eval 2.19]
+ * [%clk 0:00:59] }`), a comment after a variation or before a NAG, and `;` comments; chess.js
+ * refuses all of these. The app only reads the clock from comments, so every comment is dropped
+ * except the first `[%clk]` tag after a move, which is kept as that move's comment. Headers are
+ * left as they are.
+ */
+export function tidyMoveText(pgn: string): string {
+  const lines = pgn.split(/\r?\n/);
+  let start = 0;
+  while (start < lines.length && /^\s*(\[.*\])?\s*$/.test(lines[start] ?? '')) start += 1;
+  const head = lines.slice(0, start).join('\n');
+  const text = lines.slice(start).join('\n');
+
+  const out: string[] = [];
+  /** What follows the last move: its NAGs and the first clock tag of its comments. */
+  let afterMove: { nags: string[]; clock: string | null } | null = null;
+  const flush = () => {
+    if (!afterMove) return;
+    out.push(...afterMove.nags);
+    if (afterMove.clock) out.push(`{ ${afterMove.clock} }`);
+    afterMove = null;
+  };
+  let i = 0;
+  while (i < text.length) {
+    const char = text[i]!;
+    if (/\s/.test(char)) {
+      i += 1;
+    } else if (char === '{') {
+      const end = text.indexOf('}', i + 1);
+      const comment = text.slice(i + 1, end === -1 ? text.length : end);
+      if (afterMove && !afterMove.clock) afterMove.clock = clockTag(comment);
+      i = end === -1 ? text.length : end + 1;
+    } else if (char === ';' || (char === '%' && (i === 0 || text[i - 1] === '\n'))) {
+      // A comment to the end of the line, or an escaped line.
+      const end = text.indexOf('\n', i);
+      i = end === -1 ? text.length : end + 1;
+    } else if (char === '$') {
+      const nag = /^\$\d+/.exec(text.slice(i))?.[0] ?? '$';
+      if (afterMove) afterMove.nags.push(nag);
+      i += nag.length;
+    } else if (char === '(' || char === ')') {
+      flush();
+      out.push(char);
+      i += 1;
+    } else {
+      flush();
+      const word = /^[^\s{}();$]+/.exec(text.slice(i))?.[0] ?? char;
+      out.push(word);
+      // A move number ("12." or "12...") or a result has nothing of its own after it.
+      const isMove = !/^\d+\.*$/.test(word) && !/^(1-0|0-1|1\/2-1\/2|\*)$/.test(word);
+      afterMove = isMove ? { nags: [], clock: null } : null;
+      i += word.length;
+    }
+  }
+  flush();
+  return `${head}\n\n${out.join(' ')}`.trim();
+}
+
+function readPgn(text: string): Chess | null {
+  const chess = new Chess();
+  try {
+    chess.loadPgn(text);
+    return chess;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Turns one PGN game into a GameRecord. Returns null for anything that must be skipped:
  * variants, custom start positions, games with no moves, unreadable text.
@@ -69,12 +147,10 @@ export function gameFromPgn(pgn: string, known: KnownGameFacts = {}): GameRecord
   const trimmed = pgn.trim();
   if (trimmed === '') return null;
 
-  const loaded = new Chess();
-  try {
-    loaded.loadPgn(trimmed);
-  } catch {
-    return null;
-  }
+  // Annotated PGN is read again with its comments tidied (B5-02). Text that chess.js reads as it
+  // is never goes that way, so nothing changes for it.
+  const loaded = readPgn(trimmed) ?? readPgn(tidyMoveText(trimmed));
+  if (!loaded) return null;
   const headers = loaded.getHeaders() as Record<string, string | undefined>;
   const variant = headers.Variant;
   if (variant !== undefined && !/^standard$/i.test(variant.trim())) return null;

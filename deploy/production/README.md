@@ -46,6 +46,33 @@ dashboard instead.
 3. Version 1.0.0: `npm version 1.0.0 --no-git-tag-version` at the root, commit.
 4. A real-device pass on the trial copy first (iPhone and iPad Safari, home screen, offline).
 
+## Release checklist (every release, from 1.1.1)
+
+The tests below exist because the 1.0.x service-worker bug passed every test of its time: those
+ran on the development server, in one browser visit, with no update and no headers (Fable review
+1.1, area 8). Run all of them before the dry run; a release goes out only when all pass.
+
+1. `npm run check` at the root.
+2. `npm run e2e` at the root. It runs three sets in turn:
+   - the development-server tests (`e2e/playwright.config.ts`);
+   - the production build with its service worker (`e2e/playwright.prod.config.ts`);
+   - **the release tests** (`e2e/playwright.release.config.ts`, also `npm run e2e:release`): the
+     production build served by `wrangler dev` from this folder, as chessby.me serves it:
+     1. `site`: the real headers (CSP, HSTS, nosniff, frame, cache), `/assets/does-not-exist.js`
+        is a 404 with `no-store` (never the page kept for a year), and a full flow (paste,
+        analyse, try a move, Settings, Privacy) with no console error and no CSP report;
+     2. `visits`: second and third visit and a browser restart in one profile;
+     3. `update`: the previous release and this build behind one address (the switch is the
+        deploy): a user of the previous release opens the new one, a tab left open across the
+        switch, and offline after the update. Set `PREVIOUS_RELEASE` to the tag that is live now
+        (default `v1.1.0`); it is built once into `.release-cache/` (git-ignored);
+     4. `offline`: after one analysis online, offline: the app, the saved review, a tried move,
+        a new analysis.
+3. The dry run below, shown to the owner.
+4. After the owner's yes: the deploy, then the live check (step 3 below), **with two games in a
+   row and a reload in between**, not one: one game in a fresh browser is exactly what worked
+   while 1.0.x was broken.
+
 ## 1. Dry run (from deploy/production)
 
 ```powershell
@@ -78,7 +105,12 @@ curl.exe -sI https://chessby.me/review/lichess%3AabcDEF12 | Select-String -Patte
 curl.exe -sI https://chessby.me/engines/stockfish-17.1-lite-single-03e3232.wasm | Select-String -Pattern 'HTTP|content-type|cache-control'
 curl.exe -sI https://www.chessby.me/settings | Select-String -Pattern 'HTTP|location'
 curl.exe -s https://chessby.me/robots.txt
+curl.exe -sI https://chessby.me/assets/does-not-exist.js | Select-String -Pattern 'HTTP|content-type|cache-control'
+curl.exe -sI https://chessby.me/ | Select-String -Pattern 'strict-transport'
 ```
+
+Since 1.1.1 also expected: `/assets/does-not-exist.js` answers `404` with `text/plain` and
+`Cache-Control: no-store`; every answer carries `Strict-Transport-Security: max-age=15552000`.
 
 Expected: `200` with the CSP and no `x-robots-tag`; `text/html` for the review address;
 `application/wasm` with a year's cache; `301` to `https://chessby.me/settings`; `Allow: /`.

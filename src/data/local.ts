@@ -13,6 +13,7 @@
  */
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import { validateGameAnalysis, type GameAnalysis, type GameRecord } from '@/contract';
+import { validPlayedAt, withValidDate } from './dates';
 import { gamesToDrop, KEEP_PER_ACCOUNT } from './keep';
 import type { AccountSource, RatedClass } from './ratings';
 
@@ -77,19 +78,54 @@ export function onWriteFailure(listener: () => void): () => void {
   writeFailureListeners.add(listener);
   return () => writeFailureListeners.delete(listener);
 }
+/** Errors of writes, told to the listeners once the write has failed for good (below). */
+const failedWrites = new WeakSet<object>();
 async function writing<T>(work: () => Promise<T>): Promise<T> {
   try {
     return await work();
   } catch (error) {
-    for (const listener of writeFailureListeners) listener();
+    if (typeof error === 'object' && error !== null) failedWrites.add(error);
     throw error;
   }
 }
 
+function tellWriteFailure(error: unknown): void {
+  if (typeof error === 'object' && error !== null && failedWrites.has(error)) {
+    for (const listener of writeFailureListeners) listener();
+  }
+}
+
+/**
+ * The browser closed the app's connection (Fable review 1.1 B4-05): site data cleared or evicted
+ * while the app is open, or the connection closed for another reason. The error names differ:
+ * "The database connection is closing" (InvalidStateError), "Connection is closing because of…"
+ * (UnknownError).
+ */
+function lostConnection(error: unknown): boolean {
+  if (!(error instanceof Error) && !(error instanceof DOMException)) return false;
+  return (
+    error.name === 'InvalidStateError' ||
+    // A transaction under way when the connection went is aborted; a full device aborts one
+    // too, and then fails again on the new connection, which is when it is reported.
+    error.name === 'AbortError' ||
+    /connection is clos|database is clos|connection was closed/i.test(error.message)
+  );
+}
+
 let opening: Promise<IDBPDatabase<Schema>> | null = null;
 function db(): Promise<IDBPDatabase<Schema>> {
+  if (opening) return opening;
   // A refused open is not kept, so "Try again" can open again.
-  opening ??= openDB<Schema>('chessbyme', 2, {
+  const thisOpen: Promise<IDBPDatabase<Schema>> = openDB<Schema>('chessbyme', 2, {
+    // Closed by the browser: the next use opens it again (Fable review 1.1 B4-05).
+    terminated() {
+      if (opening === thisOpen) opening = null;
+    },
+    // A newer version of the app (another tab) needs the database: let it go, open again later.
+    blocking(_current, _blocked, event) {
+      (event.target as IDBDatabase).close();
+      if (opening === thisOpen) opening = null;
+    },
     async upgrade(database, oldVersion, _newVersion, transaction) {
       if (oldVersion < 1) {
         const games = database.createObjectStore('games', { keyPath: 'id' });
@@ -110,17 +146,31 @@ function db(): Promise<IDBPDatabase<Schema>> {
       }
     },
   }).catch((error: unknown) => {
-    opening = null;
+    if (opening === thisOpen) opening = null;
     throw error;
   });
-  return opening;
+  opening = thisOpen;
+  return thisOpen;
+}
+
+/** How many ids of games dropped by `trimOwner` are remembered per account. */
+const DROPPED_KEPT = 1000;
+
+/** Set in `kv` once the stored dates have been checked (1.1.1). */
+const DATES_REPAIRED = 'repaired:dates';
+
+/** The row with an impossible date read as no date, in the row and in its game (B4-04). */
+function validRow(row: StoredGame): StoredGame {
+  const playedAt = validPlayedAt(row.playedAt);
+  const game = withValidDate(row.game);
+  return playedAt === row.playedAt && game === row.game ? row : { ...row, playedAt, game };
 }
 
 function newestFirst(a: StoredGame, b: StoredGame): number {
   return (b.playedAt ?? '').localeCompare(a.playedAt ?? '');
 }
 
-export const local = {
+const store = {
   async getAccounts(): Promise<Accounts | null> {
     return ((await (await db()).get('kv', 'accounts')) as Accounts | undefined) ?? null;
   },
@@ -133,7 +183,7 @@ export const local = {
   },
 
   async listGames(owner: string): Promise<GameRecord[]> {
-    const rows = await (await db()).getAllFromIndex('games', 'owner', owner);
+    const rows = (await (await db()).getAllFromIndex('games', 'owner', owner)).map(validRow);
     return rows.sort(newestFirst).map((row) => row.game);
   },
   /**
@@ -148,10 +198,52 @@ export const local = {
       d.get('kv', 'progress') as Promise<Record<string, ReviewProgress> | undefined>,
     ]);
     const opened = (row: StoredGame) => Math.max(row.openedAt ?? 0, progress?.[row.id]?.at ?? 0);
-    return rows.sort((a, b) => opened(b) - opened(a) || newestFirst(a, b)).map((row) => row.game);
+    return rows
+      .map(validRow)
+      .sort((a, b) => opened(b) - opened(a) || newestFirst(a, b))
+      .map((row) => row.game);
+  },
+  /**
+   * The ids of the games of an account the app has: stored, or dropped by `trimOwner` as too old
+   * to keep. Read without the games themselves (Fable review 1.1 B5-01).
+   */
+  async knownGameIds(owner: string): Promise<string[]> {
+    const d = await db();
+    const [stored, dropped] = await Promise.all([
+      d.getAllKeysFromIndex('games', 'owner', owner),
+      d.get('kv', `dropped:${owner}`) as Promise<string[] | undefined>,
+    ]);
+    return [...stored, ...(dropped ?? [])];
   },
   async getGame(id: string): Promise<GameRecord | null> {
-    return (await (await db()).get('games', id))?.game ?? null;
+    const row = await (await db()).get('games', id);
+    return row ? validRow(row).game : null;
+  },
+  /**
+   * Stores "no date" for every game saved with a date that is not a real one (1.1.1, Fable review
+   * 1.1 B4-04: a pasted `[Date "2024.00.00"]` was kept as `2024-00-00T00:00:00Z` and broke
+   * My Games › Others). The lists already read such a date as none; this fixes what is stored,
+   * once per device (a mark in `kv`). Returns how many games were repaired.
+   */
+  async repairDates(): Promise<number> {
+    const d = await db();
+    if (await d.get('kv', DATES_REPAIRED)) return 0;
+    return writing(async () => {
+      const tx = d.transaction(['games', 'kv'], 'readwrite');
+      let repaired = 0;
+      let cursor = await tx.objectStore('games').openCursor();
+      while (cursor) {
+        const fixed = validRow(cursor.value);
+        if (fixed !== cursor.value) {
+          await cursor.update(fixed);
+          repaired += 1;
+        }
+        cursor = await cursor.continue();
+      }
+      await tx.objectStore('kv').put(true, DATES_REPAIRED);
+      await tx.done;
+      return repaired;
+    });
   },
   /**
    * Saves games under an account, or (owner null) as games the user opened: those are kept under
@@ -161,7 +253,8 @@ export const local = {
     await writing(async () => {
       const tx = (await db()).transaction('games', 'readwrite');
       const now = Date.now();
-      for (const game of games) {
+      for (const record of games) {
+        const game = withValidDate(record);
         const before = await tx.store.get(game.id);
         const kept = owner ?? before?.owner ?? OTHER_GAMES;
         const openedAt = owner === null ? now : before?.openedAt;
@@ -200,6 +293,15 @@ export const local = {
         for (const id of await tx.objectStore('analyses').getAllKeys()) kept.add(id);
         drop = gamesToDrop(rows, kept, keep);
         for (const id of drop) await games.delete(id);
+        if (drop.length > 0) {
+          // Remembered, so the site's copy of a dropped game is not read again at every update
+          // (Fable review 1.1 B5-01). The newest DROPPED_KEPT only: older ones are in no month the
+          // app reads.
+          const kv = tx.objectStore('kv');
+          const key = `dropped:${owner}`;
+          const before = ((await kv.get(key)) as string[] | undefined) ?? [];
+          await kv.put([...new Set([...drop, ...before])].slice(0, DROPPED_KEPT), key);
+        }
       }
       await tx.done;
       return drop.length;
@@ -279,8 +381,9 @@ export const local = {
     }
     const kv = tx.objectStore('kv');
     await kv.delete(`ratings:${owner}`);
-    // Else a reconnected account would skip the months it no longer has.
+    // Else a reconnected account would skip the months it no longer has, or games it never got.
     await kv.delete(`chesscom-months:${owner}`);
+    await kv.delete(`dropped:${owner}`);
     const progress = ((await kv.get('progress')) as Record<string, ReviewProgress>) ?? {};
     const gone = new Set<string>(ids);
     await kv.put(
@@ -302,5 +405,36 @@ export const local = {
     ]);
   },
 };
+
+/**
+ * Every call of `store`, done once more on a newly opened connection when the browser closed the
+ * one in use (Fable review 1.1 B4-05). Each call is safe to repeat: reads, puts of the same rows,
+ * deletes.
+ */
+function reopening<T extends Record<string, (...args: never[]) => Promise<unknown>>>(calls: T): T {
+  const wrapped: Record<string, unknown> = {};
+  for (const [name, call] of Object.entries(calls)) {
+    wrapped[name] = async (...args: never[]) => {
+      try {
+        return await call(...args);
+      } catch (error) {
+        if (!lostConnection(error)) {
+          tellWriteFailure(error);
+          throw error;
+        }
+        opening = null;
+        try {
+          return await call(...args);
+        } catch (again) {
+          tellWriteFailure(again);
+          throw again;
+        }
+      }
+    };
+  }
+  return wrapped as T;
+}
+
+export const local = reopening(store);
 
 export type LocalStore = typeof local;

@@ -165,3 +165,67 @@ describe('fetchLichessGames', () => {
     expect(r).toMatchObject({ ok: false, error: { code: 'no-games' } });
   });
 });
+
+// Fable review 1.1 B5-03: more games since the last visit than one page holds.
+describe('fetchLichessGames with catchUp', () => {
+  const template = JSON.parse(lines[0]!) as Record<string, unknown>;
+  /** A Lichess holding `count` games an hour apart from `first`, honouring since/until/max. */
+  function site(count: number, first: number) {
+    const games = Array.from({ length: count }, (_, i) => ({
+      ...template,
+      id: `g${String(i).padStart(4, '0')}`,
+      createdAt: first + i * 3_600_000,
+    }));
+    return (() => {
+      const calls: string[] = [];
+      const fetchStub = (async (input: RequestInfo | URL) => {
+        const url = new URL(String(input));
+        calls.push(url.search);
+        const since = Number(url.searchParams.get('since') ?? 0);
+        const until = Number(url.searchParams.get('until') ?? Infinity);
+        const max = Number(url.searchParams.get('max'));
+        const body = games
+          .filter((g) => g.createdAt >= since && g.createdAt <= until)
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .slice(0, max)
+          .map((g) => JSON.stringify(g))
+          .join('\n');
+        return new Response(body, { status: 200 });
+      }) as typeof fetch;
+      return { fetch: fetchStub, calls };
+    })();
+  }
+  const first = Date.UTC(2026, 10, 1);
+
+  it('pages back until every game since the last visit is here', async () => {
+    const s = site(130, first);
+    const r = await fetchLichessGames('x', { fetch: s.fetch, since: first, catchUp: 200 });
+    expect(r.ok && r.games.length).toBe(130);
+    expect(r.ok && new Set(r.games.map((g) => g.id)).size).toBe(130);
+    expect(s.calls).toHaveLength(3);
+    expect(s.calls[1]).toContain(`until=${first + 80 * 3_600_000 - 1}`);
+  });
+
+  it('stops at catchUp games', async () => {
+    const s = site(400, first);
+    const r = await fetchLichessGames('x', { fetch: s.fetch, since: first, catchUp: 200 });
+    expect(r.ok && r.games.length).toBe(200);
+    expect(s.calls).toHaveLength(4);
+  });
+
+  it('without since (a new account) reads one page only, as before', async () => {
+    const s = site(130, first);
+    const r = await fetchLichessGames('x', { fetch: s.fetch, catchUp: 200 });
+    expect(r.ok && r.games.length).toBe(50);
+    expect(s.calls).toHaveLength(1);
+  });
+
+  it('fails as a whole when a later page fails, so no gap is stored', async () => {
+    let n = 0;
+    const s = site(130, first);
+    const failing = (async (input: RequestInfo | URL, init?: RequestInit) =>
+      (n += 1) === 2 ? new Response('', { status: 500 }) : s.fetch(input, init)) as typeof fetch;
+    const r = await fetchLichessGames('x', { fetch: failing, since: first, catchUp: 200 });
+    expect(r.ok).toBe(false);
+  });
+});

@@ -28,7 +28,8 @@ const PAGE = 20;
 
 export function GamesScreen() {
   const { messages: text, locale } = useLanguage();
-  const { loaded, accounts, games, otherGames, summaries, refresh, failed, busy } = useApp();
+  const { loaded, accounts, games, otherGames, summaries, refresh, failed, busy, refreshFromSite } =
+    useApp();
   // Every site that failed asked the app to wait: say "try again in a moment" (HTTP 429).
   const onlyBusy = failed.length > 0 && failed.every((site) => busy.includes(site));
   const account = primaryAccount(accounts);
@@ -40,7 +41,10 @@ export function GamesScreen() {
     username: a.username,
   }));
   const both = connected.length > 1;
-  const [filter, setFilter] = useState<Filter>('all');
+  // No account (a user who only pastes PGN, Fable review 1.1 B4-03): only the games opened.
+  const noAccount = loaded && accounts === null;
+  const [chosen, setFilter] = useState<Filter>('all');
+  const filter: Filter = noAccount ? 'others' : chosen;
   const [shown, setShown] = useState(PAGE);
   const list = useRef<HTMLDivElement>(null);
   const end = useRef<HTMLDivElement>(null);
@@ -82,32 +86,57 @@ export function GamesScreen() {
       <header className={styles.header}>
         <h1 className="t-large-title">{text.games.title}</h1>
         <p className={`${styles.sub} t-caption c-3`}>
-          {onlyBusy
-            ? `${both ? text.games.accountsLine(connected) : text.games.accountLine(site, username)} · ${text.games.tryLater}`
-            : both
-              ? failed.length > 0
-                ? text.games.accountsLineFailed(connected, failed)
-                : text.games.accountsLine(connected)
-              : refresh === 'failed'
-                ? text.games.accountLineFailed(site, username)
-                : text.games.accountLine(site, username)}
+          {noAccount ? (
+            <Link to="/connect" className="inline-action pressable">
+              {text.connect.title}
+            </Link>
+          ) : onlyBusy ? (
+            <>
+              {`${both ? text.games.accountsLine(connected) : text.games.accountLine(site, username)} · `}
+              {/* A real button (Fable review 1.1 B5-04): the update is asked for again. */}
+              <button
+                type="button"
+                className="inline-action pressable"
+                onClick={() => void refreshFromSite()}
+              >
+                {text.games.tryLater}
+              </button>
+            </>
+          ) : both ? (
+            failed.length > 0 ? (
+              text.games.accountsLineFailed(connected, failed)
+            ) : (
+              text.games.accountsLine(connected)
+            )
+          ) : refresh === 'failed' ? (
+            text.games.accountLineFailed(site, username)
+          ) : (
+            text.games.accountLine(site, username)
+          )}
         </p>
       </header>
-      <Segmented
-        size="large"
-        kind="tabs"
-        label={text.games.filterLabel}
-        value={filter}
-        onChange={choose}
-        className={styles.filter}
-        options={[
-          { value: 'all', label: text.games.filter.all, controls: 'games-list' },
-          { value: 'analyzed', label: text.games.filter.analyzed, controls: 'games-list' },
-          { value: 'notYet', label: text.games.filter.notYet, controls: 'games-list' },
-          { value: 'others', label: text.games.filter.others, controls: 'games-list' },
-        ]}
-      />
-      <div id="games-list" role="tabpanel" ref={list} className={styles.list}>
+      {!noAccount && (
+        <Segmented
+          size="large"
+          kind="tabs"
+          label={text.games.filterLabel}
+          value={filter}
+          onChange={choose}
+          className={styles.filter}
+          options={[
+            { value: 'all', label: text.games.filter.all, controls: 'games-list' },
+            { value: 'analyzed', label: text.games.filter.analyzed, controls: 'games-list' },
+            { value: 'notYet', label: text.games.filter.notYet, controls: 'games-list' },
+            { value: 'others', label: text.games.filter.others, controls: 'games-list' },
+          ]}
+        />
+      )}
+      <div
+        id="games-list"
+        role={noAccount ? undefined : 'tabpanel'}
+        ref={list}
+        className={styles.list}
+      >
         {firstLoad ? (
           <Skeleton />
         ) : others ? (

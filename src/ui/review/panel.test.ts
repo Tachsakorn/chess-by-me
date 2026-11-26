@@ -60,7 +60,7 @@ describe('moveText', () => {
     expect(text).toMatchObject({
       kind: 'move',
       category: 'mistake',
-      line2: { kind: 'dropped', percent: Math.round(review.pointLoss * 100) },
+      line2: { kind: 'dropped', percent: Math.floor(review.pointLoss * 100 + 1e-9) },
       line3: {
         kind: 'better',
         best: numberedLine(ply - 1, [best!]),
@@ -93,7 +93,7 @@ describe('moveText', () => {
     );
     expect(goods.length).toBeGreaterThan(0);
     for (const review of goods) {
-      const percent = Math.round(review.pointLoss * 100);
+      const percent = Math.floor(review.pointLoss * 100 + 1e-9);
       expect(moveText(rosen.game, rosen.state, review.ply)).toMatchObject({
         line2: percent >= 1 ? { kind: 'dropped', percent } : { kind: 'held' },
         line3: { kind: 'bestWas', rest: '' },
@@ -204,6 +204,46 @@ describe('moveText: under 1%, and a missed mate', () => {
         if (text.kind === 'move' && text.line2.kind === 'dropped') {
           expect(text.line2.percent).toBeGreaterThanOrEqual(1);
         }
+      }
+    }
+  });
+});
+
+// Fable review 1.1 B3-01: rounding made a Good move read "dropped 5%" (a 4.5–5% loss), next to a
+// label that says it stayed under the Inaccuracy line. The text rounds down, so it never crosses
+// a line the label did not cross.
+describe('moveText: the percentage is rounded down', () => {
+  const ply = rosen.analysis.moves.find((m) => m.category === 'good' && !m.playedIsBest)!.ply;
+  const withLoss = (category: 'good' | 'inaccuracy' | 'mistake' | 'blunder', pointLoss: number) => {
+    const reviews = rosen.state.reviews.map((review, index) =>
+      index === ply - 1 && review ? { ...review, category, pointLoss } : review,
+    );
+    const text = moveText(rosen.game, { ...rosen.state, reviews }, ply);
+    return text.kind === 'move' && text.line2.kind === 'dropped' ? text.line2.percent : null;
+  };
+
+  it.each([
+    ['good', 0.0499, 4],
+    ['good', 0.046, 4],
+    ['inaccuracy', 0.05, 5],
+    ['inaccuracy', 0.0999, 9],
+    ['mistake', 0.1, 10],
+    ['mistake', 0.1999, 19],
+    ['blunder', 0.2, 20],
+    ['blunder', 0.29, 29],
+    ['blunder', 0.57, 57],
+  ] as const)('%s with a loss of %f reads %i%%', (category, loss, shown) => {
+    expect(withLoss(category, loss)).toBe(shown);
+  });
+
+  it('never reads 5% for a Good move, 10% for an Inaccuracy or 20% for a Mistake', () => {
+    const limit = { good: 5, inaccuracy: 10, mistake: 20 } as const;
+    for (const { game, state } of [rosen, blitz, load('lichess-HKl8S22m')]) {
+      for (let p = 1; p <= game.moves.length; p += 1) {
+        const text = moveText(game, state, p);
+        if (text.kind !== 'move' || text.line2.kind !== 'dropped') continue;
+        const max = limit[text.category as keyof typeof limit];
+        if (max !== undefined) expect(text.line2.percent).toBeLessThan(max);
       }
     }
   });

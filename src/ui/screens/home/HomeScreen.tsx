@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import type { GameAnalysis } from '@/contract';
-import { local } from '@/data/local';
 import { RATED_CLASSES } from '@/data/ratings';
 import { primaryAccount, useApp } from '@/ui/app/appStore';
 import { MiniBoard } from '@/ui/board/MiniBoard';
 import { paletteFor } from '@/ui/board/board';
 import { Icon } from '@/ui/components/Icon';
 import { Page } from '@/ui/components/Page';
+import { SettingsButton } from '@/ui/components/SettingsButton';
 import { TabBar } from '@/ui/components/TabBar';
 import { useLanguage } from '@/ui/i18n/LanguageContext';
 import {
@@ -22,6 +22,7 @@ import {
 import { useGameText } from '@/ui/model/useGameText';
 import { connectedAccounts, usernameFor } from '@/ui/model/accounts';
 import { reviewPath } from '@/ui/app/paths';
+import { loadCurrentAnalysis } from '@/ui/app/savedAnalysis';
 import styles from './HomeScreen.module.css';
 
 export function HomeScreen() {
@@ -44,7 +45,8 @@ export function HomeScreen() {
   const username = accounts?.[site] ?? '';
   const other = list.find((a) => a.source !== site)?.source ?? null;
   const shownRatings = ratings[site] ?? null;
-  const note = busy.includes(site)
+  const busyHere = busy.includes(site);
+  const note = busyHere
     ? text.home.updateBusy
     : failed.includes(site)
       ? text.home.updateFailed
@@ -60,13 +62,7 @@ export function HomeScreen() {
         <p className="t-caption w-600 c-3">{formatToday(new Date(), locale)}</p>
         <div className={styles.titleRow}>
           <h1 className="t-large-title">{text.home.title}</h1>
-          <Link
-            to="/settings"
-            aria-label={text.nav.account}
-            className={`${styles.avatar} pressable`}
-          >
-            {avatarName.slice(0, 1).toUpperCase()}
-          </Link>
+          <SettingsButton initial={avatarName || '?'} label={text.nav.account} />
         </div>
       </header>
 
@@ -122,11 +118,25 @@ export function HomeScreen() {
           >
             {text.sites[site]}
             <Icon name="swap" size={13} stroke={2} className={styles.swapIcon} />
-            {text.home.accountLineAfterSite(username, note)}
+            {busyHere ? (
+              <>
+                {text.home.accountLineAfterSite(username, '')}
+                <RetryNow label={note} />
+              </>
+            ) : (
+              text.home.accountLineAfterSite(username, note)
+            )}
           </p>
         ) : (
           <p className={`${styles.accountLine} t-caption c-3`}>
-            {text.home.accountLine(site, username, note)}
+            {busyHere ? (
+              <>
+                {text.home.accountLine(site, username, '')}
+                <RetryNow label={note} />
+              </>
+            ) : (
+              text.home.accountLine(site, username, note)
+            )}
           </p>
         )}
       </div>
@@ -173,6 +183,24 @@ export function HomeScreen() {
   );
 }
 
+/** "Try again in a moment" as a button: the update is asked for again (Fable review 1.1 B5-04). */
+function RetryNow({ label }: { label: string }) {
+  const refresh = useApp((s) => s.refreshFromSite);
+  return (
+    <button
+      type="button"
+      className="inline-action pressable"
+      onClick={(event) => {
+        // Not also the tap that switches the site shown on the line.
+        event.stopPropagation();
+        void refresh();
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 function ContinueSection({ card }: { card: ContinueCard }) {
   const text = useLanguage().messages;
   const gameText = useGameText();
@@ -184,12 +212,15 @@ function ContinueSection({ card }: { card: ContinueCard }) {
   useEffect(() => {
     let current = true;
     if (card.kind === 'paused') {
-      void local.getAnalysis(game.id).then((found) => current && setAnalysis(found));
+      // Under the current rules: an older one is rebuilt first (1.1.1, B2-01).
+      void loadCurrentAnalysis(game)
+        .then((found) => current && setAnalysis(found))
+        .catch(() => {});
     }
     return () => {
       current = false;
     };
-  }, [card.kind, game.id]);
+  }, [card.kind, game]);
 
   const position = card.kind === 'paused' ? positionAt(game, card.ply) : finalPosition(game);
   const first =

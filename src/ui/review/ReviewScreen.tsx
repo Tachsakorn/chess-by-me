@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router';
-import { isCurrentAnalysis } from '@/analysis';
 import type { GameRecord } from '@/contract';
 import { local } from '@/data/local';
 import { useAnalysisQueue } from '@/ui/app/analysisQueue';
 import { useApp } from '@/ui/app/appStore';
+import { ErrorScreen } from '@/ui/app/ErrorScreen';
+import { loadCurrentAnalysis } from '@/ui/app/savedAnalysis';
 import { saveOpened, viewedGame } from '@/ui/app/viewedGames';
 import { usernameFor } from '@/ui/model/accounts';
 import { BackButton } from '@/ui/components/BackButton';
@@ -36,7 +37,10 @@ import { useTryLine } from './useTryLine';
 import { useWide } from './useWide';
 import styles from './ReviewScreen.module.css';
 
-type Loaded = { id: string; game: GameRecord | null; saved: AnalysisState | null } | null;
+type Loaded =
+  | { id: string; game: GameRecord | null; saved: AnalysisState | null; failed?: false }
+  | { id: string; failed: true }
+  | null;
 
 /** Loads the game of the address (and its saved analysis), then shows it. */
 export function ReviewScreen() {
@@ -54,18 +58,23 @@ export function ReviewScreen() {
         await saveOpened(listed);
         game = listed;
       }
-      const stored = game ? await local.getAnalysis(id) : null;
-      // An analysis made under older labelling rules is done again, at once (Fable review).
-      const analysis = stored && isCurrentAnalysis(stored) ? stored : null;
+      // An analysis made under older labelling rules is rebuilt from its own evaluations (1.1.1,
+      // Fable review 1.1 B2-01); one that cannot be rebuilt is analysed again, at once.
+      const analysis = game ? await loadCurrentAnalysis(game) : null;
       const saved = game && analysis ? stateFromAnalysis(game, analysis) : null;
       if (current) setLoaded({ id, game, saved });
-    })();
+    })().catch(() => {
+      // Storage that cannot be read even when opened again: the normal error state, never a
+      // blank page (Fable review 1.1 B4-05).
+      if (current) setLoaded({ id, failed: true });
+    });
     return () => {
       current = false;
     };
   }, [id]);
 
   if (!loaded || loaded.id !== id) return null;
+  if (loaded.failed) return <ErrorScreen />;
   if (!loaded.game) return <Navigate to="/" replace />;
   return <ReviewView key={loaded.game.id} game={loaded.game} saved={loaded.saved} />;
 }
@@ -90,6 +99,7 @@ function ReviewView({ game, saved }: { game: GameRecord; saved: AnalysisState | 
   const [finished, setFinished] = useState<AnalysisState | null>(null);
   if (live?.phase === 'done' && finished !== live) setFinished(live);
   const failed = useAnalysisQueue((s) => s.failed.includes(game.id));
+  const failure = useAnalysisQueue((s) => (s.failed.includes(game.id) ? s.errors[game.id] : null));
   const enqueue = useAnalysisQueue((s) => s.enqueue);
   const lastPly = game.moves.length;
   const wide = useWide();
@@ -281,6 +291,7 @@ function ReviewView({ game, saved }: { game: GameRecord; saved: AnalysisState | 
             percent={running ? percent : 0}
             download={download}
             stopped={failed}
+            failure={failure}
             onRetry={() => enqueue(game, { first: true })}
           />
         )}

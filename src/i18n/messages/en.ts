@@ -168,8 +168,12 @@ export const en = {
     startHint: 'Tap › to step through the moves',
     analyzing: (n: number) => `Analyzing… ${n}%`,
     downloading: (n: number) => `Downloading the engine… ${n}%`,
+    /** The engine's files are already on the device (1.1.1). */
+    loadingEngine: 'Loading the engine…',
     accuracyOf: (name: string) => `${name} accuracy`,
     stopped: "Analysis didn't finish. Tap to try again.",
+    /** Under "stopped": the reason's code (1.1.1, Fable review 1.1 B8-01). */
+    details: (code: string) => `Details: ${code}`,
     stepper: {
       label: 'Step through the game',
       start: 'Go to start',
@@ -302,6 +306,14 @@ export const en = {
     screen: 'Screen',
     game: 'Game',
     move: 'Move',
+    /** The last analysis that failed in this session (1.1.1, B8-01). */
+    lastError: 'Last error',
+  },
+  /** A newer version on the server than the page that runs (1.1.1, Fable review 1.1 B1-02). */
+  update: {
+    ready: 'A new version is ready. Tap to reload',
+    note: 'A new version is ready.',
+    reload: 'Reload',
   },
   storage: {
     title: "This browser isn't letting Chess by me save",

@@ -4,6 +4,7 @@ import '@/styles/fonts';
 import '@/styles/tokens.css';
 import '@/styles/base.css';
 import { App } from '@/ui/app/App';
+import { watchForNewVersion } from '@/ui/app/appUpdate';
 import { listenForFirstTap } from '@/ui/sound/player';
 
 const root = document.getElementById('root');
@@ -19,6 +20,8 @@ listenForFirstTap();
 
 // Offline support (public/sw.js). Not in development, where it would hold on to old files.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  // A new version taking over this page reloads it, or says so while something runs (B1-02).
+  watchForNewVersion();
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {
       // The app works without it, only not offline.

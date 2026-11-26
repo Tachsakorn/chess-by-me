@@ -12,6 +12,8 @@ export interface ContactInfo {
   screen: { width: number; height: number };
   /** From the review screen: the game's address (none for a pasted PGN) and the move shown. */
   game?: { url: string | null; move: string };
+  /** The last analysis failure of this session (Fable review 1.1 B8-01), if any. */
+  lastError?: { code: string; detail: string | null } | null;
 }
 
 export function contactMailto(text: Messages, locale: Locale, info: ContactInfo): string {
@@ -26,6 +28,10 @@ export function contactMailto(text: Messages, locale: Locale, info: ContactInfo)
   ];
   if (info.game?.url) lines.push(`${t.game}: ${info.game.url}`);
   if (info.game) lines.push(`${t.move}: ${info.game.move}`);
+  if (info.lastError) {
+    const { code, detail } = info.lastError;
+    lines.push(`${t.lastError}: ${detail ? `${code} (${detail})` : code}`);
+  }
   const subject = encodeURIComponent(t.subject);
   const body = encodeURIComponent(lines.join('\r\n'));
   return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;

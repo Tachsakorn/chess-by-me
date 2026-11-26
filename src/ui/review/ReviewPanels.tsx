@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Color, GameRecord } from '@/contract';
+import type { EngineLoad, Failure } from '@/ui/app/analysisQueue';
+import { reloadApp, useAppUpdate } from '@/ui/app/appUpdate';
 import { useMessages } from '@/ui/i18n/LanguageContext';
 import { sideAccuracy } from '@/ui/model/games';
 import type { AnalysisState } from './analysisState';
@@ -36,15 +38,44 @@ function useEvalFit(key: string) {
   return [head, hide] as const;
 }
 
+/**
+ * "Analysis didn't finish. Tap to try again.", with the reason's code under it (Fable review 1.1
+ * B8-01). When a newer build is on the server (B1-02) a retry would fail the same way: the line
+ * says "A new version is ready. Tap to reload" instead.
+ */
+function RetryLine({ onRetry, failure }: { onRetry(): void; failure?: Failure | null }) {
+  const text = useMessages();
+  const ready = useAppUpdate((s) => s.ready);
+  if (ready) {
+    return (
+      <button type="button" className={`${styles.retry} t-body pressable`} onClick={reloadApp}>
+        {text.update.ready}
+      </button>
+    );
+  }
+  return (
+    <>
+      <button type="button" className={`${styles.retry} t-body pressable`} onClick={onRetry}>
+        {text.review.stopped}
+      </button>
+      {failure && (
+        <p className={`${styles.details} t-caption c-2`}>{text.review.details(failure.code)}</p>
+      )}
+    </>
+  );
+}
+
 interface MovePanelProps {
   game: GameRecord;
   state: AnalysisState;
   ply: number;
   /** 0..100 while this game is being analysed. */
   percent: number;
-  /** 0..100 while the engine is being downloaded for this game (A8-01); null otherwise. */
-  download: number | null;
+  /** The engine being made ready for this game (A8-01, 1.1.1); null otherwise. */
+  download: EngineLoad;
   stopped: boolean;
+  /** Why the last run failed, when it did. */
+  failure?: Failure | null;
   onRetry(): void;
 }
 
@@ -56,11 +87,16 @@ export function MovePanel({
   percent,
   download,
   stopped,
+  failure = null,
   onRetry,
 }: MovePanelProps) {
   const text = useMessages();
   const progress =
-    download !== null ? text.review.downloading(download) : text.review.analyzing(percent);
+    download === 'device'
+      ? text.review.loadingEngine
+      : download !== null
+        ? text.review.downloading(download)
+        : text.review.analyzing(percent);
   const shown = moveText(game, state, ply);
   const [head, hideEval] = useEvalFit(
     shown.kind === 'move' ? `${shown.label}|${shown.evalText}` : '',
@@ -74,9 +110,7 @@ export function MovePanel({
       <>
         <p className="t-body">{text.review.start}</p>
         {unfinished && stopped ? (
-          <button type="button" className={`${styles.retry} t-body pressable`} onClick={onRetry}>
-            {text.review.stopped}
-          </button>
+          <RetryLine onRetry={onRetry} failure={failure} />
         ) : unfinished ? (
           <p className={`${styles.line2} t-body tabular`}>{progress}</p>
         ) : (
@@ -98,9 +132,7 @@ export function MovePanel({
           <span className="t-move-title">{label}</span>
         </div>
         {stopped ? (
-          <button type="button" className={`${styles.retry} t-body pressable`} onClick={onRetry}>
-            {text.review.stopped}
-          </button>
+          <RetryLine onRetry={onRetry} failure={failure} />
         ) : (
           <p className={`${styles.line2} t-body tabular`}>{progress}</p>
         )}
@@ -124,6 +156,12 @@ export function MovePanel({
           <span className={`${styles.eval} t-body w-600 c-3 tabular`}>{shown.evalText}</span>
         )}
       </div>
+      {/* No room beside the move (a short screen, where the panel is as narrow as the board):
+          the figures take a line of their own, where "Win chance dropped" is left out (1.1.1,
+          Fable review 1.1 B6-02). */}
+      {shown.evalText && hideEval && (
+        <p className={`${styles.evalLine} t-body w-600 c-3 tabular`}>{shown.evalText}</p>
+      )}
       <p className={`${styles.line2} ${styles.chance} t-body`}>{secondLine(text.review, line2)}</p>
       {line3 && (
         <p className={`${styles.line3} ${styles.ellipsis} t-body c-2`}>
@@ -194,11 +232,7 @@ export function TryPanel({ shown, onRetry }: { shown: TryText; onRetry(): void }
           <span className={`${styles.eval} t-body w-600 c-3 tabular`}>{shown.evalText}</span>
         )}
       </div>
-      {shown.kind === 'failed' && (
-        <button type="button" className={`${styles.retry} t-body pressable`} onClick={onRetry}>
-          {text.review.stopped}
-        </button>
-      )}
+      {shown.kind === 'failed' && <RetryLine onRetry={onRetry} />}
       {second && <p className={`${styles.line2} ${styles.ellipsis} t-body`}>{second}</p>}
       {third && (
         <p

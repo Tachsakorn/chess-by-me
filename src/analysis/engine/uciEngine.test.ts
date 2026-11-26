@@ -557,3 +557,54 @@ describe('UciEngine, failures and shutdown', () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 });
+
+// 1.1.1 (Fable review 1.1 B2-03): Stockfish answers `isready` in the middle of a search (checked
+// in Edge's and WebKit's workers: 15-40 ms), so "is it alive?" can be asked at any time.
+describe('UciEngine.ping', () => {
+  it('is true when the engine answers readyok, also in the middle of a search', async () => {
+    const { transport, engine } = await startedEngine();
+    void engine.evaluate('8/8/8/8/8/8/8/K6k w - - 0 1', 20);
+    await tick();
+    const alive = engine.ping(1_000);
+    expect(transport.sent.at(-1)).toBe('isready');
+    transport.emit('readyok');
+    expect(await alive).toBe(true);
+  });
+
+  it('is false when the engine stays silent for the time given', async () => {
+    vi.useFakeTimers();
+    try {
+      const { transport, engine } = await startedEngine();
+      transport.reply = () => {};
+      const alive = engine.ping(5_000);
+      await vi.advanceTimersByTimeAsync(4_999);
+      let answered: boolean | null = null;
+      void alive.then((value) => (answered = value));
+      await vi.advanceTimersByTimeAsync(0);
+      expect(answered).toBeNull();
+      await vi.advanceTimersByTimeAsync(2);
+      expect(await alive).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('is false at once for an engine that failed or was closed', async () => {
+    const { engine, transport } = await startedEngine();
+    transport.fail('worker died');
+    expect(await engine.ping(5_000)).toBe(false);
+    const other = await startedEngine();
+    other.engine.close();
+    expect(await other.engine.ping(5_000)).toBe(false);
+  });
+
+  it('does not disturb the search it was asked during', async () => {
+    const { transport, engine } = await startedEngine();
+    const search = engine.evaluate('8/8/8/8/8/8/8/K6k w - - 0 1', 1);
+    await tick();
+    const alive = engine.ping(1_000);
+    transport.emit('readyok', 'info depth 1 multipv 1 score cp 0 pv a1a2', 'bestmove a1a2');
+    expect(await alive).toBe(true);
+    expect((await search).depth).toBe(1);
+  });
+});

@@ -14,6 +14,7 @@ import {
   type TriedLine,
 } from '@/analysis';
 import type { GameRecord, MoveReview, PositionEval } from '@/contract';
+import { checkAfterLoadFailure, setBusy } from '@/ui/app/appUpdate';
 import type { AnalysisState } from './analysisState';
 import type { TryLine } from './tryLine';
 import type { Comparison } from './tryPanel';
@@ -54,10 +55,12 @@ function createTryStore(): TryStore {
         book = loaded;
         notify();
       },
-      () => {
+      (error: unknown) => {
         bookRequest = null;
         bookFailed = true;
         notify();
+        // The book of an older build, no longer on the server (Fable review 1.1 B1-02).
+        void checkAfterLoadFailure(error);
       },
     );
   };
@@ -139,6 +142,14 @@ export function useTryLine(
 
   // Leaving the screen stops the engine.
   useEffect(() => () => store.close(), [store]);
+
+  // While the reader is in a line of their own (it is not saved), a new version does not reload
+  // the page by itself (Fable review 1.1 B1-02).
+  const inLine = (moves?.length ?? 0) > 0;
+  useEffect(() => {
+    setBusy('try', inLine);
+    return () => setBusy('try', false);
+  }, [inLine]);
 
   return useMemo(() => {
     if (!line) return NOTHING;

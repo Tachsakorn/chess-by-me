@@ -32,6 +32,11 @@
   --graph-h: calc(36px + clamp(0px, var(--board-by-height) - var(--board-by-width), 36px));
 }
 
+/* Tall screens keep the "Win chance dropped" line instead (no room for both). */
+.evalLine {
+  display: none;
+}
+
 /* Short screens (iPhone SE): smaller rows, graph and panel, 8px above the bar. */
 @media (max-height: 759.98px) {
   .screen {
@@ -46,7 +51,16 @@
   .chance + .line3 {
     margin-top: 10px;
   }
+  /* The evaluation on a line of its own when it does not fit beside the move (B6-02). */
+  .evalLine {
+    display: block;
+    margin-top: 4px;
+  }
+  .evalLine + .chance + .line3 {
+    margin-top: 2px;
+  }
 }
+
 
 .header {
   flex: none;
@@ -291,6 +305,12 @@
   color: var(--text);
 }
 
+/* The reason's code under the retry line (Fable review 1.1 B8-01). */
+.details {
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+
 .accuracies {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -423,6 +443,20 @@
   align-items: flex-start;
   gap: 32px;
   padding: var(--wide-top) var(--gutter) var(--wide-bottom);
+}
+
+/* A phone on its side (1.1.1, Fable review 1.1 B6-01): narrower than an iPad, so the right
+ * column gives the board what the height allows, keeping at least 280px. 900px and wider (the
+ * iPad, and the largest phones) keep 390px. */
+@media (max-width: 899.98px) {
+  .screen.wide {
+    --side: clamp(
+      280px,
+      100vw - 2 * var(--gutter) - 32px - var(--eval-w) - var(--eval-gap) -
+        (100dvh - var(--wide-top) - var(--wide-bottom) - 2 * (var(--row-h) + 4px)),
+      390px
+    );
+  }
 }
 
 .wideBoard {

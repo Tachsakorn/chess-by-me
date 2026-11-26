@@ -311,3 +311,31 @@ describe('the time limit of a search, by depth (1.1)', () => {
     }
   });
 });
+
+describe('the time limit of a tried move, not on the clock alone (1.1.1, B2-03)', () => {
+  async function stuckWith(ping: () => Promise<boolean>) {
+    const { engine } = manualEngine();
+    const evaluator = createPositionEvaluator(
+      { createEngine: () => Object.assign(engine, { ping }) },
+      { ...options, depth: 18 },
+      () => {},
+    );
+    evaluator.want([AFTER_E4]);
+    await vi.advanceTimersByTimeAsync(0);
+    return evaluator;
+  }
+
+  it('an engine that still answers gets more time; a silent one fails at the limit', async () => {
+    vi.useFakeTimers();
+    try {
+      const alive = await stuckWith(async () => true);
+      await vi.advanceTimersByTimeAsync(130_000);
+      expect(alive.error()).toBeNull();
+      const silent = await stuckWith(async () => false);
+      await vi.advanceTimersByTimeAsync(121_000);
+      expect(silent.error()?.detail).toBe('no answer from the engine within 120000 ms');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});

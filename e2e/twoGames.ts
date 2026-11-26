@@ -12,8 +12,17 @@ const GAMES = [
   '1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O *',
 ];
 
-async function analyse(page: Page, pgn: string): Promise<void> {
+/** Every text the review panel showed during the analysis (an observer in the page). */
+async function analyse(page: Page, pgn: string): Promise<string[]> {
   await page.goto('/search');
+  await page.evaluate(() => {
+    const seen: string[] = [];
+    (window as unknown as { panelTexts: string[] }).panelTexts = seen;
+    new MutationObserver(() => {
+      const text = document.getElementById('review-panel')?.textContent ?? '';
+      if (text && seen.at(-1) !== text) seen.push(text);
+    }).observe(document.body, { subtree: true, childList: true, characterData: true });
+  });
   await page.getByRole('button', { name: /Paste PGN/ }).click();
   const sheet = page.getByRole('dialog');
   await sheet.getByRole('textbox').fill(pgn);
@@ -24,7 +33,10 @@ async function analyse(page: Page, pgn: string): Promise<void> {
     timeout: 120_000,
   });
   await expect(panel).toContainText('Drag a piece to try your own move');
+  return page.evaluate(() => (window as unknown as { panelTexts: string[] }).panelTexts);
 }
+
+const said = (texts: string[], what: RegExp) => texts.some((text) => what.test(text));
 
 export async function analyseTwoGames(page: Page, serviceWorker: boolean): Promise<void> {
   await page.goto('/');
@@ -35,10 +47,17 @@ export async function analyseTwoGames(page: Page, serviceWorker: boolean): Promi
     await page.reload();
     await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
   }
-  await analyse(page, GAMES[0]!);
+  const first = await analyse(page, GAMES[0]!);
+  // The first time the engine really is downloaded.
+  expect(said(first, /Downloading the engine/)).toBe(true);
+  expect(said(first, /Loading the engine/)).toBe(false);
   // The app is opened again: a new page, a new copy of the engine's WebAssembly.
   await page.reload();
-  await analyse(page, GAMES[1]!);
+  const second = await analyse(page, GAMES[1]!);
+  // 1.1.1 (owner): from the service worker's storage it is "Loading", never "Downloading N%".
+  // Without the service worker the file comes over the network again.
+  expect(said(second, /Loading the engine/)).toBe(serviceWorker);
+  expect(said(second, /Downloading the engine/)).toBe(!serviceWorker);
   if (serviceWorker) {
     const cached = await page.evaluate(async () => {
       const names = await caches.keys();

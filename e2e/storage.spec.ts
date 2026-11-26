@@ -138,6 +138,11 @@ test('the limit per account drops the oldest games, never analysed, opened or qu
         left: (await local.listGames('lichess:me')).map((g) => g.id).sort(),
         theirs: (await local.listGames('chesscom:other-account')).length,
         again: await local.trimOwner('lichess:me', new Set(['g3']), 2),
+        // 1.1.1 (B5-01): the dropped games are still known, so an update does not read them again;
+        // until the account is disconnected.
+        known: (await local.knownGameIds('lichess:me')).sort(),
+        afterDisconnect:
+          (await local.deleteOwner('lichess:me'), (await local.knownGameIds('lichess:me')).length),
       };
     },
     [1, 2, 3, 4, 5, 6, 7].map((day) => game(`g${day}`, day)),
@@ -149,6 +154,8 @@ test('the limit per account drops the oldest games, never analysed, opened or qu
     left: ['g1', 'g2', 'g3', 'g6', 'g7'],
     theirs: 7,
     again: 0,
+    known: ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7'],
+    afterDisconnect: 0,
   });
 });
 
@@ -199,4 +206,40 @@ test('other games: leaving a review of one moves it first, without saving it aga
     { a: game('pgn:a', 1), b: game('pgn:b', 2) },
   );
   expect(order).toEqual({ before: ['pgn:b', 'pgn:a'], after: ['pgn:a', 'pgn:b'] });
+});
+
+test('the ids of dropped games are capped at the newest 1,000 per account, and go with it', async ({
+  page,
+}) => {
+  // 1.1.1 (owner): the list that keeps Chess.com from reading dropped games again must not grow.
+  await freshPage(page);
+  const result = await page.evaluate(async () => {
+    const MODULE_PATH = '/src/data/local.ts';
+    const { local } = (await import(MODULE_PATH)) as Local;
+    const batch = (from: number, day: number) =>
+      Array.from({ length: 700 }, (_, i) => ({
+        id: `chesscom:g${from + i}`,
+        playedAt: `2026-${String(day).padStart(2, '0')}-01T12:00:00Z`,
+      }));
+    // Two updates, each of 700 games none of which is kept (keep 0): 1,400 dropped in all.
+    await local.putGames(batch(0, 9) as never, 'chesscom:me');
+    await local.trimOwner('chesscom:me', new Set(), 0);
+    await local.putGames(batch(700, 10) as never, 'chesscom:me');
+    await local.trimOwner('chesscom:me', new Set(), 0);
+    const known = await local.knownGameIds('chesscom:me');
+    const size = JSON.stringify(known).length;
+    await local.deleteOwner('chesscom:me');
+    return {
+      count: known.length,
+      newestAllKept: Array.from({ length: 700 }, (_, i) => `chesscom:g${700 + i}`).every((id) =>
+        known.includes(id),
+      ),
+      bytes: size,
+      afterDisconnect: (await local.knownGameIds('chesscom:me')).length,
+    };
+  });
+  expect(result.count).toBe(1000);
+  expect(result.newestAllKept).toBe(true);
+  expect(result.afterDisconnect).toBe(0);
+  console.log(`1,000 remembered ids take ${result.bytes} bytes as JSON`);
 });

@@ -107,6 +107,14 @@ describe('groupByTime', () => {
     const later = groupByTime([rosen], new Date(2026, 11, 20));
     expect(later[0]!.key).toEqual({ kind: 'month', date: new Date(2026, 10, 1) });
   });
+  it('never fails on a date the browser cannot read (Fable review 1.1 B4-04)', () => {
+    const bad = { ...rosen, id: 'pgn:bad', playedAt: '2024-00-00T00:00:00Z' };
+    const groups = groupByTime([bad, rosen], new Date(2026, 11, 20));
+    for (const group of groups) {
+      if (group.key.kind === 'month') expect(Number.isNaN(group.key.date.getTime())).toBe(false);
+    }
+    expect(groups.flatMap((group) => group.games)).toHaveLength(2);
+  });
 });
 
 describe('pickContinue', () => {
@@ -137,6 +145,10 @@ describe('dates', () => {
   it('writes short dates with the Gregorian year and Arabic digits in Thai', () => {
     expect(formatShortDate('2026-11-12T10:00:00Z', 'en')).toBe('Nov 12');
     expect(formatShortDate('2026-11-12T10:00:00Z', 'th')).toBe('12 พ.ย.');
+  });
+  it('shows nothing for a date the browser cannot read (B4-04)', () => {
+    expect(formatShortDate('2024-00-00T00:00:00Z', 'en')).toBe('');
+    expect(formatShortDate('2024-13-40T00:00:00Z', 'th')).toBe('');
   });
 });
 

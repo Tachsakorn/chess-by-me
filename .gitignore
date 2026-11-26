@@ -35,3 +35,6 @@ spikes/stockfish-bench/public/engines/
 
 # engine binaries are copied from node_modules by `npm run engines:copy`
 public/engines/
+
+# release tests: previous release built once, both builds served locally (e2e/release/servers.ts)
+.release-cache/

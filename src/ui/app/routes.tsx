@@ -24,14 +24,8 @@ const screens: RouteObject[] = [
       </RequireAccount>
     ),
   },
-  {
-    path: '/games',
-    element: (
-      <RequireAccount>
-        <GamesScreen />
-      </RequireAccount>
-    ),
-  },
+  // Without an account, My Games shows the games opened from elsewhere (Fable review 1.1 B4-03).
+  { path: '/games', element: <GamesScreen /> },
   { path: '/review/:gameId', element: <ReviewScreen /> },
   { path: '/courses', element: <CoursesScreen /> },
   { path: '/search', element: <SearchScreen /> },

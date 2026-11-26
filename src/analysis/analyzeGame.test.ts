@@ -563,6 +563,17 @@ describe('analyzeGame, downloading the engine first', () => {
     expect(events.at(-1)?.type).toBe('completed');
   });
 
+  it('says when the engine comes from the device, not the network (1.1.1)', async () => {
+    const events = await run({
+      prepareEngine: async (_variant, progress) => {
+        progress(7_000_000, null, true);
+      },
+    }).done;
+    expect(events.filter((e) => e.type === 'engine-loading')).toEqual([
+      { type: 'engine-loading', loadedBytes: 7_000_000, totalBytes: null, cached: true },
+    ]);
+  });
+
   it('fails with engine-load-failed when the download fails', async () => {
     const events = await run({
       prepareEngine: async () => {
@@ -675,5 +686,167 @@ describe('analyzeGame with several engines', () => {
     await handle.done;
     expect(engines).toHaveLength(3);
     for (const engine of engines) expect(engine.log.filter((l) => l === 'close')).toHaveLength(1);
+  });
+});
+
+// 1.1.1, Fable review 1.1 B2-03 and B2-02: an analysis is not failed on the wall clock alone, a
+// silent engine hands its position to another one, and a retry keeps what was already searched.
+describe('analyzeGame, engines that are slow, silent or asleep (1.1.1)', () => {
+  const FAKED = ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'] as const;
+  const completedOrFailed = (events: AnalysisEvent[]) => events.at(-1)?.type;
+
+  /** An engine whose `n`-th search answers only after `delay` ms (fake time); alive or not. */
+  function slowEngine(n: number, delay: number, answers: 'alive' | 'silent' | 'no-ping') {
+    const base = fakeEngine();
+    let calls = 0;
+    let stuck: () => void = () => {};
+    const reached = new Promise<void>((resolve) => (stuck = resolve));
+    const engine = fakeEngine({
+      evaluate: (fen, depth, signal) => {
+        if (++calls !== n) return base.evaluate(fen, depth, signal);
+        stuck();
+        if (delay === Infinity) return new Promise<RawEval>(() => {});
+        return new Promise<RawEval>((resolve, reject) =>
+          setTimeout(() => base.evaluate(fen, depth, signal).then(resolve, reject), delay),
+        );
+      },
+      ...(answers === 'no-ping' ? {} : { ping: async () => answers === 'alive' }),
+    });
+    return { engine, reached };
+  }
+
+  it('an engine that still answers is given more time instead of failing at the limit', async () => {
+    vi.useFakeTimers({ toFake: [...FAKED] });
+    try {
+      // Depth 18: limit 120 s. The search takes 200 s, the engine answers "readyok" all along.
+      const { engine, reached } = slowEngine(3, 200_000, 'alive');
+      const started = run({ engine });
+      await reached;
+      await vi.advanceTimersByTimeAsync(210_000);
+      expect(completedOrFailed(await started.done)).toBe('completed');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a silent engine is replaced within 15 s and its position searched again (B2-02)', async () => {
+    vi.useFakeTimers({ toFake: [...FAKED] });
+    try {
+      let made = 0;
+      let dead = true;
+      const base = fakeEngine();
+      const started = run({
+        createEngine: () => {
+          made += 1;
+          // The first engine stops answering at its fifth search; the one made after it works.
+          if (made > 1) dead = false;
+          let calls = 0;
+          const isFirst = made === 1;
+          return fakeEngine({
+            evaluate: (fen, depth, signal) =>
+              isFirst && ++calls === 5
+                ? new Promise<RawEval>(() => {})
+                : base.evaluate(fen, depth, signal),
+            ping: async () => !(isFirst && dead),
+          });
+        },
+      });
+      await vi.advanceTimersByTimeAsync(16_000);
+      const events = await started.done;
+      expect(completedOrFailed(events)).toBe('completed');
+      expect(made).toBe(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a truly dead engine still fails, and no later than before 1.1.1', async () => {
+    vi.useFakeTimers({ toFake: [...FAKED] });
+    try {
+      // Every engine made stops answering at its first search and never answers "readyok".
+      const started = run({
+        createEngine: () =>
+          fakeEngine({
+            evaluate: () => new Promise<RawEval>(() => {}),
+            ping: async () => false,
+          }),
+      });
+      let ended = false;
+      void started.done.then(() => (ended = true));
+      // Before 1.1.1 the user waited the whole limit (120 s at depth 18).
+      await vi.advanceTimersByTimeAsync(119_000);
+      expect(ended).toBe(true);
+      const last = (await started.done).at(-1);
+      expect(last?.type === 'failed' && last.error.code).toBe('engine-crashed');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a page that slept longer than the limit goes on when it wakes (heartbeat)', async () => {
+    vi.useFakeTimers({ toFake: [...FAKED] });
+    try {
+      // An engine without ping (judged by the clock alone): its search answers at 125 s of timer
+      // time. At 5 s the computer sleeps for 130 s: the clock jumps, no timer runs meanwhile.
+      const { engine, reached } = slowEngine(3, 125_000, 'no-ping');
+      const started = run({ engine });
+      await reached;
+      await vi.advanceTimersByTimeAsync(5_000);
+      vi.setSystemTime(Date.now() + 130_000);
+      await vi.advanceTimersByTimeAsync(125_000);
+      expect(completedOrFailed(await started.done)).toBe('completed');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('an engine without ping that answers after the limit still fails, as before', async () => {
+    vi.useFakeTimers({ toFake: [...FAKED] });
+    try {
+      // The same search with no sleep but answering after the limit: an engine judged by the
+      // clock alone fails, as before.
+      const { engine, reached } = slowEngine(3, 125_000, 'no-ping');
+      const started = run({ engine });
+      await reached;
+      await vi.advanceTimersByTimeAsync(130_000);
+      expect(completedOrFailed(await started.done)).toBe('failed');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a retry after a failure does not search again what was already searched (B2-02)', async () => {
+    const searched: string[] = [];
+    const base = fakeEngine();
+    let failAt = 40;
+    const deps = {
+      createEngine: () =>
+        fakeEngine({
+          evaluate: (fen: string, depth: number, signal?: AbortSignal) => {
+            searched.push(fen);
+            if (--failAt === 0) return Promise.reject(new EngineError('engine-crashed', 'boom'));
+            return base.evaluate(fen, depth, signal);
+          },
+        }),
+      loadOpeningBook,
+      now: () => new Date('2026-11-13T12:00:00Z'),
+    };
+    const analyzeGame = createAnalyzeGame(deps);
+    const once = () =>
+      new Promise<AnalysisEvent>((resolve) =>
+        analyzeGame(game, options, (event) => {
+          if (event.type === 'completed' || event.type === 'failed') resolve(event);
+        }),
+      );
+    expect((await once()).type).toBe('failed');
+    const before = searched.length;
+    const second = await once();
+    expect(second.type).toBe('completed');
+    // 85 positions to search: the 39 found before the failure are not searched again.
+    expect(searched.length - before).toBe(85 - 39);
+    // Completed: the next run of the same game starts from nothing.
+    const third = await once();
+    expect(third.type).toBe('completed');
+    expect(searched.length - before - (85 - 39)).toBe(85);
   });
 });

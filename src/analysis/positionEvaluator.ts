@@ -47,6 +47,11 @@ function toAnalysisError(error: unknown): AnalysisError {
  * `onChange` is called whenever a new evaluation is known or a failure is recorded, never
  * synchronously from `want`.
  */
+/** As in analyzeGame (1.1.1): the gap that means the page slept, and the "are you there?" wait. */
+const SLEEP_GAP_MS = 5_000;
+const PING_WAIT_MS = 5_000;
+const MAX_EXTENSIONS = 3;
+
 export function createPositionEvaluator(
   deps: PositionEvaluatorDeps,
   options: AnalysisOptions,
@@ -101,15 +106,34 @@ export function createPositionEvaluator(
     if (closed || signal?.aborted) throw new EngineError('cancelled');
     return new Promise<RawEval>((resolve, reject) => {
       let timer: ReturnType<typeof setTimeout> | undefined;
+      let started = 0;
+      let extensions = 0;
+      const fail = () =>
+        reject(
+          new EngineError(
+            'engine-crashed',
+            `no answer from the engine within ${searchTimeoutMs} ms`,
+          ),
+        );
       const startTimer = () => {
         clearTimeout(timer);
+        started = Date.now();
         timer = setTimeout(() => {
-          reject(
-            new EngineError(
-              'engine-crashed',
-              `no answer from the engine within ${searchTimeoutMs} ms`,
-            ),
-          );
+          // Not on the clock alone (1.1.1, Fable review 1.1 B2-03): overdue because the page
+          // slept, or an engine that still answers, gets its time again; a silent one fails.
+          if (Date.now() - started > searchTimeoutMs + SLEEP_GAP_MS) {
+            startTimer();
+            return;
+          }
+          if (!created.ping || extensions >= MAX_EXTENSIONS) {
+            fail();
+            return;
+          }
+          void created.ping(PING_WAIT_MS).then((alive) => {
+            if (!alive) return fail();
+            extensions += 1;
+            startTimer();
+          });
         }, searchTimeoutMs);
       };
       startTimer();

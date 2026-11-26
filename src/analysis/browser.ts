@@ -22,7 +22,21 @@ const base = `${import.meta.env.BASE_URL}engines/`;
 /** A download that receives nothing for this long is given up; the user can try again. */
 const STALL_MS = 60_000;
 
-type Progress = (loadedBytes: number, totalBytes: number | null) => void;
+type Progress = (loadedBytes: number, totalBytes: number | null, cached?: boolean) => void;
+
+/**
+ * True when the service worker has the file stored on this device (public/sw.js keeps the engine
+ * in its own cache), so getting it is not a download (1.1.1: "Loading the engine…", not
+ * "Downloading the engine… N%").
+ */
+async function storedOnDevice(url: string): Promise<boolean> {
+  if (typeof caches === 'undefined') return false;
+  try {
+    return (await caches.match(url)) !== undefined;
+  } catch {
+    return false;
+  }
+}
 
 /** The downloaded lite engine as a blob address: one download per session. */
 let liteWasm: Promise<string> | null = null;
@@ -30,6 +44,7 @@ let liteWasm: Promise<string> | null = null;
 const watchers = new Set<Progress>();
 
 async function download(url: string): Promise<string> {
+  const cached = await storedOnDevice(url);
   const controller = new AbortController();
   let stall = setTimeout(() => controller.abort(), STALL_MS);
   try {
@@ -47,7 +62,7 @@ async function download(url: string): Promise<string> {
       stall = setTimeout(() => controller.abort(), STALL_MS);
       chunks.push(value);
       loaded += value.byteLength;
-      for (const watch of watchers) watch(loaded, total);
+      for (const watch of watchers) watch(loaded, total, cached);
     }
     return URL.createObjectURL(new Blob(chunks as BlobPart[], { type: 'application/wasm' }));
   } catch (error) {

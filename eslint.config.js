@@ -17,6 +17,8 @@ const noUiInLogic = {
 export default defineConfig([
   globalIgnores([
     'dist',
+    // The previous release, built by the release tests (e2e/release/servers.ts).
+    '.release-cache',
     'coverage',
     'spikes',
     'public/engines',

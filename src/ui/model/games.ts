@@ -129,7 +129,9 @@ export function groupByTime(games: readonly GameRecord[], now: Date): GameGroup[
   const lastWeek = thisWeek - 7 * 24 * 3600 * 1000;
   const groups: GameGroup[] = [];
   for (const game of games) {
-    const played = game.playedAt ? new Date(game.playedAt) : null;
+    const parsed = game.playedAt ? new Date(game.playedAt) : null;
+    // A date the browser cannot read is no date, never an error (Fable review 1.1 B4-04).
+    const played = parsed && !Number.isNaN(parsed.getTime()) ? parsed : null;
     let id: string;
     let key: GroupKey;
     if (played && played.getTime() >= thisWeek) {
@@ -214,9 +216,11 @@ export function formatToday(date: Date, locale: Locale): string {
 }
 
 export function formatShortDate(iso: string | null, locale: Locale): string {
-  if (!iso) return '';
+  const date = iso ? new Date(iso) : null;
+  // A date the browser cannot read shows as no date (Fable review 1.1 B4-04).
+  if (!date || Number.isNaN(date.getTime())) return '';
   return new Intl.DateTimeFormat(intlLocale(locale), { month: 'short', day: 'numeric' }).format(
-    new Date(iso),
+    date,
   );
 }
 

@@ -11,12 +11,16 @@ export { compareWithGameMove, reviewTriedMove, type TriedLine } from './tryMove'
 export { loadOpeningBook, type OpeningBook } from './classify';
 export { createAnalyzeGame, type AnalysisEngine, type AnalyzeGameDeps } from './analyzeGame';
 export { buildAnalysis, reviewMove, type BuildAnalysisInput } from './buildAnalysis';
+export { rebuildAnalysis } from './rebuild';
 export { APP_ANALYSIS_OPTIONS } from './settings';
 export { ENGINE_VERSION } from './engine/engineFiles';
 import { RULES_VERSION } from './classify';
 export { RULES_VERSION };
 
-/** False for a saved analysis made under older labelling rules: it is to be done again. */
+/**
+ * False for a saved analysis made under older labelling rules: it is rebuilt from its own
+ * positions (`rebuildAnalysis`), or done again when that is not possible.
+ */
 export function isCurrentAnalysis(analysis: { rulesVersion?: number }): boolean {
   return analysis.rulesVersion === RULES_VERSION;
 }

@@ -76,7 +76,8 @@ export default defineConfig({
   optimizeDeps: { entries: ['index.html', 'dev/**/*.html'] },
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+    // deploy/: the site's Worker script (1.1.1, Fable review 1.1 B1-01).
+    include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'deploy/**/*.test.ts'],
     // The cburnett pieces are read from chessground's stylesheet with ?raw (src/ui/board/pieces.ts);
     // Vitest blanks stylesheets unless told to keep them.
     css: { include: [/chessground\.cburnett\.css/] },
